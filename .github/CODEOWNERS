@@ -1,0 +1,22 @@
+# Protected zones (CLAUDE.md §6) need the architect role. Interim architect: Vlad (D-22) until Q2 is answered.
+# Enforced only with branch protection "Require review from Code Owners" on main.
+
+/packages/db/                   @Vladosyna
+/packages/core/identity/        @Vladosyna
+/packages/core/permissions/     @Vladosyna
+/packages/contracts/            @Vladosyna
+/infra/                         @Vladosyna
+/.github/                       @Vladosyna
+/.claude/                       @Vladosyna
+/CLAUDE.md                      @Vladosyna
+/docs/ocs/01-decisions.md       @Vladosyna
+/docs/ocs/adr/                  @Vladosyna
+**/package.json                 @Vladosyna
+/pnpm-lock.yaml                 @Vladosyna
+/pnpm-workspace.yaml            @Vladosyna
+/turbo.json                     @Vladosyna
+/tsconfig.base.json             @Vladosyna
+/tsconfig.paths.json            @Vladosyna
+/eslint.config.js               @Vladosyna
+/tools/eslint-plugin/           @Vladosyna
+/tools/ci/                      @Vladosyna

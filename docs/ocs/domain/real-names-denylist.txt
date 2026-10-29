@@ -1,0 +1,34 @@
+# Real client, brand, partner and person names that must never appear in code, seeds, fixtures or tests
+# (CLAUDE.md §3 rule 3). Checked by packages/testing/src/__tests__/no-real-names.test.ts over apps/, packages/, tools/.
+# One name per line, matched case-insensitively as a whole word. Extend when new real names appear in docs.
+NEINVER
+SSRR
+Gebr. Heinemann
+Heinemann
+PMI
+Philip Morris
+IQOS
+Brno Olympia
+Logista
+Forus
+EuroTSI
+BR Tech
+Vitosha
+Verifone
+Unifree
+Inditex
+Zara Home
+Erajaya
+Watsons
+Skechers
+Super Retail Group
+Alcorcon
+Vladyslav Yurchyna
+Yurchyna
+Xavier Xue
+Song Jun
+Francesca Versiglia
+Hai Tao
+Wesley
+Benoit
+Josephine
