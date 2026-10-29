@@ -1,0 +1,5 @@
+// path: apps/web/src/routes/Cases.tsx
+// expect: none
+import { Button } from '@ocs/ui';
+import { t } from '@ocs/i18n';
+export const Toolbar = () => <Button label={t('cases.new')}>{t('cases.new')}</Button>;

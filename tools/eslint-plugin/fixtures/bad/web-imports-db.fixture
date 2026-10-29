@@ -1,0 +1,4 @@
+// path: apps/web/src/routes/Example.tsx
+// expect: boundaries/dependencies, ocs/no-db-import
+import { db } from '@ocs/db';
+export const x = db;

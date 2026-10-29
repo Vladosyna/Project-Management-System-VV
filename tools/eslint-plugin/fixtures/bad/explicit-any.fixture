@@ -1,0 +1,5 @@
+// path: packages/core/cases/rules/eta.ts
+// expect: @typescript-eslint/no-explicit-any
+export function eta(input: any): string {
+  return String(input);
+}

@@ -24,8 +24,10 @@ Rules: a decision here is not re-opened without Vlad's explicit OK. New decision
 | D-18 | 29 Oct 2026 | Project ID format from SOP-DEL-02: `CLIENT-CC-CITY-NNN` (client short code ≤ 8 letters, ISO country, 3-letter city / IATA, running number). It is the primary business key for projects/sites in OCS, in mail subjects and in DingTalk folder names. | SOP-DEL-02 |
 | D-19 | 29 Oct 2026 | Excel trackers are retired per project, not big-bang, when: two weeks of all updates in OCS, Monday pack from OCS matches Excel, PM confirms data. | Vlad / Claude |
 | D-20 | 29 Oct 2026 | The knowledge base stores credentials in full; credentials are **never** imported into OCS as text. Only into a secret store, if at all. | Claude |
+| D-21 | 29 Oct 2026 | **ADR-001 accepted**: P-01…P-09 below are binding (`docs/ocs/adr/ADR-001-technology-stack.md`). P-10 hosting is deferred to Q4; until then local docker compose only, F0.12 preview/staging waits. | Vlad |
+| D-22 | 29 Oct 2026 | Branches: `main` starts at the bootstrap-pack commit and changes only through PRs; Phase 0 work on `arch/phase-0-skeleton`. Until Q2 is answered Vlad is the interim architect role in CODEOWNERS. | Vlad |
 
-## Proposed — confirm at kickoff (ADR-001)
+## Proposed at kickoff (ADR-001) — accepted 29 Oct 2026 as D-21 (P-10 deferred)
 
 | # | Proposal | Why |
 |---|---|---|

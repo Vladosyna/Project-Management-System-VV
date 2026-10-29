@@ -1,0 +1,6 @@
+// path: packages/core/cases/commands/set-eta.ts
+// expect: none
+import { RuleViolation } from '../../kernel';
+import { findAction } from '../../actions';
+import { saveEta } from '../repository';
+export const x = [RuleViolation, findAction, saveEta];

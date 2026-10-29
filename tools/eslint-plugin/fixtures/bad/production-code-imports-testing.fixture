@@ -1,0 +1,4 @@
+// path: packages/core/cases/commands/set-eta.ts
+// expect: boundaries/dependencies
+import { createTestDatabase } from '@ocs/testing';
+export const x = createTestDatabase;

@@ -1,0 +1,12 @@
+packages:
+  - apps/*
+  - packages/*
+  - tools/*
+
+# Supply-chain guardrails (03-engineering-rules §7, ADR-001).
+# Exact versions only; nothing younger than 7 days is resolved, including transitive dependencies.
+savePrefix: ''
+minimumReleaseAge: 10080
+# Install scripts run only for packages listed here (pnpm 10 default is none).
+onlyBuiltDependencies:
+  - esbuild

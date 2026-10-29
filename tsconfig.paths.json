@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "//": "Import resolution for ESLint (boundaries) only — maps every workspace package, declared or not, so a forbidden import is classified and reported instead of silently unresolved. Packages compile with their own tsconfig.json.",
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "paths": {
+      "@ocs/core/*": ["./packages/core/*/index.ts"],
+      "@ocs/web": ["./apps/web/src/index.ts"],
+      "@ocs/api": ["./apps/api/src/index.ts"],
+      "@ocs/worker": ["./apps/worker/src/index.ts"],
+      "@ocs/mcp": ["./apps/mcp/src/index.ts"],
+      "@ocs/generators": ["./tools/generators/src/index.ts"],
+      "@ocs/*": ["./packages/*/src/index.ts"]
+    }
+  },
+  "files": []
+}

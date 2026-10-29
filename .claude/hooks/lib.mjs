@@ -8,7 +8,11 @@ export async function readInput() {
   for await (const c of process.stdin) chunks.push(c);
   const raw = Buffer.concat(chunks).toString('utf8').trim();
   if (!raw) return {};
-  try { return JSON.parse(raw); } catch { return {}; }
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return {};
+  }
 }
 
 export function projectDir(input) {
@@ -17,19 +21,39 @@ export function projectDir(input) {
 
 export function currentBranch(dir) {
   try {
-    return execFileSync('git', ['rev-parse', '--abbrev-ref', 'HEAD'], { cwd: dir, stdio: ['ignore', 'pipe', 'ignore'] })
-      .toString().trim();
-  } catch { return ''; }
+    return execFileSync('git', ['rev-parse', '--abbrev-ref', 'HEAD'], {
+      cwd: dir,
+      stdio: ['ignore', 'pipe', 'ignore'],
+    })
+      .toString()
+      .trim();
+  } catch {
+    return '';
+  }
 }
 
 export const isArchBranch = (b) => b.startsWith('arch/');
 
 // Protected zones (CLAUDE.md §6). Paths are repo-relative, POSIX separators.
 export const PROTECTED_PREFIXES = [
-  'packages/db/', 'packages/core/identity/', 'packages/core/permissions/', 'packages/contracts/',
-  'infra/', '.github/', '.claude/',
+  'packages/db/',
+  'packages/core/identity/',
+  'packages/core/permissions/',
+  'packages/contracts/',
+  'infra/',
+  '.github/',
+  '.claude/',
 ];
-export const PROTECTED_FILES = ['CLAUDE.md', 'docs/ocs/01-decisions.md', 'pnpm-lock.yaml', 'package-lock.json', 'yarn.lock', 'pnpm-workspace.yaml', 'turbo.json', 'tsconfig.base.json'];
+export const PROTECTED_FILES = [
+  'CLAUDE.md',
+  'docs/ocs/01-decisions.md',
+  'pnpm-lock.yaml',
+  'package-lock.json',
+  'yarn.lock',
+  'pnpm-workspace.yaml',
+  'turbo.json',
+  'tsconfig.base.json',
+];
 export const PROTECTED_BASENAMES = ['package.json'];
 
 export function relPath(dir, file) {
@@ -37,7 +61,9 @@ export function relPath(dir, file) {
   return path.relative(dir, abs).split(path.sep).join('/');
 }
 
-export function isOutside(rel) { return rel.startsWith('../') || rel === '..' || path.isAbsolute(rel); }
+export function isOutside(rel) {
+  return rel.startsWith('../') || rel === '..' || path.isAbsolute(rel);
+}
 
 export function isTempPath(file) {
   const abs = path.resolve(file);

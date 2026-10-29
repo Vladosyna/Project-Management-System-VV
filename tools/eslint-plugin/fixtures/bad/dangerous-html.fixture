@@ -1,0 +1,3 @@
+// path: apps/web/src/routes/Case.tsx
+// expect: ocs/no-dangerous-html
+export const Body = (p: { html: string }) => <div dangerouslySetInnerHTML={{ __html: p.html }} />;

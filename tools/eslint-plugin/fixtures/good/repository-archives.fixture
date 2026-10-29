@@ -1,0 +1,4 @@
+// path: packages/core/cases/repository.ts
+// expect: none
+import { db, cases } from '@ocs/db';
+export const archiveCase = (id: string, at: Date) => db.update(cases).set({ archivedAt: at }).where(id);

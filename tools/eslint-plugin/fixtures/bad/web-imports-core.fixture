@@ -1,0 +1,4 @@
+// path: apps/web/src/routes/Example.ts
+// expect: boundaries/dependencies
+import { NotFound } from '@ocs/core/kernel';
+export const x = NotFound;

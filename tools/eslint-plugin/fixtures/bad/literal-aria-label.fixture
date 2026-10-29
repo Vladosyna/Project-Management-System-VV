@@ -1,0 +1,3 @@
+// path: packages/ui/src/IconButton.tsx
+// expect: ocs/no-literal-string
+export const Close = () => <button aria-label="Close" />;

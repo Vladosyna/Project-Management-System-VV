@@ -1,0 +1,13 @@
+{
+  "name": "@ocs/worker",
+  "private": true,
+  "type": "module",
+  "description": "Background jobs (pg-boss): mail intake, DingTalk, device platform, alerts, AI agent",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run --passWithNoTests"
+  }
+}

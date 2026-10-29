@@ -1,0 +1,3 @@
+// path: apps/web/src/routes/Cases.tsx
+// expect: ocs/no-raw-colour
+export const accent = '#0066ff';

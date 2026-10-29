@@ -1,0 +1,4 @@
+// path: apps/api/src/errors.ts
+// expect: ocs/public-api-only
+import { RuleViolation } from '@ocs/core/kernel/errors';
+export const x = RuleViolation;

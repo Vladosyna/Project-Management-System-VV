@@ -1,0 +1,9 @@
+# Authored documents and vendored content are not reformatted.
+*.md
+docs/ocs/reference/
+.claude/skills/
+pnpm-lock.yaml
+node_modules/
+dist/
+coverage/
+.turbo/

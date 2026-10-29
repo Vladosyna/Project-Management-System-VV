@@ -1,0 +1,16 @@
+{
+  "name": "@ocs/contracts",
+  "private": true,
+  "type": "module",
+  "description": "Zod schemas and inferred types shared by web, api, mcp and worker [protected]",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "zod": "4.6.7"
+  }
+}

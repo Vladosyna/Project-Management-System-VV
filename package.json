@@ -1,0 +1,40 @@
+{
+  "name": "ocs",
+  "private": true,
+  "type": "module",
+  "description": "Vionvision Operations & Collaboration System — modular monolith (docs/ocs/02-architecture.md)",
+  "packageManager": "pnpm@10.28.0",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "build": "turbo run build",
+    "typecheck": "turbo run typecheck",
+    "lint": "eslint . --max-warnings=0",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "turbo run test",
+    "test:integration": "turbo run test:integration",
+    "test:hooks": "node .claude/hooks/selftest.mjs",
+    "verify": "pnpm format:check && pnpm lint && turbo run typecheck test test:integration && pnpm test:hooks",
+    "verify:quick": "pnpm lint && turbo run typecheck test"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@ocs/eslint-plugin": "workspace:*",
+    "@types/node": "22.20.5",
+    "@vitest/coverage-v8": "5.0.5",
+    "eslint": "10.13.0",
+    "eslint-config-prettier": "10.1.8",
+    "eslint-import-resolver-typescript": "4.4.5",
+    "eslint-plugin-boundaries": "7.2.1",
+    "globals": "17.13.0",
+    "prettier": "3.9.10",
+    "tsx": "4.23.15",
+    "turbo": "2.11.10",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.72.0",
+    "typescript-language-server": "6.0.2",
+    "vitest": "5.0.5"
+  }
+}
