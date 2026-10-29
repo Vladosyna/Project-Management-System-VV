@@ -1,0 +1,13 @@
+{
+  "name": "@ocs/i18n",
+  "private": true,
+  "type": "module",
+  "description": "EN / \u4e2d\u6587 message catalogues",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run --passWithNoTests"
+  }
+}

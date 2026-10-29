@@ -27,5 +27,7 @@ OCS is built mostly by Vionvision PMs who are not professional engineers, workin
 ## Consequences
 
 - Every dependency added later goes through an `arch/` branch and the architect role (package.json is protected).
-- Exact library versions are pinned in the lockfile; the versions in use at Phase 0 are listed in `docs/ocs/adr/ADR-001-versions.md` once the skeleton is installed.
+- Exact library versions live in the `package.json` files (no ranges, `savePrefix: ''`) and `pnpm-lock.yaml` — that is the single source of truth. pnpm refuses any version younger than 7 days (`minimumReleaseAge`), and install scripts run only for allow-listed packages (`onlyBuiltDependencies`).
+- TypeScript is held at 6.0.x: typescript-eslint supports `<6.1`. TypeScript 7 (native compiler) is re-evaluated when typescript-eslint supports it.
+- Node ≥ 22.12 (Vitest 5 requirement; CI and dev on Node 22 LTS) — stricter than the "Node ≥ 20" in 11-kickoff.
 - Changing any line of this ADR requires a new decisions-log entry with Vlad's OK.

@@ -1,0 +1,13 @@
+{
+  "name": "@ocs/web",
+  "private": true,
+  "type": "module",
+  "description": "React SPA: internal UI, later client portal and partner app as routes",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run --passWithNoTests"
+  }
+}

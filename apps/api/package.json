@@ -1,0 +1,13 @@
+{
+  "name": "@ocs/api",
+  "private": true,
+  "type": "module",
+  "description": "HTTP API (Hono + zod-openapi). Thin: auth session \u2192 core \u2192 error mapping",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run --passWithNoTests"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "name": "@ocs/core",
+  "private": true,
+  "type": "module",
+  "description": "All business logic, one folder per module; only <module>/index.ts is public",
+  "exports": {
+    "./*": "./*/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run --passWithNoTests"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "name": "@ocs/generators",
+  "private": true,
+  "type": "module",
+  "description": "pnpm gen:* \u2014 module, command, query, screen, rule, migration (F0.10)",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run --passWithNoTests"
+  }
+}

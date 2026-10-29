@@ -1,7 +1,16 @@
 // PreToolUse(Bash): block dangerous or rule-breaking shell commands.
 import path from 'node:path';
 import os from 'node:os';
-import { readInput, projectDir, currentBranch, isArchBranch, relPath, isOutside, isProtected, block } from './lib.mjs';
+import {
+  readInput,
+  projectDir,
+  currentBranch,
+  isArchBranch,
+  relPath,
+  isOutside,
+  isProtected,
+  block,
+} from './lib.mjs';
 
 const input = await readInput();
 const cmd = String((input.tool_input || {}).command || '');
@@ -12,31 +21,55 @@ const arch = isArchBranch(branch);
 
 const rules = [
   [/\bgit\s+push\b[^\n;&|]*(\s--force(-with-lease)?\b|\s-f\b)/, 'Force push is forbidden.'],
-  [/\bgit\s+push\b[^\n;&|]*[\s:](main|master)(\s|$|;|&|\|)/, 'Pushing to main is forbidden. Push your branch and open a PR.'],
+  [
+    /\bgit\s+push\b[^\n;&|]*[\s:](main|master)(\s|$|;|&|\|)/,
+    'Pushing to main is forbidden. Push your branch and open a PR.',
+  ],
   [/--no-verify\b/, 'Skipping git hooks (--no-verify) is forbidden.'],
   [/\bgit\s+commit\b[^\n;&|]*\s-n\b/, 'Skipping git hooks (commit -n) is forbidden.'],
-  [/\bgit\s+reset\s+--hard\b/, 'git reset --hard can destroy work. Ask the person first and explain what would be lost.'],
+  [
+    /\bgit\s+reset\s+--hard\b/,
+    'git reset --hard can destroy work. Ask the person first and explain what would be lost.',
+  ],
   [/\bgit\s+clean\s+-[a-z]*f/, 'git clean -f deletes untracked files. Ask the person first.'],
-  [/\brm\s+-[a-z]*r[a-z]*f[a-z]*\s+(\/|~|\$HOME|\.|\*)(\s|$)/, 'Recursive delete of a root, home or whole directory is forbidden.'],
-  [/\b(curl|wget)\b[^\n|]*\|\s*(sudo\s+)?(sh|bash|zsh|node|python3?)\b/, 'Piping a download into a shell is forbidden.'],
+  [
+    /\brm\s+-[a-z]*r[a-z]*f[a-z]*\s+(\/|~|\$HOME|\.|\*)(\s|$)/,
+    'Recursive delete of a root, home or whole directory is forbidden.',
+  ],
+  [
+    /\b(curl|wget)\b[^\n|]*\|\s*(sudo\s+)?(sh|bash|zsh|node|python3?)\b/,
+    'Piping a download into a shell is forbidden.',
+  ],
   [/\b(npm|pnpm|yarn)\s+publish\b/, 'Publishing packages is forbidden.'],
-  [/\bdrizzle-kit\s+push\b/, 'drizzle-kit push bypasses migrations. Use pnpm gen:migration on an arch/ branch.'],
-  [/(PROD|PRODUCTION)_DATABASE_URL|--env[= ]prod(uction)?\b|\bpsql\b[^\n]*prod/i, 'Production access from a development session is forbidden. Data fixes go through audited commands.'],
+  [
+    /\bdrizzle-kit\s+push\b/,
+    'drizzle-kit push bypasses migrations. Use pnpm gen:migration on an arch/ branch.',
+  ],
+  [
+    /(PROD|PRODUCTION)_DATABASE_URL|--env[= ]prod(uction)?\b|\bpsql\b[^\n]*prod/i,
+    'Production access from a development session is forbidden. Data fixes go through audited commands.',
+  ],
   [/\bgit\s+config\b[^\n]*core\.hooksPath/, 'Changing git hooks path is forbidden.'],
 ];
 for (const [re, msg] of rules) if (re.test(cmd)) block(msg);
 
 if (/\bgit\s+commit\b/.test(cmd) && ['main', 'master'].includes(branch)) {
-  block('Do not commit on main. Create a branch: feat/<module>-<short>, fix/..., or arch/... for protected zones.');
+  block(
+    'Do not commit on main. Create a branch: feat/<module>-<short>, fix/..., or arch/... for protected zones.',
+  );
 }
 
 if (!arch) {
   if (/\b(pnpm|yarn)\b[^\n;&|]*\sadd\s|\bnpm\s+(install|i)\s+(?!-)[@a-z0-9]/i.test(cmd)) {
-    block('Adding dependencies changes package.json (protected). Propose it to the person; it is done on an arch/ branch with architect review.');
+    block(
+      'Adding dependencies changes package.json (protected). Propose it to the person; it is done on an arch/ branch with architect review.',
+    );
   }
   const target = writeTargets(cmd).find((t) => protectedPath(t));
   if (target) {
-    block(`This shell command writes to "${target}", a protected zone, outside an arch/ branch. Use normal edits on an arch/ branch with review.`);
+    block(
+      `This shell command writes to "${target}", a protected zone, outside an arch/ branch. Use normal edits on an arch/ branch with review.`,
+    );
   }
 }
 process.exit(0);
@@ -65,7 +98,7 @@ function tokenize(s) {
     } else if (c === '\\' && i + 1 < s.length) {
       cur = (cur ?? '') + s[++i];
     } else if (/\s/.test(c)) {
-      if (cur !== null) out.push(cur), (cur = null);
+      if (cur !== null) (out.push(cur), (cur = null));
       if (c === '\n') out.push(';');
     } else if (';&|<>'.includes(c)) {
       if (cur !== null && !(c === '>' && /^\d$/.test(cur))) out.push(cur);
@@ -92,7 +125,7 @@ function writeTargets(command) {
   const segments = [];
   let seg = [];
   for (const t of tokens) {
-    if (/^[;&|<>]+$/.test(t)) segments.push(seg), (seg = []);
+    if (/^[;&|<>]+$/.test(t)) (segments.push(seg), (seg = []));
     else seg.push(t);
   }
   segments.push(seg);
