@@ -1,0 +1,79 @@
+# OCS CI (F0.5, 03-engineering-rules §1 layer 4). Required checks on main: verify, security, pr-rules.
+# Third-party actions are pinned to commit SHAs; tools run from pinned container images.
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  TURBO_TELEMETRY_DISABLED: '1'
+  DO_NOT_TRACK: '1'
+
+jobs:
+  verify:
+    name: verify
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Format
+        run: pnpm format:check
+      - name: Lint (boundaries + OCS rules)
+        run: pnpm lint
+      - name: Typecheck, unit and integration tests (PostgreSQL via Testcontainers)
+        run: pnpm exec turbo run typecheck test test:integration
+      - name: Claude Code hooks self-test
+        run: pnpm test:hooks
+
+  security:
+    name: security
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+      - name: Secret scan (gitleaks, full history)
+        run: docker run --rm -v "$PWD:/repo" ghcr.io/gitleaks/gitleaks:v8.30.1 git --redact --no-banner /repo
+      - name: Static analysis (Semgrep)
+        run: >
+          docker run --rm -v "$PWD:/src" -w /src semgrep/semgrep:1.181.0
+          semgrep scan --config p/typescript --config p/javascript --config p/nodejsscan
+          --error --metrics=off --exclude node_modules --exclude docs --exclude .claude/skills
+      - name: Dependency audit
+        run: pnpm audit --audit-level=high
+
+  pr-rules:
+    name: pr-rules
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - name: PR size ≤ 400 lines (label size-exception to override, architect role)
+        env:
+          PR_LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
+        run: node tools/ci/pr-size.mjs "origin/${{ github.base_ref }}"
+      - name: Existing migrations unchanged
+        run: node tools/ci/migrations-immutable.mjs "origin/${{ github.base_ref }}"
