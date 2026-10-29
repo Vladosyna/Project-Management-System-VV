@@ -2,6 +2,8 @@
 
 Levels: **P0** same day · **P1** within 2 working days · **P2** within the week. Every hit has an owner, a due time and a handling log. "Block" means the save is refused with the clause shown, not an alert. Working days use the CN/EU calendars of the people involved.
 
+Working calendars (`packages/core/calendar`): **CN** from the State Council notice per year (2026 loaded; a year without the official notice throws instead of guessing — add 2027 when published, usually November); **ES, DE, PT, GB** nationwide public holidays computed from fixed dates and Easter (regional holidays not yet included). Each rule config names whose calendar applies.
+
 | # | Rule | Fires when | Level | Phase |
 |---|---|---|---|---|
 | R1 | Shipment without SN / MAC | Block at save | P0 | V1.1 |
