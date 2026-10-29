@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>OCS — Cases</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0;background:#f0f1f6}
+a{color:#005be6}a:hover{color:#0c1b2b}
+.nav a{display:flex;align-items:center;gap:10px;min-height:40px;padding:0 14px;color:#c9d3df;text-decoration:none;font-size:14px}
+.nav a:hover{background:#14273b;color:#ffffff}
+.chip{display:inline-block;padding:2px 8px;border-radius:5px;font-size:12px;font-weight:700;white-space:nowrap}
+.card{background:#ffffff;border:1px solid #d9d9d9;padding:20px;box-sizing:border-box}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:0 16px;border-radius:3.2rem;font-size:13px;font-weight:700;border:1px solid #0066ff;cursor:pointer;font-family:inherit;text-decoration:none}
+.lnk{font-size:12px;color:#666666;white-space:nowrap}
+.row:hover{background:#f7f8fb}
+</style>
+</helmet>
+<div style="display: flex; flex-wrap: wrap; min-height: 100vh; font-family: Arial, 'Microsoft YaHei', 'PingFang SC', sans-serif; color: #000000; background: #f0f1f6">
+  <nav class="nav" aria-label="Main" style="flex: 1 1 232px; max-width: 260px; background: #0c1b2b; display: flex; flex-direction: column; gap: 2px; padding: 20px 10px; box-sizing: border-box">
+    <div style="padding: 4px 14px 22px 14px; display: flex; flex-direction: column; gap: 6px">
+      <img src="/_blob/c1964100bba4ba939b1b6cbb1559b622" alt="Vionvision" style="width: 140px; height: auto">
+      <span style="color: #66a3ff; font-size: 12px; letter-spacing: 1px">OCS · DELIVERY PLATFORM</span>
+    </div>
+    <sc-for list="{{nav}}" as="n" hint-placeholder-count="12">
+      <a href="{{n.href}}" style="{{n.style}}">{{n.label}}</a>
+    </sc-for>
+  </nav>
+
+  <main style="flex: 999 1 560px; min-width: 0; padding: 28px; box-sizing: border-box; display: flex; flex-direction: column; gap: 20px">
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 12px">
+      <div>
+        <div style="font-size: 13px; color: #666666">/ 07 Cases</div>
+        <h1 style="margin: 6px 0 0 0; font-size: 30px; font-weight: 500">One Thread per Problem — From the First Email to the Fix</h1>
+      </div>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap">
+        <button type="button" class="btn" style="background: #ffffff; color: #005be6">Import old tickets</button>
+        <button type="button" class="btn" style="background: #0066ff; color: #ffffff">New case</button>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px">
+      <sc-for list="{{kpis}}" as="k" hint-placeholder-count="5">
+        <div class="card" style="padding: 14px 16px; {{k.edge}}">
+          <div style="font-size: 30px; font-weight: 500; color: {{k.c}}">{{k.v}}</div>
+          <div style="font-size: 13px; font-weight: 700">{{k.k}}</div>
+          <div style="font-size: 12px; color: #666666; margin-top: 2px">{{k.s}}</div>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+      <section class="card" style="flex: 1 1 100%; min-width: 0; padding: 0" aria-labelledby="h-c">
+        <div style="padding: 16px 20px 10px 20px; display: flex; flex-direction: column; gap: 12px">
+          <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; align-items: center">
+            <h2 id="h-c" style="margin: 0; font-size: 17px">Open cases</h2>
+            <span style="font-size: 12px; color: #666666">Sorted by priority, then ETA · click a case to open it</span>
+          </div>
+          <div role="tablist" aria-label="Team" style="display: flex; gap: 6px; flex-wrap: wrap">
+            <sc-for list="{{teams}}" as="t" hint-placeholder-count="7">
+              <button type="button" role="tab" onClick="{{t.pick}}" style="{{t.style}}">{{t.label}}</button>
+            </sc-for>
+          </div>
+        </div>
+        <div style="overflow-x: auto">
+          <table style="width: 100%; border-collapse: collapse; font-size: 13px; min-width: 980px">
+            <thead><tr style="background: #f2f2f2; text-align: left"><th style="padding: 10px 12px">Case</th><th style="padding: 10px 12px">Client · site</th><th style="padding: 10px 12px">Owner · team</th><th style="padding: 10px 12px">Linked</th><th style="padding: 10px 12px">Status</th><th style="padding: 10px 12px">ETA</th><th style="padding: 10px 12px">Client</th></tr></thead>
+            <tbody>
+              <sc-for list="{{rows}}" as="r" hint-placeholder-count="10">
+                <tr class="row" style="border-bottom: 1px solid #d9d9d9; vertical-align: top">
+                  <td style="padding: 12px; min-width: 250px; max-width: 340px">
+                    <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin-bottom: 4px"><span class="chip" style="{{r.pchip}}">{{r.p}}</span><a href="{{r.href}}" style="font-weight: 700; text-decoration: none">{{r.id}}</a><span class="chip" style="background: #f0f1f6; color: #000000">{{r.type}}</span></div>
+                    <div style="line-height: 18px">{{r.t}}</div>
+                  </td>
+                  <td style="padding: 12px">{{r.client}}<div class="lnk">{{r.site}}</div></td>
+                  <td style="padding: 12px">{{r.owner}}<div class="lnk">{{r.team}}</div></td>
+                  <td style="padding: 12px"><div class="lnk">✉ {{r.mail}} · {{r.wi}} work items</div><div class="lnk">{{r.dev}}</div></td>
+                  <td style="padding: 12px"><span class="chip" style="{{r.schip}}">{{r.s}}</span></td>
+                  <td style="padding: 12px; white-space: nowrap"><span style="font-weight: 700; color: {{r.etac}}">{{r.eta}}</span><div class="lnk">{{r.etan}}</div></td>
+                  <td style="padding: 12px"><span class="chip" style="{{r.vchip}}">{{r.v}}</span></td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <div style="flex: 1 1 100%; min-width: 0; display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+        <section class="card" aria-labelledby="h-i" style="border-color: #0066ff; flex: 3 1 560px; min-width: 0">
+          <div style="display: flex; justify-content: space-between; gap: 8px; align-items: baseline; flex-wrap: wrap">
+            <h2 id="h-i" style="margin: 0; font-size: 17px">Inbox — not yet in a case</h2>
+            <span style="font-size: 12px; color: #666666">cases@ · DingTalk · WhatsApp · portal</span>
+          </div>
+          <p style="margin: 6px 0 4px 0; font-size: 12px; color: #666666; line-height: 17px">Mail with a case number or in a known thread is attached automatically. The rest waits here with an AI suggestion. A person decides.</p>
+          <sc-for list="{{inbox}}" as="m" hint-placeholder-count="5">
+            <div style="padding: 12px 0; border-bottom: 1px solid #d9d9d9; display: flex; flex-direction: column; gap: 6px">
+              <div style="display: flex; justify-content: space-between; gap: 8px; font-size: 12px; color: #666666"><span><span class="chip" style="background: #f0f1f6; color: #000000">{{m.src}}</span> {{m.from}}</span><span>{{m.when}}</span></div>
+              <div style="font-size: 13px; font-weight: 700; line-height: 18px">{{m.subj}}</div>
+              <div style="font-size: 12px; line-height: 17px; background: #f0f6ff; padding: 6px 8px; color: #0c1b2b">AI: {{m.ai}}</div>
+              <div style="display: flex; gap: 6px; flex-wrap: wrap"><button type="button" class="btn" style="background: #0066ff; color: #ffffff; min-height: 30px; font-size: 12px">{{m.b1}}</button><button type="button" class="btn" style="background: #ffffff; color: #005be6; min-height: 30px; font-size: 12px">{{m.b2}}</button><button type="button" class="btn" style="background: #ffffff; color: #666666; border-color: #d9d9d9; min-height: 30px; font-size: 12px">Not a case</button></div>
+            </div>
+          </sc-for>
+        </section>
+
+        <section class="card" aria-labelledby="h-f" style="flex: 2 1 320px; min-width: 0">
+          <h2 id="h-f" style="margin: 0 0 12px 0; font-size: 17px">How a case moves</h2>
+          <sc-for list="{{flow}}" as="f" hint-placeholder-count="6">
+            <div style="display: flex; gap: 12px; padding: 7px 0; font-size: 13px; line-height: 18px">
+              <span style="flex: 0 0 26px; height: 26px; border-radius: 13px; background: #0066ff; color: #ffffff; font-weight: 700; font-size: 12px; display: flex; align-items: center; justify-content: center">{{f.n}}</span>
+              <div><b>{{f.t}}</b><div style="color: #666666; font-size: 12px">{{f.d}}</div></div>
+            </div>
+          </sc-for>
+        </section>
+      </div>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2000}}'>
+class Component extends DCLogic {
+  constructor(p){ super(p); this.state = { team: 'All' }; }
+  renderVals() {
+    const navDef = [['Home','Main.dc.html'],['Portfolio','Portfolio.dc.html'],['Projects','Project.dc.html'],['Sites','Site.dc.html'],['Platform & algorithms','Platform.dc.html'],['Actions & alerts','Actions.dc.html'],['Cases','Cases.dc.html'],['Commercial','Commercial.dc.html'],['Client portal','Client.dc.html'],['Partner app','Partner.dc.html'],['Knowledge','#'],['Admin','#']];
+    const nav = navDef.map((n, i) => ({ label: n[0], href: n[1], style: i === 6 ? 'background:#0066ff;color:#ffffff;font-weight:700' : '' }));
+    const P = { P0:'background:#0c1b2b;color:#ffffff', P1:'background:#fcefd9;color:#9a5b00', P2:'background:#f2f2f2;color:#000000' };
+    const S = { dev:'background:#dce9f5;color:#005be6', wait:'background:#f2f2f2;color:#000000', dec:'background:#fcefd9;color:#9a5b00', rd:'background:#ede4f7;color:#5b2a9a', breach:'background:#fde2e1;color:#b42318' };
+    const V = { yes:'background:#e3f1e4;color:#1f7a3a', no:'background:#f2f2f2;color:#666666' };
+    const all = [
+      { id:'CS-0412', p:'P0', type:'Algorithm', t:'Age Alert — duplicate alerts on G5 devices; 3 of 13 PMI test cases pass', client:'PMI · Czech Republic', site:'IQOS Brno Olympia', owner:'Xavier Xue', team:'Algorithm: Song Jun · Platform: Jamon', mail:6, wi:4, dev:'14 devices', s:'Fix in progress', sk:'dev', eta:'6 Nov', etan:'moved from 30 Oct', late:false, v:'Yes', teams:['Algorithm','Platform','Firmware'] },
+      { id:'CS-0402', p:'P0', type:'Firmware', t:'Batch configuration push failed on 108 devices', client:'NEINVER', site:'Several centres', owner:'Xavier Xue', team:'Firmware: assigned 23 Oct, no ETA', mail:2, wi:1, dev:'108 devices', s:'No ETA — past SLA', sk:'breach', eta:'—', etan:'ETA due 27 Oct', late:true, v:'No', teams:['Firmware'] },
+      { id:'CS-0421', p:'P0', type:'Infrastructure', t:'No EU calibrator; live video from China not possible — EU access host needed', client:'PMI · all EU markets', site:'Calibration', owner:'Hai Tao', team:'Platform · Delivery', mail:3, wi:2, dev:'—', s:'Decision needed', sk:'dec', eta:'—', etan:'decision by 31 Oct', late:false, v:'Yes', teams:['Platform','Delivery'] },
+      { id:'CS-0418', p:'P1', type:'Data', t:'Front-end and API figures differ (passers-by, visitors)', client:'PMI · DE, CZ, CH, JP', site:'Dashboard / OpenAPI v2', owner:'Jamon', team:'Platform: Elias', mail:4, wi:2, dev:'—', s:'Investigating', sk:'dev', eta:'31 Oct', etan:'first estimate', late:false, v:'Yes', teams:['Platform'] },
+      { id:'CS-0397', p:'P1', type:'Devices', t:'Device count differs across AIoT, platform, packing lists and as-built', client:'NEINVER', site:'SSRR · Getafe · Alegra', owner:'Xavier Xue', team:'Delivery · Platform', mail:5, wi:3, dev:'Registry diff: 3 sources', s:'In progress', sk:'dev', eta:'4 Nov', etan:'—', late:false, v:'No', teams:['Delivery','Platform'] },
+      { id:'CS-0391', p:'P1', type:'Feature', t:'Global filter — "cannot be done" vs "next release": two answers given', client:'Gebr. Heinemann', site:'VIE 4020', owner:'Platform PM (vacant) → Hai Tao', team:'Platform', mail:3, wi:1, dev:'—', s:'Decision needed', sk:'dec', eta:'—', etan:'contradiction flagged', late:false, v:'Yes', teams:['Platform'] },
+      { id:'CS-0388', p:'P1', type:'Hardware', t:'CBoxes connected but no video stream', client:'Gebr. Heinemann', site:'VIE 4020', owner:'Xavier Xue', team:'Delivery', mail:4, wi:2, dev:'CBox × 2', s:'Waiting on client', sk:'wait', eta:'—', etan:'store IT visit', late:false, v:'Yes', teams:['Delivery','Network'] },
+      { id:'CS-0430', p:'P1', type:'Network', t:'Loss-prevention device offline since 23 Oct', client:'Logista', site:'Alcorcón', owner:'Xavier Xue', team:'Delivery', mail:1, wi:1, dev:'1 device', s:'Waiting on client', sk:'wait', eta:'—', etan:'—', late:false, v:'Yes', teams:['Network','Delivery'] },
+      { id:'CS-0433', p:'P1', type:'Network', t:'Data centre unreachable from device F05C-3C0D — firewall check', client:'Unifree · Uniga (Loewe)', site:'Istanbul', owner:'Xavier Xue', team:'Delivery · Platform: Ron', mail:2, wi:2, dev:'1 device', s:'In progress', sk:'dev', eta:'30 Oct', etan:'—', late:false, v:'Yes', teams:['Network','Platform'] },
+      { id:'CS-0377', p:'P2', type:'Firmware', t:'CBox locked after MAC-pinning update — whitelist and on-site visit', client:'Inditex', site:'Marineda (A Coruña)', owner:'Vlad', team:'Firmware: Song Jun · Leon', mail:9, wi:3, dev:'CBox × 1', s:'Waiting on client', sk:'wait', eta:'—', etan:'access not approved', late:false, v:'Yes', teams:['Firmware','Delivery'] }
+    ];
+    const teamList = ['All','Platform','Algorithm','Firmware','Network','Delivery','Waiting on client'];
+    const teams = teamList.map((t) => ({ label: t, pick: () => this.setState({ team: t }), style: 'min-height:34px;padding:0 12px;border-radius:5px;font-size:13px;font-family:inherit;cursor:pointer;border:1px solid ' + (this.state.team === t ? '#0066ff;background:#0066ff;color:#ffffff' : '#d9d9d9;background:#ffffff;color:#000000') }));
+    const f = this.state.team;
+    const rows = all.filter((r) => f === 'All' || (f === 'Waiting on client' ? r.sk === 'wait' : r.teams.indexOf(f) >= 0)).map((r) => ({ ...r, pchip: P[r.p], schip: S[r.sk], vchip: r.v === 'Yes' ? V.yes : V.no, etac: r.late ? '#b42318' : '#000000', href: r.id === 'CS-0412' ? 'Case.dc.html' : '#' }));
+    return {
+      nav, teams, rows,
+      kpis: [
+        { v:'47', k:'Open cases', s:'13 clients', c:'#005be6', edge:'' },
+        { v:'18', k:'Waiting on R&D', s:'Platform 9 · Algorithm 6 · Firmware 3', c:'#5b2a9a', edge:'' },
+        { v:'4', k:'No owner or no ETA', s:'past the 2-working-day rule', c:'#b42318', edge:'border-left: 4px solid #b42318;' },
+        { v:'6', k:'Client update overdue', s:'P0 daily · P1 twice a week', c:'#9a5b00', edge:'' },
+        { v:'7', k:'Unlinked messages', s:'oldest 26 Oct', c:'#005be6', edge:'' }
+      ],
+      inbox: [
+        { src:'Mail', from:'Francesca Versiglia · PMI', when:'09:12', subj:'Re: Age Alert test results — date for the retest?', ai:'Same thread as CS-0412 (Brno Olympia). Attach and add to "client update due".', b1:'Attach to CS-0412', b2:'Open' },
+        { src:'Mail', from:'PMI BR Tech', when:'Yesterday', subj:'REST test environment returns HTTP 500', ai:'No open case matches. New case · Platform · P1. Related: CS-0418 (same API).', b1:'New case', b2:'Link to CS-0418' },
+        { src:'WhatsApp', from:'Logista tech group', when:'26 Oct', subj:'Any update on the loss-prevention PoC?', ai:'Status question, not a fault. Related: CS-0430 (device offline). Suggest reply draft for Xavier.', b1:'Attach to CS-0430', b2:'Draft reply' },
+        { src:'Mail', from:'Erajaya · via Alex', when:'26 Oct', subj:'PoC update and kick-off meeting', ai:'Commercial request — action, not a case. Owner: Alex.', b1:'Make an action', b2:'New case' },
+        { src:'Old tickets', from:'Ticket system import', when:'—', subj:'31 open tickets, last read 2 Sep', ai:'12 match open cases, 7 look closed, 12 need a person.', b1:'Review import', b2:'Later' }
+      ],
+      flow: [
+        { n:'1', t:'Arrives', d:'Mail to cases@ or in CC, DingTalk, WhatsApp, client portal, an alert' },
+        { n:'2', t:'Triaged within 4 working hours', d:'Duty triager sets type, priority, owner — required fields checked' },
+        { n:'3', t:'Split into work items', d:'One per team: platform, algorithm, firmware, delivery, partner, client' },
+        { n:'4', t:'ETA within 2 working days', d:'Each team sets its ETA from DingTalk; every change needs a reason' },
+        { n:'5', t:'Client kept informed', d:'Client-visible status, committed ETA, updates on a fixed rhythm' },
+        { n:'6', t:'Closed with root cause', d:'Category, fix, release or config change — feeds the capability matrix' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>OCS — Case CS-0412</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0;background:#f0f1f6}
+a{color:#005be6}a:hover{color:#0c1b2b}
+.nav a{display:flex;align-items:center;gap:10px;min-height:40px;padding:0 14px;color:#c9d3df;text-decoration:none;font-size:14px}
+.nav a:hover{background:#14273b;color:#ffffff}
+.chip{display:inline-block;padding:2px 8px;border-radius:5px;font-size:12px;font-weight:700;white-space:nowrap}
+.card{background:#ffffff;border:1px solid #d9d9d9;padding:20px;box-sizing:border-box}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:0 16px;border-radius:3.2rem;font-size:13px;font-weight:700;border:1px solid #0066ff;cursor:pointer;font-family:inherit;text-decoration:none}
+.k{font-size:12px;color:#666666}
+.h2{margin:0 0 12px 0;font-size:17px}
+</style>
+</helmet>
+<div style="display: flex; flex-wrap: wrap; min-height: 100vh; font-family: Arial, 'Microsoft YaHei', 'PingFang SC', sans-serif; color: #000000; background: #f0f1f6">
+  <nav class="nav" aria-label="Main" style="flex: 1 1 232px; max-width: 260px; background: #0c1b2b; display: flex; flex-direction: column; gap: 2px; padding: 20px 10px; box-sizing: border-box">
+    <div style="padding: 4px 14px 22px 14px; display: flex; flex-direction: column; gap: 6px">
+      <img src="/_blob/c1964100bba4ba939b1b6cbb1559b622" alt="Vionvision" style="width: 140px; height: auto">
+      <span style="color: #66a3ff; font-size: 12px; letter-spacing: 1px">OCS · DELIVERY PLATFORM</span>
+    </div>
+    <sc-for list="{{nav}}" as="n" hint-placeholder-count="12">
+      <a href="{{n.href}}" style="{{n.style}}">{{n.label}}</a>
+    </sc-for>
+  </nav>
+
+  <main style="flex: 999 1 560px; min-width: 0; padding: 28px; box-sizing: border-box; display: flex; flex-direction: column; gap: 20px">
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 12px">
+      <div>
+        <div style="font-size: 13px; color: #666666"><a href="Cases.dc.html" style="color: #666666">/ 07 Cases</a> / CS-0412</div>
+        <h1 style="margin: 6px 0 8px 0; font-size: 30px; font-weight: 500">Age Alert — Duplicate Alerts on G5 Devices</h1>
+        <div style="display: flex; gap: 6px; flex-wrap: wrap"><span class="chip" style="background: #0c1b2b; color: #ffffff">P0</span><span class="chip" style="background: #f0f1f6; color: #000000">Algorithm</span><span class="chip" style="background: #dce9f5; color: #005be6">Fix in progress</span><span class="chip" style="background: #e3f1e4; color: #1f7a3a">Visible to PMI</span><span class="chip" style="background: #fcefd9; color: #9a5b00">Client update due 31 Oct</span></div>
+      </div>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap">
+        <button type="button" class="btn" style="background: #ffffff; color: #005be6">Change ETA</button>
+        <button type="button" class="btn" style="background: #ffffff; color: #005be6">Close with root cause</button>
+        <button type="button" class="btn" style="background: #0066ff; color: #ffffff">Update client</button>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px">
+      <sc-for list="{{facts}}" as="f" hint-placeholder-count="6">
+        <div class="card" style="padding: 12px 14px">
+          <div class="k">{{f.k}}</div>
+          <div style="font-size: 14px; font-weight: 700; margin-top: 4px; line-height: 19px">{{f.v}}</div>
+          <div class="k" style="margin-top: 2px">{{f.s}}</div>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+      <div style="flex: 3 1 600px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
+        <section class="card" style="background: #f0f6ff; border-color: #b3d1ff" aria-labelledby="h-s">
+          <h2 id="h-s" class="h2" style="font-size: 15px">AI summary · updated 10:40 · from 6 mails, 2 DingTalk threads, 1 test pack</h2>
+          <p style="margin: 0; font-size: 13px; line-height: 20px">PMI's Age Alert pilot at Brno Olympia passed 3 of 13 test cases (6 Oct). Duplicates are 83.8% of alerts on G5 devices. Root cause is narrowed to duplicate track IDs on the G5 build; the fix needs a firmware flag, which has no owner yet. Platform is adding a de-duplication window as a stop-gap. PMI asked today for a retest date. Two different test-case lists were in use — the PMI list is now the master.</p>
+        </section>
+
+        <section class="card" style="padding: 0" aria-labelledby="h-t">
+          <div style="padding: 16px 20px 0 20px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; align-items: center">
+            <h2 id="h-t" class="h2" style="margin: 0">Timeline</h2>
+            <div role="tablist" aria-label="Filter timeline" style="display: flex; gap: 4px; flex-wrap: wrap">
+              <sc-for list="{{tabs}}" as="t" hint-placeholder-count="4">
+                <button type="button" role="tab" onClick="{{t.pick}}" style="{{t.style}}">{{t.label}}</button>
+              </sc-for>
+            </div>
+          </div>
+          <div style="padding: 8px 20px 4px 20px">
+            <sc-for list="{{events}}" as="e" hint-placeholder-count="7">
+              <article style="display: flex; gap: 14px; padding: 14px 0; border-bottom: 1px solid #ececec">
+                <div style="flex: 0 0 92px; font-size: 12px; color: #666666; line-height: 17px">{{e.when}}</div>
+                <div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 5px">
+                  <div style="display: flex; gap: 6px; flex-wrap: wrap; align-items: center"><span class="chip" style="{{e.tchip}}">{{e.type}}</span><span style="font-size: 13px; font-weight: 700">{{e.who}}</span><span class="chip" style="{{e.vchip}}">{{e.vis}}</span></div>
+                  <div style="font-size: 13px; line-height: 19px">{{e.text}}</div>
+                  <div class="k">{{e.meta}}</div>
+                </div>
+              </article>
+            </sc-for>
+          </div>
+          <div style="padding: 16px 20px 20px 20px; border-top: 1px solid #d9d9d9; display: flex; flex-direction: column; gap: 10px; background: #fafbfc">
+            <div style="display: flex; gap: 6px; flex-wrap: wrap; align-items: center">
+              <span style="font-size: 13px; font-weight: 700">Who sees this:</span>
+              <sc-for list="{{vis}}" as="v" hint-placeholder-count="2">
+                <button type="button" onClick="{{v.pick}}" style="{{v.style}}">{{v.label}}</button>
+              </sc-for>
+            </div>
+            <div style="min-height: 70px; background: #ffffff; border: 1px solid {{boxBorder}}; padding: 10px 12px; font-size: 13px; color: #666666; line-height: 19px">{{placeholder}}</div>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: space-between">
+              <div style="display: flex; gap: 8px; flex-wrap: wrap"><button type="button" class="btn" style="background: #ffffff; color: #005be6">AI draft from timeline</button><button type="button" class="btn" style="background: #ffffff; color: #005be6">Attach file</button></div>
+              <button type="button" class="btn" style="background: #0066ff; color: #ffffff">{{sendLabel}}</button>
+            </div>
+            <div class="k">Client mail is never sent by OCS on its own: a draft opens in your mail client with cases+CS-0412@ in CC, so the sent mail lands back here.</div>
+          </div>
+        </section>
+      </div>
+
+      <div style="flex: 2 1 360px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
+        <section class="card" aria-labelledby="h-w">
+          <div style="display: flex; justify-content: space-between; gap: 8px; align-items: baseline"><h2 id="h-w" class="h2">Work items</h2><a href="#" style="font-size: 13px">+ Add</a></div>
+          <sc-for list="{{work}}" as="w" hint-placeholder-count="4">
+            <div style="padding: 10px 0; border-top: 1px solid #ececec; display: flex; flex-direction: column; gap: 4px">
+              <div style="display: flex; justify-content: space-between; gap: 8px"><span style="font-size: 12px; font-weight: 700; color: #005be6">{{w.id}} · {{w.team}}</span><span class="chip" style="{{w.schip}}">{{w.s}}</span></div>
+              <div style="font-size: 13px; font-weight: 700; line-height: 18px">{{w.t}}</div>
+              <div style="font-size: 12px; line-height: 17px; color: {{w.oc}}">{{w.owner}} · ETA {{w.eta}}</div>
+            </div>
+          </sc-for>
+          <p class="k" style="margin: 10px 0 0 0; line-height: 17px">Case ETA follows the latest blocking work item. R&amp;D accepts, sets ETA and comments from a DingTalk card — no second login.</p>
+        </section>
+
+        <section class="card" aria-labelledby="h-c" style="border-color: #1f7a3a">
+          <h2 id="h-c" class="h2">What PMI sees</h2>
+          <sc-for list="{{client}}" as="c" hint-placeholder-count="4">
+            <div style="display: flex; justify-content: space-between; gap: 12px; padding: 7px 0; border-bottom: 1px solid #ececec; font-size: 13px"><span class="k" style="font-size: 13px">{{c.k}}</span><span style="font-weight: 700; text-align: right">{{c.v}}</span></div>
+          </sc-for>
+          <p class="k" style="margin: 10px 0 0 0; line-height: 17px">Internal comments, internal ETA, R&amp;D names and partner names stay hidden. The committed ETA is set by the delivery owner, not copied from R&amp;D.</p>
+        </section>
+
+        <section class="card" aria-labelledby="h-e">
+          <h2 id="h-e" class="h2">ETA history</h2>
+          <sc-for list="{{etas}}" as="h" hint-placeholder-count="3">
+            <div style="padding: 7px 0; border-bottom: 1px solid #ececec; font-size: 13px; line-height: 18px"><b>{{h.v}}</b> <span class="k">· {{h.when}} · {{h.who}}</span><div class="k">{{h.why}}</div></div>
+          </sc-for>
+        </section>
+
+        <section class="card" aria-labelledby="h-l">
+          <h2 id="h-l" class="h2">Linked</h2>
+          <sc-for list="{{links}}" as="l" hint-placeholder-count="6">
+            <div style="display: flex; justify-content: space-between; gap: 12px; padding: 7px 0; border-bottom: 1px solid #ececec; font-size: 13px"><span>{{l.k}}</span><span class="k" style="text-align: right">{{l.v}}</span></div>
+          </sc-for>
+        </section>
+
+        <section class="card" aria-labelledby="h-p">
+          <h2 id="h-p" class="h2">People</h2>
+          <sc-for list="{{people}}" as="p" hint-placeholder-count="5">
+            <div style="display: flex; gap: 10px; align-items: center; padding: 6px 0; font-size: 13px"><span class="chip" style="background: #0c1b2b; color: #ffffff; min-width: 14px; text-align: center">{{p.r}}</span><span><b>{{p.n}}</b> <span class="k">· {{p.d}}</span></span></div>
+          </sc-for>
+        </section>
+      </div>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1720}}'>
+class Component extends DCLogic {
+  constructor(p){ super(p); this.state = { tab: 'All', vis: 'Internal' }; }
+  renderVals() {
+    const navDef = [['Home','Main.dc.html'],['Portfolio','Portfolio.dc.html'],['Projects','Project.dc.html'],['Sites','Site.dc.html'],['Platform & algorithms','Platform.dc.html'],['Actions & alerts','Actions.dc.html'],['Cases','Cases.dc.html'],['Commercial','Commercial.dc.html'],['Client portal','Client.dc.html'],['Partner app','Partner.dc.html'],['Knowledge','#'],['Admin','#']];
+    const nav = navDef.map((n, i) => ({ label: n[0], href: n[1], style: i === 6 ? 'background:#0066ff;color:#ffffff;font-weight:700' : '' }));
+    const T = { mailin:'background:#dce9f5;color:#005be6', mailout:'background:#e3f1e4;color:#1f7a3a', ding:'background:#ede4f7;color:#5b2a9a', note:'background:#f2f2f2;color:#000000', eta:'background:#fcefd9;color:#9a5b00', sys:'background:#0c1b2b;color:#ffffff', ai:'background:#f0f6ff;color:#005be6' };
+    const VI = { Internal:'background:#ffffff;color:#666666;border:1px solid #d9d9d9', Client:'background:#e3f1e4;color:#1f7a3a' };
+    const all = [
+      { when:'29 Oct 10:40', type:'ETA change', tk:'eta', who:'Song Jun · Algorithm', v:'Internal', k:'int', text:'ALG-118 ETA 30 Oct → 6 Nov. Duplicates come from repeated track IDs on the G5 build; the clean fix needs a firmware flag (FW-064).', meta:'From DingTalk card · reason required and given' },
+      { when:'29 Oct 09:12', type:'Mail in', tk:'mailin', who:'Francesca Versiglia · PMI', v:'Client', k:'mail', text:'"Can you give us a date for the retest at Brno Olympia?"', meta:'Attached automatically — same thread · client update due by 31 Oct' },
+      { when:'28 Oct 17:05', type:'AI flag', tk:'ai', who:'OCS', v:'Internal', k:'int', text:'Two test-case lists in use: Xavier (13 cases, PMI pack) and Song Jun (11 cases). Resolved by Xavier — PMI list is the master; TST-031 updated.', meta:'Contradiction check · resolved 28 Oct 17:20' },
+      { when:'28 Oct 15:30', type:'DingTalk', tk:'ding', who:'Jamon · Platform', v:'Internal', k:'int', text:'Measured on the 6 Oct pack: 83.8% of alerts are duplicates. A de-duplication window in the alert service hides most of them but does not fix the cause. Opened PLT-207.', meta:'Group "CVA Age Alert" · synced' },
+      { when:'27 Oct 11:00', type:'Mail out', tk:'mailout', who:'Xavier Xue · Delivery', v:'Client', k:'mail', text:'"We have reproduced the duplicate alerts on G5 devices and are working on the root cause. Next update by 29 Oct."', meta:'Sent from Outlook · cases+CS-0412@ in CC' },
+      { when:'6 Oct', type:'Test result', tk:'sys', who:'Brno Olympia test pack', v:'Client', k:'int', text:'3 of 13 test cases passed — detection scope, latency, reminders, opening hours.', meta:'File: PMI_AgeAlert_Brno_TestPack_2026-10-06.xlsx · shared with PMI' },
+      { when:'2 Oct', type:'Case opened', tk:'sys', who:'From mail · PMI BR Tech', v:'Client', k:'mail', text:'Case created from the pilot feedback mail; triaged P0 · Algorithm by the duty triager in 2 h 10 min.', meta:'First-response SLA met' }
+    ];
+    const tabList = ['All','Mail','Internal','Client-visible'];
+    const tabs = tabList.map((t) => ({ label: t, pick: () => this.setState({ tab: t }), style: 'min-height:32px;padding:0 12px;border-radius:5px;font-size:13px;font-family:inherit;cursor:pointer;border:1px solid ' + (this.state.tab === t ? '#0066ff;background:#0066ff;color:#ffffff' : '#d9d9d9;background:#ffffff;color:#000000') }));
+    const tb = this.state.tab;
+    const events = all.filter((e) => tb === 'All' || (tb === 'Mail' && e.k === 'mail') || (tb === 'Internal' && e.v === 'Internal') || (tb === 'Client-visible' && e.v === 'Client')).map((e) => ({ ...e, tchip: T[e.tk], vchip: VI[e.v], vis: e.v === 'Client' ? 'PMI sees' : 'Internal' }));
+    const isC = this.state.vis === 'Client';
+    const vis = [['Internal','Internal only'],['Client','Visible to PMI']].map(([id, label]) => ({ label, pick: () => this.setState({ vis: id }), style: 'min-height:32px;padding:0 12px;border-radius:5px;font-size:13px;font-family:inherit;cursor:pointer;border:1px solid ' + (this.state.vis === id ? (id === 'Client' ? '#1f7a3a;background:#1f7a3a;color:#ffffff' : '#0c1b2b;background:#0c1b2b;color:#ffffff') : '#d9d9d9;background:#ffffff;color:#000000') }));
+    const S = { dev:'background:#dce9f5;color:#005be6', rev:'background:#e3f1e4;color:#1f7a3a', no:'background:#fde2e1;color:#b42318', plan:'background:#f2f2f2;color:#000000' };
+    return {
+      nav, tabs, events, vis,
+      boxBorder: isC ? '#1f7a3a' : '#d9d9d9',
+      placeholder: isC ? 'Write the update PMI will see. Tip: status, what changed, next step, next update date. Internal names are replaced with team names.' : 'Comment for the team. @mention to notify in DingTalk; "/action" turns it into an action, "/item" into a work item.',
+      sendLabel: isC ? 'Open draft in Outlook' : 'Post comment',
+      facts: [
+        { k:'Client · site', v:'PMI · IQOS Brno Olympia', s:'Czech Republic · Age Alert pilot' },
+        { k:'Accountable', v:'Xavier Xue', s:'Delivery' },
+        { k:'Internal ETA', v:'6 Nov', s:'moved once · from ALG-118' },
+        { k:'Committed to PMI', v:'Retest 10–11 Nov', s:'set by delivery owner' },
+        { k:'SLA', v:'First response met', s:'next client update by 31 Oct' },
+        { k:'Capability', v:'Age Alert on G5: Beta', s:'not for rollout until TST-031 passes' }
+      ],
+      work: [
+        { id:'ALG-118', team:'Algorithm', t:'Root cause: repeated track IDs on the G5 build', owner:'Song Jun', eta:'6 Nov', s:'In development', schip:S.dev, oc:'#666666' },
+        { id:'PLT-207', team:'Platform', t:'De-duplication window in the alert service (stop-gap)', owner:'Jamon', eta:'31 Oct', s:'In review', schip:S.rev, oc:'#666666' },
+        { id:'FW-064', team:'Firmware', t:'G5 firmware flag for single-track output', owner:'No owner — in triage 2 days', eta:'not set', s:'Needs owner', schip:S.no, oc:'#b42318' },
+        { id:'TST-031', team:'Algorithm · client alignment', t:'Retest the 13 PMI cases at Brno Olympia', owner:'Joe', eta:'after FW-064', s:'Planned', schip:S.plan, oc:'#666666' }
+      ],
+      client: [
+        { k:'Status', v:'Fix in progress' },
+        { k:'Retest planned', v:'10–11 Nov' },
+        { k:'Next update', v:'by 31 Oct' },
+        { k:'Owner', v:'Vionvision delivery team' }
+      ],
+      etas: [
+        { v:'6 Nov', when:'29 Oct', who:'Song Jun', why:'Root cause in G5 build; depends on firmware flag FW-064' },
+        { v:'30 Oct', when:'23 Oct', who:'Song Jun', why:'First estimate after reproducing the duplicates' }
+      ],
+      links: [
+        { k:'Mails', v:'6 · 2 threads' },
+        { k:'DingTalk threads', v:'2 · CVA Age Alert, R&D duty' },
+        { k:'Devices', v:'14 · G5 · same build' },
+        { k:'Documents', v:'Test pack 6 Oct · Age Alert spec' },
+        { k:'Release', v:'Fix to ship in G5 build — not scheduled' },
+        { k:'Related cases', v:'CS-0418 (API figures)' }
+      ],
+      people: [
+        { r:'A', n:'Xavier Xue', d:'accountable · delivery' },
+        { r:'R', n:'Song Jun, Jamon', d:'responsible · algorithm, platform' },
+        { r:'C', n:'Joe', d:'consulted · algorithm–client alignment' },
+        { r:'I', n:'Vlad, Hai Tao', d:'informed' },
+        { r:'P', n:'Francesca Versiglia', d:'PMI · sees client-visible items' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

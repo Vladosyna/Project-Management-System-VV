@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<title>OCS — R&amp;D work card in DingTalk</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0;background:#eef0f4}
+.chip{display:inline-block;padding:2px 8px;border-radius:5px;font-size:12px;font-weight:700;white-space:nowrap}
+.b{flex:1 1 0;min-height:40px;border-radius:6px;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer}
+.en{font-size:11px;color:#8a8f99}
+</style>
+</helmet>
+<div style="width: 390px; min-height: 844px; box-sizing: border-box; font-family: 'PingFang SC', 'Microsoft YaHei', Arial, sans-serif; color: #1f2329; background: #eef0f4; display: flex; flex-direction: column">
+  <header style="background: #ffffff; padding: 14px 16px 12px 16px; border-bottom: 1px solid #e1e4ea; display: flex; align-items: center; gap: 10px">
+    <div style="width: 36px; height: 36px; border-radius: 8px; background: #0c1b2b; color: #66a3ff; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center">OCS</div>
+    <div><div style="font-size: 15px; font-weight: 700">OCS 工作通知</div><div class="en">Work chat · enterprise app · mock</div></div>
+  </header>
+
+  <main style="flex: 1 1 auto; padding: 14px 12px; display: flex; flex-direction: column; gap: 12px">
+    <div style="text-align: center; font-size: 11px; color: #8a8f99">今天 10:52</div>
+
+    <article style="background: #ffffff; border-radius: 10px; overflow: hidden; border: 1px solid #e1e4ea">
+      <div style="background: #fde2e1; color: #b42318; padding: 8px 14px; font-size: 12px; font-weight: 700">新工作项 · 需要负责人 · P0 <span style="font-weight: 400">· New work item, needs owner</span></div>
+      <div style="padding: 14px; display: flex; flex-direction: column; gap: 10px">
+        <div>
+          <div style="font-size: 12px; color: #005be6; font-weight: 700">FW-064 · 固件 Firmware</div>
+          <div style="font-size: 16px; font-weight: 700; line-height: 22px; margin-top: 2px">G5 固件：单轨迹输出开关</div>
+          <div class="en">G5 firmware flag for single-track output</div>
+        </div>
+        <div style="background: #f5f6f8; border-radius: 6px; padding: 10px; font-size: 13px; line-height: 20px">
+          <b>案例 CS-0412 · PMI 捷克 · 年龄提醒</b><br>
+          G5 设备 83.8% 提醒为重复；根因：G5 版本重复轨迹 ID（Song Jun）。需固件开关后复测 PMI 13 条用例。
+          <div class="en" style="margin-top: 4px">AI summary of the case · PMI waits for a retest date</div>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 6px; font-size: 12px"><span class="chip" style="background: #f0f1f6; color: #1f2329">14 台设备</span><span class="chip" style="background: #f0f1f6; color: #1f2329">客户可见</span><span class="chip" style="background: #fcefd9; color: #9a5b00">分诊已 2 天</span></div>
+
+        <sc-if value="{{showStart}}" hint-placeholder-val="{{true}}">
+          <div style="display: flex; gap: 8px">
+            <button type="button" class="b" onClick="{{accept}}" style="background: #0066ff; color: #ffffff; border: 1px solid #0066ff">我来负责</button>
+            <button type="button" class="b" onClick="{{ask}}" style="background: #ffffff; color: #0066ff; border: 1px solid #0066ff">提问</button>
+            <button type="button" class="b" style="background: #ffffff; color: #1f2329; border: 1px solid #d0d4db">转派</button>
+          </div>
+          <div class="en" style="text-align: center">Take it · Ask delivery · Reassign</div>
+        </sc-if>
+
+        <sc-if value="{{showEta}}" hint-placeholder-val="{{false}}">
+          <div style="font-size: 13px; font-weight: 700">已接收 · 请在 2 个工作日内设定 ETA <span class="en">Accepted — set ETA</span></div>
+          <div style="display: flex; gap: 6px; flex-wrap: wrap">
+            <sc-for list="{{etaOpts}}" as="o" hint-placeholder-count="4">
+              <button type="button" onClick="{{o.pick}}" style="{{o.style}}">{{o.label}}</button>
+            </sc-for>
+          </div>
+          <div style="font-size: 12px; color: #8a8f99">原因 / 依赖（必填）Reason or dependency — required</div>
+          <div style="min-height: 44px; border: 1px solid #d0d4db; border-radius: 6px; padding: 8px; font-size: 13px; color: #1f2329">{{reason}}</div>
+          <button type="button" class="b" onClick="{{save}}" style="background: #0066ff; color: #ffffff; border: 1px solid #0066ff; flex: 0 0 auto; width: 100%">提交 ETA · Save</button>
+        </sc-if>
+
+        <sc-if value="{{showAsk}}" hint-placeholder-val="{{false}}">
+          <div style="font-size: 13px; line-height: 19px; background: #f0f6ff; padding: 10px; border-radius: 6px">问题将发给交付负责人 Xavier Xue，并记录在案例时间线（内部）。<div class="en">Question goes to the delivery owner and the case timeline (internal).</div></div>
+          <button type="button" class="b" onClick="{{back}}" style="background: #ffffff; color: #0066ff; border: 1px solid #0066ff; width: 100%">返回 Back</button>
+        </sc-if>
+
+        <sc-if value="{{showDone}}" hint-placeholder-val="{{false}}">
+          <div style="background: #e3f1e4; color: #1f7a3a; border-radius: 6px; padding: 10px; font-size: 13px; line-height: 19px"><b>已同步到 OCS</b> · 负责人：你 · ETA {{eta}}<br><span style="font-size: 11px">Synced — case ETA and client update recalculated</span></div>
+        </sc-if>
+
+        <a href="Case.dc.html" style="font-size: 13px; color: #005be6; text-decoration: none; border-top: 1px solid #eef0f4; padding-top: 10px">在 OCS 打开案例 › <span class="en">Open the case in OCS</span></a>
+      </div>
+    </article>
+
+    <article style="background: #ffffff; border-radius: 10px; border: 1px solid #e1e4ea; padding: 12px 14px; display: flex; flex-direction: column; gap: 6px">
+      <div style="font-size: 13px; font-weight: 700">我的队列 <span class="en">My queue</span></div>
+      <sc-for list="{{queue}}" as="q" hint-placeholder-count="3">
+        <div style="display: flex; justify-content: space-between; gap: 8px; font-size: 12px; padding: 4px 0; border-top: 1px solid #f0f1f4"><span>{{q.t}}</span><span style="font-weight: 700; color: {{q.c}}; white-space: nowrap">{{q.e}}</span></div>
+      </sc-for>
+      <div class="en">每天 09:30 推送 · daily digest 09:30 Beijing</div>
+    </article>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(p){ super(p); this.state = { step: 'start', eta: '5 Nov' }; }
+  renderVals() {
+    const st = this.state.step;
+    const etaOpts = ['3 Nov','5 Nov','7 Nov','10 Nov'].map((e) => ({ label: e, pick: () => this.setState({ eta: e }), style: 'min-height:36px;padding:0 12px;border-radius:6px;font-size:13px;font-family:inherit;cursor:pointer;border:1px solid ' + (this.state.eta === e ? '#0066ff;background:#0066ff;color:#ffffff' : '#d0d4db;background:#ffffff;color:#1f2329') }));
+    return {
+      showStart: st === 'start', showEta: st === 'eta', showAsk: st === 'ask', showDone: st === 'done',
+      accept: () => this.setState({ step: 'eta' }),
+      ask: () => this.setState({ step: 'ask' }),
+      back: () => this.setState({ step: 'start' }),
+      save: () => this.setState({ step: 'done' }),
+      etaOpts, eta: this.state.eta,
+      reason: '需要 G5 构建窗口；与 ALG-118 一起发布',
+      queue: [
+        { t:'FW-061 · NEINVER 108 台批量下发失败', e:'无 ETA', c:'#b42318' },
+        { t:'FW-058 · Inditex CBox MAC 修复包测试', e:'4 Nov', c:'#1f2329' },
+        { t:'FW-055 · Heinemann 固件发布清单', e:'超期 2 天', c:'#9a5b00' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

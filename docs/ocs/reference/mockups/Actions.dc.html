@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>OCS — Actions and alerts</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0;background:#f0f1f6}
+a{color:#005be6}a:hover{color:#0c1b2b}
+.nav a{display:flex;align-items:center;gap:10px;min-height:40px;padding:0 14px;color:#c9d3df;text-decoration:none;font-size:14px}
+.nav a:hover{background:#14273b;color:#ffffff}
+.chip{display:inline-block;padding:2px 8px;border-radius:5px;font-size:12px;font-weight:700;white-space:nowrap}
+.card{background:#ffffff;border:1px solid #d9d9d9;padding:20px;box-sizing:border-box}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:0 16px;border-radius:3.2rem;font-size:13px;font-weight:700;border:1px solid #0066ff;cursor:pointer;font-family:inherit;text-decoration:none}
+</style>
+</helmet>
+<div style="display: flex; flex-wrap: wrap; min-height: 100vh; font-family: Arial, 'Microsoft YaHei', 'PingFang SC', sans-serif; color: #000000; background: #f0f1f6">
+  <nav class="nav" aria-label="Main" style="flex: 1 1 232px; max-width: 260px; background: #0c1b2b; display: flex; flex-direction: column; gap: 2px; padding: 20px 10px; box-sizing: border-box">
+    <div style="padding: 4px 14px 22px 14px; display: flex; flex-direction: column; gap: 6px">
+      <img src="/_blob/c1964100bba4ba939b1b6cbb1559b622" alt="Vionvision" style="width: 140px; height: auto">
+      <span style="color: #66a3ff; font-size: 12px; letter-spacing: 1px">OCS · DELIVERY PLATFORM</span>
+    </div>
+    <sc-for list="{{nav}}" as="n" hint-placeholder-count="12">
+      <a href="{{n.href}}" style="{{n.style}}">{{n.label}}</a>
+    </sc-for>
+  </nav>
+
+  <main style="flex: 999 1 560px; min-width: 0; padding: 28px; box-sizing: border-box; display: flex; flex-direction: column; gap: 20px">
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 12px">
+      <div>
+        <div style="font-size: 13px; color: #666666">/ 06 Actions &amp; alerts</div>
+        <h1 style="margin: 6px 0 0 0; font-size: 30px; font-weight: 500">Every Open Action, With an Owner and a Date</h1>
+      </div>
+      <button type="button" class="btn" style="background: #0066ff; color: #ffffff">New action</button>
+    </div>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center">
+      <span style="font-size: 13px; font-weight: 700">Owner</span>
+      <sc-for list="{{owners}}" as="o" hint-placeholder-count="6">
+        <button type="button" onClick="{{o.pick}}" style="{{o.style}}">{{o.label}}</button>
+      </sc-for>
+      <span style="margin-left: auto; font-size: 12px; color: #666666">Actions come from meetings, mail, chats, alerts and comments — the source is kept on every card.</span>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; align-items: start">
+      <sc-for list="{{cols}}" as="col" hint-placeholder-count="4">
+        <section style="background: #e6e8ef; padding: 12px; display: flex; flex-direction: column; gap: 10px; min-height: 200px" aria-label="{{col.name}}">
+          <div style="display: flex; justify-content: space-between; font-size: 14px; font-weight: 700"><span>{{col.name}}</span><span style="color: #005be6">{{col.count}}</span></div>
+          <sc-for list="{{col.items}}" as="c" hint-placeholder-count="3">
+            <article style="background: #ffffff; border: 1px solid #d9d9d9; padding: 12px; display: flex; flex-direction: column; gap: 6px">
+              <div style="display: flex; gap: 6px; flex-wrap: wrap"><span class="chip" style="{{c.pchip}}">{{c.p}}</span><span class="chip" style="background: #f0f1f6; color: #000000">{{c.project}}</span></div>
+              <div style="font-size: 13px; font-weight: 700; line-height: 18px">{{c.title}}</div>
+              <div style="font-size: 12px; color: #666666; line-height: 17px">{{c.owner}} · due {{c.due}}<br>Source: {{c.src}}</div>
+            </article>
+          </sc-for>
+        </section>
+      </sc-for>
+    </div>
+
+    <section class="card" style="padding: 0" aria-labelledby="h-r">
+      <div style="padding: 16px 20px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; align-items: center">
+        <h2 id="h-r" style="margin: 0; font-size: 17px">Alert rules — hits today</h2>
+        <span style="font-size: 12px; color: #666666">Checked every hour · P0 same day · P1 within 2 working days · P2 within the week</span>
+      </div>
+      <div style="overflow-x: auto">
+        <table style="width: 100%; border-collapse: collapse; font-size: 13px; min-width: 860px">
+          <thead><tr style="background: #f2f2f2; text-align: left"><th style="padding: 10px 12px">#</th><th style="padding: 10px 12px">Rule</th><th style="padding: 10px 12px">Level</th><th style="padding: 10px 12px">Hits</th><th style="padding: 10px 12px">Example</th></tr></thead>
+          <tbody>
+            <sc-for list="{{rules}}" as="r" hint-placeholder-count="8">
+              <tr style="border-bottom: 1px solid #d9d9d9"><td style="padding: 10px 12px; font-weight: 700">{{r.id}}</td><td style="padding: 10px 12px">{{r.t}}</td><td style="padding: 10px 12px"><span class="chip" style="{{r.chip}}">{{r.l}}</span></td><td style="padding: 10px 12px; font-weight: 700; color: #005be6">{{r.h}}</td><td style="padding: 10px 12px; color: #666666">{{r.e}}</td></tr>
+            </sc-for>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1280}}'>
+class Component extends DCLogic {
+  constructor(p){ super(p); this.state = { owner: 'All' }; }
+  renderVals() {
+    const navDef = [['Home','Main.dc.html'],['Portfolio','Portfolio.dc.html'],['Projects','Project.dc.html'],['Sites','Site.dc.html'],['Platform & algorithms','Platform.dc.html'],['Actions & alerts','Actions.dc.html'],['Cases','Cases.dc.html'],['Commercial','Commercial.dc.html'],['Client portal','Client.dc.html'],['Partner app','Partner.dc.html'],['Knowledge','#'],['Admin','#']];
+    const nav = navDef.map((n, i) => ({ label: n[0], href: n[1], style: i === 5 ? 'background:#0066ff;color:#ffffff;font-weight:700' : '' }));
+    const P = { P0:'background:#0c1b2b;color:#ffffff', P1:'background:#fcefd9;color:#9a5b00', P2:'background:#f2f2f2;color:#000000' };
+    const items = [
+      { col:'Open', p:'P0', project:'PMI RO', title:'Raise PO for 9 Romania stores — installing from tonight', owner:'Steve', due:'28 Oct', src:'Alert R14 (proposed)' },
+      { col:'Open', p:'P0', project:'PMI EE', title:'Send Estonia quotation — 1 store, 5 sensors, EUR 7,530 net', owner:'Steve', due:'23 Oct', src:'Josephine, mail 22 Oct' },
+      { col:'Open', p:'P0', project:'PMI BG', title:'Re-issue Bulgaria quote at 3 stores / 13 sensors', owner:'Wesley', due:'29 Oct', src:'Alert R13' },
+      { col:'Open', p:'P1', project:'OCS', title:'Name tech lead and two developers', owner:'Hai Tao', due:'7 Nov', src:'OCS proposal v1' },
+      { col:'In progress', p:'P0', project:'PMI RO', title:'Confirm sensor count with Leon: 28 design vs 32 quoted', owner:'Steve', due:'27 Oct', src:'Design check 23 Oct' },
+      { col:'In progress', p:'P1', project:'PMI CH', title:'Decide 8.1% import VAT with Benoit — PO 5702013749 issued', owner:'Vlad', due:'30 Oct', src:'Quote register v2' },
+      { col:'In progress', p:'P1', project:'PMI', title:'Front-end vs API figures for DE, CZ, CH, JP', owner:'Jamon', due:'30 Oct', src:'BR Tech notes 22 Oct' },
+      { col:'Waiting on someone', p:'P1', project:'NEINVER', title:'Switch .196 limit; passwords for .191 / .200', owner:'Waiting on NEINVER IT', due:'30 Oct', src:'Weekly update 16 Oct' },
+      { col:'Waiting on someone', p:'P1', project:'PMI PT', title:'LPA: subprocessors and subcontractors', owner:'Waiting on Wesley', due:'31 Oct', src:'Francesca, mail 21 Oct' },
+      { col:'Waiting on someone', p:'P2', project:'PMI KZ', title:'Kazakhstan — legal approval', owner:'Waiting on PMI legal', due:'—', src:'Benoit, mail 22 Oct' },
+      { col:'Waiting on someone', p:'P1', project:'PMI CZ', title:'Brackets for Nový Smíchov metal ceiling', owner:'Waiting on PMI CZ', due:'—', src:'Marcel Funda, 20 Oct' },
+      { col:'Done', p:'P1', project:'PMI ES', title:'Quote v2 sent at the agreed EUR 47,130', owner:'Steve', due:'22 Oct', src:'Mail 22 Oct' },
+      { col:'Done', p:'P1', project:'PMI RS', title:'Quote re-issued to PM Operations a.d. Niš', owner:'Steve', due:'21 Oct', src:'Francesca, mail 21 Oct' },
+      { col:'Done', p:'P2', project:'PMI', title:'Approval notice for calibration access requests', owner:'Jamon', due:'22 Oct', src:'DingTalk 22 Oct' }
+    ];
+    const ownerList = ['All','Vlad','Steve','Wesley','Jamon','Hai Tao','Waiting'];
+    const owners = ownerList.map((o) => ({ label: o, pick: () => this.setState({ owner: o }), style: 'min-height:36px;padding:0 14px;border-radius:5px;font-size:13px;font-family:inherit;cursor:pointer;border:1px solid ' + (this.state.owner === o ? '#0066ff;background:#0066ff;color:#ffffff' : '#d9d9d9;background:#ffffff;color:#000000') }));
+    const sel = items.filter((i) => this.state.owner === 'All' || (this.state.owner === 'Waiting' ? i.owner.indexOf('Waiting') === 0 : i.owner === this.state.owner));
+    const cols = ['Open','In progress','Waiting on someone','Done'].map((name) => {
+      const its = sel.filter((i) => i.col === name).map((i) => ({ ...i, pchip: P[i.p] }));
+      return { name, count: its.length, items: its };
+    });
+    const rules = [
+      { id:'R12', t:'Quote ≠ design', l:'P0', chip:P.P0, h:'3', e:'Romania 32 vs 28 · Slovakia 18 vs 14 · Bosnia 10 vs 8' },
+      { id:'R13', t:'Store in two POs', l:'P0', chip:P.P0, h:'1', e:'Bulgaria Paradise and Vitosha' },
+      { id:'R14', t:'Installed without PO', l:'P0', chip:P.P0, h:'1', e:'Spain Zaragoza (3 × G6S)' },
+      { id:'R9', t:'D−2 final check not passed', l:'P0', chip:P.P0, h:'0', e:'Next due: Romania Cluj Iulius (install 31 Oct) — check by 29 Oct' },
+      { id:'R10', t:'Calibration without written DPIA', l:'P0', chip:P.P0, h:'1', e:'Austria Vienna — installed 17 Oct, PIA not done' },
+      { id:'R7', t:'Part A missing after 10 days', l:'P1', chip:P.P1, h:'3', e:'Greece: Metro Mall, Tsimiski, Cosmos, Irakleio' },
+      { id:'R5', t:'Invoice-ready, no invoice', l:'P1', chip:P.P1, h:'2', e:'Romania BTQ Bacău · Bulgaria Vitosha' },
+      { id:'R15', t:'Sensor offline after go-live', l:'P1', chip:P.P1, h:'19', e:'NEINVER SSRR — see site page' }
+    ];
+    return { nav, owners, cols, rules };
+  }
+}
+</script>
+</body>
+</html>

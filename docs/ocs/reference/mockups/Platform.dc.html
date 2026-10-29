@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>OCS — Platform and algorithms</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0;background:#f0f1f6}
+a{color:#005be6}a:hover{color:#0c1b2b}
+.nav a{display:flex;align-items:center;gap:10px;min-height:40px;padding:0 14px;color:#c9d3df;text-decoration:none;font-size:14px}
+.nav a:hover{background:#14273b;color:#ffffff}
+.chip{display:inline-block;padding:2px 8px;border-radius:5px;font-size:12px;font-weight:700;white-space:nowrap}
+.card{background:#ffffff;border:1px solid #d9d9d9;padding:20px;box-sizing:border-box}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:0 16px;border-radius:3.2rem;font-size:13px;font-weight:700;border:1px solid #0066ff;cursor:pointer;font-family:inherit;text-decoration:none}
+.tag{display:inline-block;padding:2px 7px;margin:2px 4px 2px 0;border:1px solid #d9d9d9;border-radius:5px;font-size:12px}
+</style>
+</helmet>
+<div style="display: flex; flex-wrap: wrap; min-height: 100vh; font-family: Arial, 'Microsoft YaHei', 'PingFang SC', sans-serif; color: #000000; background: #f0f1f6">
+  <nav class="nav" aria-label="Main" style="flex: 1 1 232px; max-width: 260px; background: #0c1b2b; display: flex; flex-direction: column; gap: 2px; padding: 20px 10px; box-sizing: border-box">
+    <div style="padding: 4px 14px 22px 14px; display: flex; flex-direction: column; gap: 6px">
+      <img src="/_blob/c1964100bba4ba939b1b6cbb1559b622" alt="Vionvision" style="width: 140px; height: auto">
+      <span style="color: #66a3ff; font-size: 12px; letter-spacing: 1px">OCS · DELIVERY PLATFORM</span>
+    </div>
+    <sc-for list="{{nav}}" as="n" hint-placeholder-count="12">
+      <a href="{{n.href}}" style="{{n.style}}">{{n.label}}</a>
+    </sc-for>
+  </nav>
+
+  <main style="flex: 999 1 560px; min-width: 0; padding: 28px; box-sizing: border-box; display: flex; flex-direction: column; gap: 20px">
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 12px">
+      <div>
+        <div style="font-size: 13px; color: #666666">/ 05 Platform &amp; algorithms</div>
+        <h1 style="margin: 6px 0 0 0; font-size: 30px; font-weight: 500">What Runs Where — Devices, Versions, Algorithms, Accuracy</h1>
+      </div>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap">
+        <button type="button" class="btn" style="background: #ffffff; color: #005be6">Release notes</button>
+        <button type="button" class="btn" style="background: #0066ff; color: #ffffff">Log a platform issue</button>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px">
+      <sc-for list="{{fleet}}" as="f" hint-placeholder-count="6">
+        <div class="card" style="padding: 14px 16px">
+          <div style="font-size: 15px; font-weight: 700">{{f.k}}</div>
+          <div style="font-size: 12px; color: #666666; margin-top: 4px; line-height: 17px">{{f.v}}</div>
+        </div>
+      </sc-for>
+    </div>
+
+    <div role="tablist" aria-label="Platform sections" style="display: flex; gap: 4px; flex-wrap: wrap; border-bottom: 1px solid #d9d9d9">
+      <sc-for list="{{tabs}}" as="t" hint-placeholder-count="4">
+        <button type="button" role="tab" onClick="{{t.pick}}" style="{{t.style}}">{{t.label}}</button>
+      </sc-for>
+    </div>
+
+    <sc-if value="{{showConf}}" hint-placeholder-val="{{true}}">
+      <section class="card" style="padding: 0" aria-label="Site configurations">
+        <div style="overflow-x: auto">
+          <table style="width: 100%; border-collapse: collapse; font-size: 13px; min-width: 1000px">
+            <thead><tr style="background: #f2f2f2; text-align: left"><th style="padding: 10px 12px">Site</th><th style="padding: 10px 12px">Hardware</th><th style="padding: 10px 12px">Algorithms enabled</th><th style="padding: 10px 12px">Configuration notes</th><th style="padding: 10px 12px">Status</th></tr></thead>
+            <tbody>
+              <sc-for list="{{configs}}" as="c" hint-placeholder-count="5">
+                <tr style="border-bottom: 1px solid #d9d9d9; vertical-align: top">
+                  <td style="padding: 12px; font-weight: 700">{{c.site}}<div style="font-weight: 400; color: #666666; font-size: 12px">{{c.client}}</div></td>
+                  <td style="padding: 12px">{{c.hw}}</td>
+                  <td style="padding: 12px"><sc-for list="{{c.algos}}" as="a" hint-placeholder-count="3"><span class="tag">{{a}}</span></sc-for></td>
+                  <td style="padding: 12px">{{c.notes}}</td>
+                  <td style="padding: 12px"><span class="chip" style="{{c.chip}}">{{c.status}}</span></td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </sc-if>
+
+    <sc-if value="{{showRel}}" hint-placeholder-val="{{false}}">
+      <section class="card" style="padding: 0" aria-label="Releases">
+        <div style="overflow-x: auto">
+          <table style="width: 100%; border-collapse: collapse; font-size: 13px; min-width: 900px">
+            <thead><tr style="background: #f2f2f2; text-align: left"><th style="padding: 10px 12px">Component</th><th style="padding: 10px 12px">Version</th><th style="padding: 10px 12px">Where it runs</th><th style="padding: 10px 12px">Date</th><th style="padding: 10px 12px">Status</th><th style="padding: 10px 12px">Note</th></tr></thead>
+            <tbody>
+              <sc-for list="{{releases}}" as="r" hint-placeholder-count="6">
+                <tr style="border-bottom: 1px solid #d9d9d9; vertical-align: top">
+                  <td style="padding: 12px; font-weight: 700">{{r.c}}</td><td style="padding: 12px">{{r.v}}</td><td style="padding: 12px">{{r.w}}</td><td style="padding: 12px; white-space: nowrap">{{r.d}}</td>
+                  <td style="padding: 12px"><span class="chip" style="{{r.chip}}">{{r.s}}</span></td><td style="padding: 12px; color: #666666">{{r.n}}</td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </sc-if>
+
+    <sc-if value="{{showAcc}}" hint-placeholder-val="{{false}}">
+      <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+        <section class="card" style="flex: 1 1 420px; min-width: 0" aria-labelledby="h-t">
+          <h2 id="h-t" style="margin: 0 0 12px 0; font-size: 17px">Accuracy targets (PMI KPI list)</h2>
+          <sc-for list="{{targets}}" as="t" hint-placeholder-count="5">
+            <div style="display: flex; justify-content: space-between; gap: 12px; padding: 9px 0; border-bottom: 1px solid #d9d9d9; font-size: 13px"><span>{{t.k}}</span><span style="font-weight: 700; color: #005be6">{{t.v}}</span></div>
+          </sc-for>
+        </section>
+        <section class="card" style="flex: 1 1 420px; min-width: 0" aria-labelledby="h-r">
+          <h2 id="h-r" style="margin: 0 0 12px 0; font-size: 17px">Latest results</h2>
+          <sc-for list="{{results}}" as="r" hint-placeholder-count="4">
+            <div style="padding: 9px 0; border-bottom: 1px solid #d9d9d9; font-size: 13px; line-height: 19px"><span style="font-weight: 700">{{r.k}}</span> — {{r.v}}<div style="color: #666666; font-size: 12px">{{r.s}}</div></div>
+          </sc-for>
+          <p style="margin: 12px 0 0 0; font-size: 12px; color: #666666">Formulas fixed for every report: counts 1 − |system − manual| / manual · events correct / detected · totals Σ|difference| / Σ manual.</p>
+        </section>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{showIss}}" hint-placeholder-val="{{false}}">
+      <section class="card" style="padding: 0" aria-label="Known issues">
+        <div style="overflow-x: auto">
+          <table style="width: 100%; border-collapse: collapse; font-size: 13px; min-width: 860px">
+            <thead><tr style="background: #f2f2f2; text-align: left"><th style="padding: 10px 12px">Issue</th><th style="padding: 10px 12px">Affects</th><th style="padding: 10px 12px">Owner</th><th style="padding: 10px 12px">Target</th><th style="padding: 10px 12px">Status</th></tr></thead>
+            <tbody>
+              <sc-for list="{{issues}}" as="i" hint-placeholder-count="5">
+                <tr style="border-bottom: 1px solid #d9d9d9; vertical-align: top">
+                  <td style="padding: 12px; font-weight: 700">{{i.t}}</td><td style="padding: 12px">{{i.a}}</td><td style="padding: 12px">{{i.o}}</td><td style="padding: 12px; white-space: nowrap">{{i.d}}</td><td style="padding: 12px"><span class="chip" style="{{i.chip}}">{{i.s}}</span></td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </sc-if>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1420}}'>
+class Component extends DCLogic {
+  constructor(p){ super(p); this.state = { tab: 'conf' }; }
+  renderVals() {
+    const navDef = [['Home','Main.dc.html'],['Portfolio','Portfolio.dc.html'],['Projects','Project.dc.html'],['Sites','Site.dc.html'],['Platform & algorithms','Platform.dc.html'],['Actions & alerts','Actions.dc.html'],['Cases','Cases.dc.html'],['Commercial','Commercial.dc.html'],['Client portal','Client.dc.html'],['Partner app','Partner.dc.html'],['Knowledge','#'],['Admin','#']];
+    const nav = navDef.map((n, i) => ({ label: n[0], href: n[1], style: i === 4 ? 'background:#0066ff;color:#ffffff;font-weight:700' : '' }));
+    const tabDef = [['conf','Site configurations'],['rel','Releases'],['acc','Accuracy'],['iss','Known issues']];
+    const tabs = tabDef.map(([id, label]) => ({ label, pick: () => this.setState({ tab: id }), style: 'min-height:44px;padding:0 18px;font-family:inherit;font-size:14px;cursor:pointer;background:none;border:none;border-bottom:' + (this.state.tab === id ? '3px solid #0066ff;color:#005be6;font-weight:700' : '3px solid transparent;color:#000000') }));
+    const C = { ok:'background:#e3f1e4;color:#1f7a3a', prog:'background:#dce9f5;color:#005be6', risk:'background:#fcefd9;color:#9a5b00', wait:'background:#f2f2f2;color:#000000' };
+    return {
+      nav, tabs,
+      showConf: this.state.tab === 'conf', showRel: this.state.tab === 'rel', showAcc: this.state.tab === 'acc', showIss: this.state.tab === 'iss',
+      fleet: [
+        { k:'G6 / G6S (PoE)', v:'Ceiling sensors — PMI boutiques, NEINVER outlets' },
+        { k:'G6 WiFi', v:'PMI Japan SiS, Egypt islands (import issue)' },
+        { k:'B1', v:'PMI islands (UK Manchester, Kazakhstan)' },
+        { k:'CBox', v:'Edge terminal — Heinemann VIE queue' },
+        { k:'Edge container', v:'Jetson Orin, Docker — draft plan 8 Oct' },
+        { k:'V-store + OpenAPI v2', v:'Dashboards, CVA, footfall API' }
+      ],
+      configs: [
+        { site:'VIE 4020', client:'Gebr. Heinemann', hw:'Sensors + CBoxes', algos:['Entrance','19 zones','Product engagement','ReID journey','Queue','Age / gender'], notes:'Reach counted as a count, not an event. Queue still on the previous combined mapping; CBoxes cover it partly. Age bands 0–18 · 19–45 · 46–60 · 60+.', status:'Handover', chip:C.prog },
+        { site:'SSRR outlet', client:'NEINVER', hw:'G6 sensors on store switches', algos:['Traffic','Counting lines'], notes:'Lines configured on the 21 sensors back online; calibration next on sensors with normal speed.', status:'Network recovery', chip:C.risk },
+        { site:'IQOS Brno Olympia', client:'PMI · Czech Republic', hw:'G6 / G6S', algos:['Traffic','Age Alert (CVA)'], notes:'Age Alert pilot 6 Oct: 3 of 13 test cases passed — detection scope, latency, reminders, opening hours.', status:'At risk', chip:C.risk },
+        { site:'PMI transition boutiques', client:'PMI · 17 markets', hw:'G6 / G6S per design', algos:['Traffic','Passers-by','Unique visitors','Dwell time'], notes:'Calibration only after written DPIA and PMI approval; out of store hours; 48-hour access.', status:'Installing', chip:C.prog },
+        { site:'Alcorcón', client:'Logista', hw:'[hardware]', algos:['Loss prevention'], notes:'Live theft test, plan v2 (9 Oct).', status:'PoC', chip:C.prog }
+      ],
+      releases: [
+        { c:'G6 firmware — PMI low-resolution build', v:'2026-03-18', w:'PMI devices only', d:'18 Mar 2026', s:'Released', chip:C.ok, n:'Low-resolution image for privacy; patch history kept per device' },
+        { c:'C5Pro firmware', v:'V7.27 (from V6.32)', w:'C5Pro devices', d:'Jul 2026', s:'Released', chip:C.ok, n:'Release notes in reference library' },
+        { c:'Edge AI container', v:'App package ~130 MB · base image ~4.5 GB', w:'NVIDIA Jetson Orin, Ubuntu 22.04, L4T R36.x', d:'8 Oct 2026', s:'Draft', chip:C.wait, n:'Stateless container, no SSH; offline install possible' },
+        { c:'Footfall OpenAPI', v:'v2.0', w:'Cloud', d:'—', s:'Released', chip:C.ok, n:'Source for OCS online status and accuracy data' },
+        { c:'Scene-understanding algorithm', v:'Design', w:'—', d:'Jul 2026', s:'In development', chip:C.prog, n:'Internal design document' },
+        { c:'Age / gender model', v:'[version]', w:'PMI, Heinemann', d:'—', s:'Under review', chip:C.risk, n:'Middle age band weak; blind test proposed' }
+      ],
+      targets: [
+        { k:'Traffic (real-time)', v:'≥ 98%' },
+        { k:'Visitor traffic (T+1)', v:'≥ 95%' },
+        { k:'Unique visitors (T+1)', v:'≥ 95%' },
+        { k:'Entry rate', v:'≥ 95%' },
+        { k:'Store peak hour', v:'≥ 90%' }
+      ],
+      results: [
+        { k:'Heinemann VIE — gender (male)', v:'97.0%', s:'Accuracy handover v4, 16 Oct (sheet showed 98.02%, corrected)' },
+        { k:'Heinemann VIE — queue', v:'86.9% (sheet also shows 88.4%)', s:'Previous combined mapping; to retest with separate CBoxes' },
+        { k:'PMI Czech — Age Alert pilot', v:'3 of 13 test cases passed', s:'Brno Olympia test pack, 6 Oct' },
+        { k:'NEINVER SSRR', v:'Not tested yet', s:'Calibration first' }
+      ],
+      issues: [
+        { t:'Front-end vs API figures differ (passers-by, visitors)', a:'PMI DE, CZ, CH, JP', o:'Jamon → Elias', d:'End of week', s:'In progress', chip:C.prog },
+        { t:'CVA duplicate alerts; Czech pilot bugs', a:'PMI Age Alert', o:'Jamon', d:'27 Oct', s:'At risk', chip:C.risk },
+        { t:'No notice when calibration access is approved', a:'All PMI markets', o:'Jamon', d:'Ready 22 Oct', s:'Done', chip:C.ok },
+        { t:'Guides: calibration access, password policy, AnyDesk only out of hours', a:'PMI', o:'Vionvision', d:'ASAP', s:'Not started', chip:C.wait },
+        { t:'PHP vulnerability question from PMI IT', a:'Platform', o:'Platform team', d:'—', s:'In progress', chip:C.prog }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

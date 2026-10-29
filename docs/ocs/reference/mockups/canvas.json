@@ -1,0 +1,173 @@
+{
+  "v": 3,
+  "createdOnFiles": {
+    "v": 1,
+    "at": "2026-10-28T12:00:00Z"
+  },
+  "title": "OCS Delivery Platform — Mockup",
+  "launch": {
+    "view": "canvas"
+  },
+  "pages": [],
+  "boards": {
+    "Main.dc.html": {
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 1240,
+      "title": "1 · Home — my desk",
+      "expand": "fill",
+      "is_interactive": true
+    },
+    "Portfolio.dc.html": {
+      "x": 1520,
+      "y": 0,
+      "w": 1440,
+      "h": 1240,
+      "title": "2 · Portfolio — all projects",
+      "expand": "fill",
+      "is_interactive": true
+    },
+    "Project.dc.html": {
+      "x": 3040,
+      "y": 0,
+      "w": 1440,
+      "h": 1560,
+      "title": "3 · Project workspace — PMI Transition",
+      "expand": "fill",
+      "is_interactive": true
+    },
+    "Site.dc.html": {
+      "x": 0,
+      "y": 1980,
+      "w": 1440,
+      "h": 1560,
+      "title": "4 · Site — NEINVER SSRR",
+      "expand": "fill",
+      "is_interactive": true
+    },
+    "Platform.dc.html": {
+      "x": 1520,
+      "y": 1980,
+      "w": 1440,
+      "h": 1420,
+      "title": "5 · Platform & algorithms",
+      "expand": "fill",
+      "is_interactive": true
+    },
+    "Actions.dc.html": {
+      "x": 3040,
+      "y": 1980,
+      "w": 1440,
+      "h": 1280,
+      "title": "6 · Actions & alerts",
+      "expand": "fill",
+      "is_interactive": true
+    },
+    "Commercial.dc.html": {
+      "x": 0,
+      "y": 3960,
+      "w": 1440,
+      "h": 1320,
+      "title": "7 · Commercial — quotes, POs, invoices",
+      "expand": "fill",
+      "is_interactive": true
+    },
+    "Client.dc.html": {
+      "x": 1520,
+      "y": 3960,
+      "w": 1440,
+      "h": 1640,
+      "title": "8 · Client portal — what PMI sees",
+      "expand": "fill",
+      "is_interactive": true
+    },
+    "Partner.dc.html": {
+      "x": 3040,
+      "y": 3960,
+      "w": 390,
+      "h": 844,
+      "title": "9 · Partner app — installation checklist",
+      "is_interactive": true
+    },
+    "Cases.dc.html": {
+      "x": 0,
+      "y": 6200,
+      "w": 1440,
+      "h": 2000,
+      "title": "10 · Cases — one inbox for every problem",
+      "expand": "fill",
+      "is_interactive": true
+    },
+    "Case.dc.html": {
+      "x": 1520,
+      "y": 6200,
+      "w": 1440,
+      "h": 1760,
+      "title": "11 · Case — email, R&D work items, ETA, client view",
+      "expand": "fill",
+      "is_interactive": true
+    },
+    "RnD.dc.html": {
+      "x": 3040,
+      "y": 6200,
+      "w": 390,
+      "h": 844,
+      "title": "12 · R&D side — work card in DingTalk",
+      "is_interactive": true
+    }
+  },
+  "order": [
+    "Main.dc.html",
+    "Portfolio.dc.html",
+    "Project.dc.html",
+    "Site.dc.html",
+    "Platform.dc.html",
+    "Actions.dc.html",
+    "Commercial.dc.html",
+    "Client.dc.html",
+    "Partner.dc.html",
+    "Cases.dc.html",
+    "Case.dc.html",
+    "RnD.dc.html"
+  ],
+  "notes": {
+    "row1": {
+      "x": 0,
+      "y": -300,
+      "text": "Internal workspace — one place for every project",
+      "kind": "title1",
+      "maxW": 4480
+    },
+    "row2": {
+      "x": 0,
+      "y": 1680,
+      "text": "Delivery detail — sites, devices, platform, algorithms, actions",
+      "kind": "title1",
+      "maxW": 4480
+    },
+    "row3": {
+      "x": 0,
+      "y": 3660,
+      "text": "Money, client and partner views",
+      "kind": "title1",
+      "maxW": 4480
+    },
+    "row4": {
+      "x": 0,
+      "y": 5900,
+      "text": "Cases — one thread from the first email to the fix, shared by delivery, platform, algorithms and the client",
+      "kind": "title1",
+      "maxW": 4480
+    }
+  },
+  "designSystems": [
+    {
+      "title": "Vionvision",
+      "namespace": "vionvision",
+      "artifact": "https://claude.ai/artifact/83AcuvwzHex9AQGecqoVAR",
+      "version": "1791941564-f16d",
+      "copiedAt": "2026-10-28T12:00:00Z"
+    }
+  ]
+}

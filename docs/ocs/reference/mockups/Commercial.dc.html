@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>OCS — Commercial</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0;background:#f0f1f6}
+a{color:#005be6}a:hover{color:#0c1b2b}
+.nav a{display:flex;align-items:center;gap:10px;min-height:40px;padding:0 14px;color:#c9d3df;text-decoration:none;font-size:14px}
+.nav a:hover{background:#14273b;color:#ffffff}
+.chip{display:inline-block;padding:2px 8px;border-radius:5px;font-size:12px;font-weight:700;white-space:nowrap}
+.card{background:#ffffff;border:1px solid #d9d9d9;padding:20px;box-sizing:border-box}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:0 16px;border-radius:3.2rem;font-size:13px;font-weight:700;border:1px solid #0066ff;cursor:pointer;font-family:inherit;text-decoration:none}
+</style>
+</helmet>
+<div style="display: flex; flex-wrap: wrap; min-height: 100vh; font-family: Arial, 'Microsoft YaHei', 'PingFang SC', sans-serif; color: #000000; background: #f0f1f6">
+  <nav class="nav" aria-label="Main" style="flex: 1 1 232px; max-width: 260px; background: #0c1b2b; display: flex; flex-direction: column; gap: 2px; padding: 20px 10px; box-sizing: border-box">
+    <div style="padding: 4px 14px 22px 14px; display: flex; flex-direction: column; gap: 6px">
+      <img src="/_blob/c1964100bba4ba939b1b6cbb1559b622" alt="Vionvision" style="width: 140px; height: auto">
+      <span style="color: #66a3ff; font-size: 12px; letter-spacing: 1px">OCS · DELIVERY PLATFORM</span>
+    </div>
+    <sc-for list="{{nav}}" as="n" hint-placeholder-count="12">
+      <a href="{{n.href}}" style="{{n.style}}">{{n.label}}</a>
+    </sc-for>
+  </nav>
+
+  <main style="flex: 999 1 560px; min-width: 0; padding: 28px; box-sizing: border-box; display: flex; flex-direction: column; gap: 20px">
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 12px">
+      <div>
+        <div style="font-size: 13px; color: #666666">/ 07 Commercial · internal only</div>
+        <h1 style="margin: 6px 0 0 0; font-size: 30px; font-weight: 500">Quotes Built From Designs, Checked Before They Go Out</h1>
+      </div>
+      <button type="button" class="btn" style="background: #0066ff; color: #ffffff">New quote</button>
+    </div>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+      <section class="card" style="flex: 2 1 460px; min-width: 0" aria-labelledby="h-qb">
+        <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; align-items: center">
+          <h2 id="h-qb" style="margin: 0; font-size: 17px">Quote builder — Bosnia and Herzegovina</h2>
+          <span class="chip" style="background: #fcefd9; color: #9a5b00">Draft v2 · replaces HSC2026100138</span>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 20px; margin: 14px 0; font-size: 13px">
+          <div><span style="color: #666666">Bill-to</span><br><span style="font-weight: 700">Philip Morris BH d.o.o., Sarajevo</span></div>
+          <div><span style="color: #666666">Tax ID</span><br><span style="font-weight: 700">JIB on file</span></div>
+          <div><span style="color: #666666">Incoterm · VAT treatment</span><br><span style="font-weight: 700">DDP · local VAT 17% on separate line</span></div>
+          <div><span style="color: #666666">Hourly rate tier</span><br><span style="font-weight: 700">EUR 160</span></div>
+        </div>
+        <div style="overflow-x: auto">
+        <table style="width: 100%; border-collapse: collapse; font-size: 13px; min-width: 460px">
+          <thead><tr style="background: #f2f2f2; text-align: left"><th style="padding: 8px 10px">Line</th><th style="padding: 8px 10px">Basis</th><th style="padding: 8px 10px; text-align: right">Qty</th><th style="padding: 8px 10px; text-align: right">Unit (EUR)</th><th style="padding: 8px 10px; text-align: right">Amount (EUR)</th></tr></thead>
+          <tbody>
+            <sc-for list="{{lines}}" as="l" hint-placeholder-count="4">
+              <tr style="border-bottom: 1px solid #d9d9d9"><td style="padding: 10px; font-weight: 700">{{l.n}}</td><td style="padding: 10px; color: #666666">{{l.b}}</td><td style="padding: 10px; text-align: right">{{l.q}}</td><td style="padding: 10px; text-align: right">{{l.u}}</td><td style="padding: 10px; text-align: right; font-weight: 700">{{l.a}}</td></tr>
+            </sc-for>
+            <tr style="background: #f0f1f6"><td style="padding: 10px; font-weight: 700" colspan="4">Total incl. VAT (was EUR 16,777.80)</td><td style="padding: 10px; text-align: right; font-weight: 700; color: #005be6; font-size: 15px">13,572.00</td></tr>
+          </tbody>
+        </table>
+        </div>
+        <div style="display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap">
+          <button type="button" class="btn" style="background: #0066ff; color: #ffffff">Issue PDF</button>
+          <button type="button" class="btn" style="background: #ffffff; color: #005be6">Send for internal approval</button>
+        </div>
+      </section>
+
+      <section class="card" style="flex: 1 1 300px; min-width: 0" aria-labelledby="h-ck">
+        <h2 id="h-ck" style="margin: 0 0 10px 0; font-size: 17px">Checks before issue</h2>
+        <sc-for list="{{checks}}" as="c" hint-placeholder-count="6">
+          <div style="display: flex; gap: 10px; padding: 9px 0; border-bottom: 1px solid #d9d9d9; font-size: 13px; line-height: 18px; align-items: flex-start">
+            <span class="chip" style="{{c.chip}}">{{c.s}}</span><span>{{c.t}}</span>
+          </div>
+        </sc-for>
+      </section>
+    </div>
+
+    <div role="tablist" aria-label="Commercial sections" style="display: flex; gap: 4px; flex-wrap: wrap; border-bottom: 1px solid #d9d9d9">
+      <sc-for list="{{tabs}}" as="t" hint-placeholder-count="2">
+        <button type="button" role="tab" onClick="{{t.pick}}" style="{{t.style}}">{{t.label}}</button>
+      </sc-for>
+    </div>
+
+    <sc-if value="{{showQ}}" hint-placeholder-val="{{true}}">
+      <section class="card" style="padding: 0" aria-label="Quote register">
+        <div style="overflow-x: auto">
+          <table style="width: 100%; border-collapse: collapse; font-size: 13px; min-width: 980px">
+            <thead><tr style="background: #f2f2f2; text-align: left"><th style="padding: 10px 12px">Market</th><th style="padding: 10px 12px">Quote</th><th style="padding: 10px 12px; text-align: right">Issued (EUR)</th><th style="padding: 10px 12px; text-align: right">Corrected (EUR)</th><th style="padding: 10px 12px">Why</th><th style="padding: 10px 12px">VAT treatment</th><th style="padding: 10px 12px">Status</th></tr></thead>
+            <tbody>
+              <sc-for list="{{quotes}}" as="q" hint-placeholder-count="8">
+                <tr style="border-bottom: 1px solid #d9d9d9; vertical-align: top"><td style="padding: 10px 12px; font-weight: 700">{{q.m}}</td><td style="padding: 10px 12px; color: #666666">{{q.no}}</td><td style="padding: 10px 12px; text-align: right">{{q.cur}}</td><td style="padding: 10px 12px; text-align: right; font-weight: 700">{{q.cor}}</td><td style="padding: 10px 12px">{{q.why}}</td><td style="padding: 10px 12px">{{q.vat}}</td><td style="padding: 10px 12px"><span class="chip" style="{{q.chip}}">{{q.s}}</span></td></tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </sc-if>
+
+    <sc-if value="{{showP}}" hint-placeholder-val="{{false}}">
+      <section class="card" style="padding: 0" aria-label="POs and invoices">
+        <div style="overflow-x: auto">
+          <table style="width: 100%; border-collapse: collapse; font-size: 13px; min-width: 980px">
+            <thead><tr style="background: #f2f2f2; text-align: left"><th style="padding: 10px 12px">PO</th><th style="padding: 10px 12px">Market · store</th><th style="padding: 10px 12px">Devices</th><th style="padding: 10px 12px">Installed</th><th style="padding: 10px 12px">Invoice</th><th style="padding: 10px 12px">Paid</th><th style="padding: 10px 12px">Blocker</th></tr></thead>
+            <tbody>
+              <sc-for list="{{pos}}" as="p" hint-placeholder-count="8">
+                <tr style="border-bottom: 1px solid #d9d9d9; vertical-align: top"><td style="padding: 10px 12px; font-weight: 700">{{p.po}}</td><td style="padding: 10px 12px">{{p.ms}}</td><td style="padding: 10px 12px">{{p.dev}}</td><td style="padding: 10px 12px">{{p.ins}}</td><td style="padding: 10px 12px"><span class="chip" style="{{p.ichip}}">{{p.inv}}</span></td><td style="padding: 10px 12px">{{p.paid}}</td><td style="padding: 10px 12px; color: #666666">{{p.blk}}</td></tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+        <div style="padding: 12px 20px; font-size: 12px; color: #666666">Source: PMI unsettled tracking list, 22 Oct update. Partner invoices and margins sit on a separate internal tab.</div>
+      </section>
+    </sc-if>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1320}}'>
+class Component extends DCLogic {
+  constructor(p){ super(p); this.state = { tab: 'q' }; }
+  renderVals() {
+    const navDef = [['Home','Main.dc.html'],['Portfolio','Portfolio.dc.html'],['Projects','Project.dc.html'],['Sites','Site.dc.html'],['Platform & algorithms','Platform.dc.html'],['Actions & alerts','Actions.dc.html'],['Cases','Cases.dc.html'],['Commercial','Commercial.dc.html'],['Client portal','Client.dc.html'],['Partner app','Partner.dc.html'],['Knowledge','#'],['Admin','#']];
+    const nav = navDef.map((n, i) => ({ label: n[0], href: n[1], style: i === 7 ? 'background:#0066ff;color:#ffffff;font-weight:700' : '' }));
+    const tabs = [['q','Quote register'],['p','POs and invoices']].map(([id, label]) => ({ label, pick: () => this.setState({ tab: id }), style: 'min-height:44px;padding:0 18px;font-family:inherit;font-size:14px;cursor:pointer;background:none;border:none;border-bottom:' + (this.state.tab === id ? '3px solid #0066ff;color:#005be6;font-weight:700' : '3px solid transparent;color:#000000') }));
+    const C = { ok:'background:#e3f1e4;color:#1f7a3a', risk:'background:#fcefd9;color:#9a5b00', p0:'background:#0c1b2b;color:#ffffff', prog:'background:#dce9f5;color:#005be6', wait:'background:#f2f2f2;color:#000000' };
+    return {
+      nav, tabs, showQ: this.state.tab === 'q', showP: this.state.tab === 'p',
+      lines: [
+        { n:'G6 / G6S sensors', b:'Designs 22 Sep: Aria 5 + Banja Luka 3', q:'8', u:'1,050.00', a:'8,400.00' },
+        { n:'Installation incl. cabling', b:'2 h × 8 sensors + 2 h × 2 stores', q:'20 h', u:'160.00', a:'3,200.00' },
+        { n:'Subtotal net', b:'', q:'', u:'', a:'11,600.00' },
+        { n:'Local VAT', b:'17% — DDP, prepaid via courier', q:'', u:'', a:'1,972.00' }
+      ],
+      checks: [
+        { s:'Pass', chip:C.ok, t:'Sensors = current designs (8)' },
+        { s:'Pass', chip:C.ok, t:'Stores in title = stores in quote (2)' },
+        { s:'Pass', chip:C.ok, t:'No store already in another PO' },
+        { s:'Pass', chip:C.ok, t:'VAT on its own line; price columns net' },
+        { s:'Pass', chip:C.ok, t:'Arithmetic re-calculated by the system' },
+        { s:'Fixed', chip:C.risk, t:'Old version: hardware subtotal printed 12,885 instead of 12,285' }
+      ],
+      quotes: [
+        { m:'Bulgaria', no:'HSC2026090113', cur:'35,850.00', cor:'18,770.00', why:'Paradise and Vitosha have own POs → 3 stores, 13 sensors', vat:'EU · reverse charge', s:'Re-issue', chip:C.p0 },
+        { m:'Romania', no:'HSC2026090110', cur:'46,720.00', cor:'41,240.00', why:'Designs show 28 sensors, not 32', vat:'EU · reverse charge', s:'Re-issue', chip:C.p0 },
+        { m:'Slovakia', no:'HSC2026090121', cur:'27,640.00', cor:'21,920.00', why:'Designs show 14 sensors, not 18', vat:'EU · reverse charge', s:'Re-issue', chip:C.p0 },
+        { m:'Lithuania', no:'HSC2026090115', cur:'81,110.00', cor:'76,820.00', why:'Panorama 2 sensors, not 5; Akropolis double PO to check', vat:'EU · reverse charge', s:'Check', chip:C.risk },
+        { m:'Spain', no:'HSC2026090119 v2', cur:'47,040.00', cor:'47,130.00 + IVA', why:'Hardware line mis-added; domestic sale', vat:'Spain · IVA 21% added', s:'Sent 22 Oct', chip:C.prog },
+        { m:'Switzerland', no:'HSC2026090116', cur:'31,550.00', cor:'31,550.00', why:'Import VAT 8.1% not included; PO already issued', vat:'Non-EU · DDP', s:'Decide', chip:C.risk },
+        { m:'Serbia', no:'HSC2026090118 v2', cur:'11,208.00', cor:'9,340.00 + 20% VAT', why:'VAT hidden in unit prices', vat:'Non-EU · DDP', s:'Check v2', chip:C.risk },
+        { m:'Estonia', no:'—', cur:'—', cor:'7,530.00', why:'Quote missing — 1 store, 5 sensors', vat:'EU · reverse charge', s:'Overdue', chip:C.p0 }
+      ],
+      pos: [
+        { po:'5702005285', ms:'Portugal · transition, 10 stores', dev:'34 sensors', ins:'23 Nov – 3 Dec', inv:'Not yet', ichip:C.wait, paid:'—', blk:'LPA open' },
+        { po:'5702013749', ms:'Switzerland · transition, 4 stores', dev:'21 sensors', ins:'3–6 Dec', inv:'Not yet', ichip:C.wait, paid:'—', blk:'VAT decision' },
+        { po:'5702008476', ms:'Croatia · Zagreb', dev:'3 sensors', ins:'12 Jan', inv:'Not yet', ichip:C.wait, paid:'—', blk:'—' },
+        { po:'5701829812', ms:'Romania · BTQ Bacău', dev:'3 × G6S', ins:'Done', inv:'Ready', ichip:C.risk, paid:'No', blk:'Invoice after PMI Romania fixes network' },
+        { po:'5702010941', ms:'Bulgaria · Vitosha Sofia', dev:'5 × G6', ins:'Done', inv:'Ready', ichip:C.risk, paid:'No', blk:'Configuration not done' },
+        { po:'5701954601', ms:'Austria · Vienna Mariahilfer', dev:'4 × G6', ins:'Done 17 Oct', inv:'Blocked', ichip:C.p0, paid:'No', blk:'PIA and configuration not done' },
+        { po:'2026060075', ms:'Philippines · Manila MOA', dev:'4 × G6', ins:'Done', inv:'Issued', ichip:C.ok, paid:'Yes', blk:'Prepaid' },
+        { po:'Missing', ms:'Spain · Zaragoza', dev:'3 × G6S', ins:'Done', inv:'Blocked', ichip:C.p0, paid:'No', blk:'No PO found — PMI asks for footfall data' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

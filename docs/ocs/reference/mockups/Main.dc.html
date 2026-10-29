@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>OCS — Home</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0;background:#f0f1f6}
+a{color:#005be6}a:hover{color:#0c1b2b}
+.nav a{display:flex;align-items:center;gap:10px;min-height:40px;padding:0 14px;color:#c9d3df;text-decoration:none;font-size:14px}
+.nav a:hover{background:#14273b;color:#ffffff}
+.chip{display:inline-block;padding:2px 8px;border-radius:5px;font-size:12px;font-weight:700;white-space:nowrap}
+.card{background:#ffffff;border:1px solid #d9d9d9;padding:20px;box-sizing:border-box}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:0 16px;border-radius:3.2rem;font-size:13px;font-weight:700;border:1px solid #0066ff;cursor:pointer;font-family:inherit}
+</style>
+</helmet>
+<div style="display: flex; flex-wrap: wrap; min-height: 100vh; font-family: Arial, 'Microsoft YaHei', 'PingFang SC', sans-serif; color: #000000; background: #f0f1f6">
+
+  <nav class="nav" aria-label="Main" style="flex: 1 1 232px; max-width: 260px; background: #0c1b2b; display: flex; flex-direction: column; gap: 2px; padding: 20px 10px; box-sizing: border-box">
+    <div style="padding: 4px 14px 22px 14px; display: flex; flex-direction: column; gap: 6px">
+      <img src="/_blob/c1964100bba4ba939b1b6cbb1559b622" alt="Vionvision" style="width: 140px; height: auto">
+      <span style="color: #66a3ff; font-size: 12px; letter-spacing: 1px">OCS · DELIVERY PLATFORM</span>
+    </div>
+    <sc-for list="{{nav}}" as="n" hint-placeholder-count="12">
+      <a href="{{n.href}}" style="{{n.style}}">{{n.label}}</a>
+    </sc-for>
+    <div style="margin-top: auto; padding: 14px; border-top: 1px solid #2a3d52; color: #a9b4c2; font-size: 12px; line-height: 18px">Signed in as Vladyslav Yurchyna<br>Delivery Director · Admin</div>
+  </nav>
+
+  <main style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column">
+    <header style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 14px 28px; background: #ffffff; border-bottom: 1px solid #d9d9d9">
+      <label for="q" style="position: absolute; left: -9999px">Search</label>
+      <input id="q" type="search" placeholder="Search projects, sites, SN / MAC, PO, people…" style="flex: 1 1 320px; min-height: 40px; padding: 0 14px; border: 1px solid #d9d9d9; border-radius: 5px; font-size: 14px; font-family: inherit">
+      <span style="font-size: 13px; color: #666666">Beijing 20:00 · Madrid 13:00 · London 12:00</span>
+      <button type="button" class="btn" style="background: #ffffff; color: #005be6" onClick="{{toggleLang}}">{{langLabel}}</button>
+      <span aria-label="Notifications" style="display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border: 1px solid #d9d9d9; border-radius: 5px">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="1.5" aria-hidden="true"><path d="M6 16V11a6 6 0 1 1 12 0v5l2 2H4z"></path><path d="M10 20h4"></path></svg>
+      </span>
+    </header>
+
+    <div style="padding: 28px; display: flex; flex-direction: column; gap: 24px; box-sizing: border-box; max-width: 1240px; width: 100%">
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 12px">
+        <div>
+          <div style="font-size: 13px; color: #666666">/ 01 Home · Wednesday 28 October 2026</div>
+          <h1 style="margin: 6px 0 0 0; font-size: 30px; font-weight: 500">{{greeting}}</h1>
+        </div>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap">
+          <a href="Actions.dc.html" class="btn" style="background: #0066ff; color: #ffffff; text-decoration: none">New action</a>
+          <a href="Portfolio.dc.html" class="btn" style="background: #ffffff; color: #005be6; text-decoration: none">Open portfolio</a>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px">
+        <sc-for list="{{kpis}}" as="k" hint-placeholder-count="4">
+          <div class="card" style="display: flex; flex-direction: column; gap: 4px; background: #ffffff">
+            <span style="font-size: 40px; line-height: 46px; font-weight: 500; color: {{k.color}}">{{k.value}}</span>
+            <span style="font-size: 14px; font-weight: 700">{{k.label}}</span>
+            <span style="font-size: 12px; color: #666666">{{k.sub}}</span>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start">
+        <div style="flex: 3 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 24px">
+          <section class="card" aria-labelledby="h-act">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px">
+              <h2 id="h-act" style="margin: 0; font-size: 17px">My actions</h2>
+              <a href="Actions.dc.html" style="font-size: 13px">All actions</a>
+            </div>
+            <div style="overflow-x: auto">
+            <table style="width: 100%; border-collapse: collapse; font-size: 13px; min-width: 560px">
+              <thead><tr style="background: #f2f2f2; text-align: left">
+                <th style="padding: 8px 10px">Action</th><th style="padding: 8px 10px">Project</th><th style="padding: 8px 10px">Due</th><th style="padding: 8px 10px">Status</th>
+              </tr></thead>
+              <tbody>
+                <sc-for list="{{actions}}" as="a" hint-placeholder-count="6">
+                  <tr style="border-bottom: 1px solid #d9d9d9">
+                    <td style="padding: 10px; font-weight: 700">{{a.title}}<div style="font-weight: 400; color: #666666; font-size: 12px; margin-top: 2px">{{a.source}}</div></td>
+                    <td style="padding: 10px">{{a.project}}</td>
+                    <td style="padding: 10px; white-space: nowrap">{{a.due}}</td>
+                    <td style="padding: 10px"><span class="chip" style="{{a.chip}}">{{a.status}}</span></td>
+                  </tr>
+                </sc-for>
+              </tbody>
+            </table>
+            </div>
+          </section>
+
+          <section class="card" aria-labelledby="h-upd">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px">
+              <h2 id="h-upd" style="margin: 0; font-size: 17px">Latest updates</h2>
+              <div style="display: flex; gap: 6px; flex-wrap: wrap">
+                <sc-for list="{{filters}}" as="f" hint-placeholder-count="5">
+                  <button type="button" onClick="{{f.pick}}" style="{{f.style}}">{{f.label}}</button>
+                </sc-for>
+              </div>
+            </div>
+            <div style="display: flex; flex-direction: column">
+              <sc-for list="{{feed}}" as="u" hint-placeholder-count="6">
+                <div style="display: flex; gap: 14px; padding: 12px 0; border-bottom: 1px solid #d9d9d9">
+                  <div style="flex: 0 0 64px; font-size: 12px; color: #666666; line-height: 18px">{{u.date}}<br><span style="font-weight: 700; color: #005be6">{{u.src}}</span></div>
+                  <div style="flex: 1 1 auto; min-width: 0; font-size: 13px; line-height: 19px">
+                    <span style="font-weight: 700">{{u.project}}</span> · {{u.text}}
+                    <div style="color: #666666; font-size: 12px; margin-top: 2px">{{u.meta}}</div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </section>
+        </div>
+
+        <div style="flex: 2 1 340px; min-width: 0; display: flex; flex-direction: column; gap: 24px">
+          <section class="card" aria-labelledby="h-al">
+            <h2 id="h-al" style="margin: 0 0 12px 0; font-size: 17px">Alerts</h2>
+            <sc-for list="{{alerts}}" as="al" hint-placeholder-count="4">
+              <div style="display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid #d9d9d9; align-items: flex-start">
+                <span class="chip" style="{{al.chip}}">{{al.level}}</span>
+                <div style="font-size: 13px; line-height: 18px"><span style="font-weight: 700">{{al.rule}}</span><br>{{al.text}}<div style="color: #666666; font-size: 12px">{{al.owner}}</div></div>
+              </div>
+            </sc-for>
+          </section>
+
+          <section class="card" aria-labelledby="h-ai" style="background: #ffffff; border-color: #0066ff">
+            <h2 id="h-ai" style="margin: 0 0 4px 0; font-size: 17px">Ask OCS</h2>
+            <p style="margin: 0 0 12px 0; font-size: 12px; color: #666666">Answers from OCS data only, with sources. Proposals need your approval.</p>
+            <label for="ask" style="position: absolute; left: -9999px">Ask a question</label>
+            <input id="ask" type="text" value="Which Portuguese stores still miss static IPs?" style="width: 100%; box-sizing: border-box; min-height: 40px; padding: 0 12px; border: 1px solid #d9d9d9; border-radius: 5px; font-size: 13px; font-family: inherit">
+            <div style="margin-top: 10px; padding: 12px; background: #f0f1f6; font-size: 13px; line-height: 19px">All 10 Portugal stores are still open — the first D−2 check is due 19 Nov (Braga Parque, installation 23 Nov). Static IPs received: 0 of 34 sensors. <a href="Project.dc.html">Open Portugal</a></div>
+            <h3 style="margin: 16px 0 8px 0; font-size: 14px">Proposed from mail and chats</h3>
+            <sc-for list="{{proposals}}" as="pp" hint-placeholder-count="2">
+              <div style="padding: 10px; border: 1px solid #d9d9d9; margin-bottom: 8px; font-size: 13px; line-height: 18px">
+                {{pp.text}}<div style="color: #666666; font-size: 12px; margin: 4px 0 8px 0">{{pp.src}}</div>
+                <div style="display: flex; gap: 8px"><button type="button" class="btn" style="background: #0066ff; color: #ffffff">Approve</button><button type="button" class="btn" style="background: #ffffff; color: #005be6">Edit</button></div>
+              </div>
+            </sc-for>
+          </section>
+
+          <section class="card" aria-labelledby="h-wk">
+            <h2 id="h-wk" style="margin: 0 0 12px 0; font-size: 17px">Next 7 days</h2>
+            <sc-for list="{{week}}" as="w" hint-placeholder-count="5">
+              <div style="display: flex; gap: 12px; padding: 8px 0; border-bottom: 1px solid #d9d9d9; font-size: 13px"><span style="flex: 0 0 82px; color: #005be6; font-weight: 700">{{w.d}}</span><span>{{w.t}}</span></div>
+            </sc-for>
+          </section>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1240}}'>
+class Component extends DCLogic {
+  constructor(p){ super(p); this.state = { zh: false, filter: 'All' }; }
+  renderVals() {
+    const zh = this.state.zh;
+    const navDef = [['Home','首页','Main.dc.html'],['Portfolio','项目总览','Portfolio.dc.html'],['Projects','项目','Project.dc.html'],['Sites','门店','Site.dc.html'],['Platform & algorithms','平台与算法','Platform.dc.html'],['Actions & alerts','行动与预警','Actions.dc.html'],['Cases','案例','Cases.dc.html'],['Commercial','商务','Commercial.dc.html'],['Client portal','客户门户','Client.dc.html'],['Partner app','供应商端','Partner.dc.html'],['Knowledge','知识库','#'],['Admin','系统管理','#']];
+    const nav = navDef.map((n, i) => ({ label: zh ? n[1] : n[0], href: n[2], style: i === 0 ? 'background:#0066ff;color:#ffffff;font-weight:700' : '' }));
+    const S = { done:'background:#e3f1e4;color:#1f7a3a', prog:'background:#dce9f5;color:#005be6', risk:'background:#fcefd9;color:#9a5b00', wait:'background:#f2f2f2;color:#000000', p0:'background:#0c1b2b;color:#ffffff', p1:'background:#fcefd9;color:#9a5b00', p2:'background:#f2f2f2;color:#000000' };
+    const feedAll = [
+      { date:'28 Oct', src:'Plan', project:'PMI · Romania', text:'Installation window opens tonight in Ploiești — 9 stores to 6 Nov, after store closure, Partner A.', meta:'Deployment plan · 1 engineer · 2,425 km route', type:'Delivery' },
+      { date:'23 Oct', src:'Chat', project:'PMI · Pricing', text:'Rule set: hardware DAP EUR 1,050 per sensor excl. VAT; DDP and local VAT where reverse charge is not possible.', meta:'Pasted by Vlad · applies to all quotes', type:'Commercial' },
+      { date:'22 Oct', src:'Mail', project:'PMI · Spain', text:'Quote v2 sent for the agreed EUR 47,130; Francesca forwards to the market for PO.', meta:'Steve → Francesca Versiglia · 09:17 UTC', type:'Commercial' },
+      { date:'22 Oct', src:'Mail', project:'PMI · Kazakhstan', text:'Not legally approved for the moment; cables to be installed for future work.', meta:'Benoit Vial · status: blocked', type:'Delivery' },
+      { date:'22 Oct', src:'Meeting', project:'PMI · BR Tech', text:'Guides to be updated: calibration access, password policy, AnyDesk only out of store hours.', meta:'BR Tech notes · 11 actions created', type:'Platform' },
+      { date:'20 Oct', src:'Mail', project:'PMI · Czech Republic', text:'Nový Smíchov stopped — sensors cannot be fixed to the metal grid ceiling; local brackets being made.', meta:'Marcel Funda (PMI) · EuroTSI', type:'Delivery' },
+      { date:'16 Oct', src:'Report', project:'NEINVER · SSRR', text:'110 sensors online (from 89); about 60% back to normal speed and ready for calibration.', meta:'Weekly update to Sergio', type:'Delivery' },
+      { date:'16 Oct', src:'Report', project:'Heinemann · VIE', text:'Accuracy test handover v4 delivered — 19 zones, ReID journey, queue on previous mapping.', meta:'Handover document', type:'Platform' }
+    ];
+    const types = ['All','Delivery','Platform','Commercial'];
+    const filters = types.map((t) => ({ label: t, pick: () => this.setState({ filter: t }), style: 'min-height:32px;padding:0 12px;border-radius:5px;font-size:12px;font-family:inherit;cursor:pointer;border:1px solid ' + (this.state.filter === t ? '#0066ff;background:#0066ff;color:#ffffff' : '#d9d9d9;background:#ffffff;color:#000000') }));
+    const feed = feedAll.filter((u) => this.state.filter === 'All' || u.type === this.state.filter);
+    return {
+      nav, filters, feed,
+      langLabel: zh ? 'EN' : '中文',
+      toggleLang: () => this.setState({ zh: !zh }),
+      greeting: zh ? '下午好，Vlad' : 'Good afternoon, Vlad',
+      kpis: [
+        { value:'3', label:'P0 alerts open', sub:'Romania count · Estonia quote · Bulgaria double PO', color:'#005be6' },
+        { value:'9', label:'Actions due this week', sub:'4 overdue · 5 on time', color:'#005be6' },
+        { value:'11', label:'Installations in 14 days', sub:'Romania 9 · Poland 2', color:'#005be6' },
+        { value:'9 / 16', label:'Quotes need correction', sub:'Design check of 23 Oct', color:'#9a5b00' }
+      ],
+      actions: [
+        { title:'Confirm Romania sensor count (28 design vs 32 quoted) before shipping', project:'PMI · Romania', due:'27 Oct', status:'Overdue', chip:S.risk, source:'Design check 23 Oct' },
+        { title:'Send Estonia quotation — 1 store, 5 sensors', project:'PMI · Estonia', due:'23 Oct', status:'Overdue', chip:S.risk, source:'Josephine, mail 22 Oct' },
+        { title:'Decide Swiss import VAT (8.1%) with Benoit — PO already issued', project:'PMI · Switzerland', due:'30 Oct', status:'In progress', chip:S.prog, source:'Quote register v2' },
+        { title:'Answer LPA subprocessor questions', project:'PMI · Portugal', due:'31 Oct', status:'Waiting on Wesley', chip:S.wait, source:'Francesca, mail 21 Oct' },
+        { title:'Name OCS tech lead and two developers', project:'OCS', due:'7 Nov', status:'Not started', chip:S.p2, source:'OCS proposal v1' },
+        { title:'Switch .196 limit and passwords for .191 / .200', project:'NEINVER · SSRR', due:'30 Oct', status:'Waiting on NEINVER', chip:S.wait, source:'Weekly update 16 Oct' }
+      ],
+      alerts: [
+        { level:'P0', chip:S.p0, rule:'R12 Quote ≠ design', text:'Romania 32 vs 28 · Slovakia 18 vs 14 · Bosnia 10 vs 8', owner:'Steve · today' },
+        { level:'P0', chip:S.p0, rule:'R13 Store in two POs', text:'Bulgaria: Paradise and Vitosha in transition quote and own POs', owner:'Wesley · today' },
+        { level:'P0', chip:S.p0, rule:'R14 Installed without PO', text:'Spain Zaragoza — 3 × G6S installed, no PO found', owner:'Steve · today' },
+        { level:'P1', chip:S.p1, rule:'R10 Calibration without DPIA', text:'Austria Vienna — installed 17 Oct, PIA not done', owner:'Vlad · 2 working days' }
+      ],
+      proposals: [
+        { text:'New action: check front-end vs API figures for DE, CZ, CH, JP — owner Jamon, due 30 Oct.', src:'From BR Tech meeting notes, 22 Oct' },
+        { text:'Slovakia: move IQOS Boutique Košice from 25 Jan to 23 Jan 2027.', src:'From Dominika Medzihradská, mail 22 Oct' }
+      ],
+      week: [
+        { d:'Wed 28 Oct', t:'Romania — Ploiești (night)' },
+        { d:'Thu 29 Oct', t:'Romania — AFI Brașov (night) · BR Tech bi-weekly' },
+        { d:'Fri 30 Oct', t:'Romania — Sibiu (night)' },
+        { d:'Mon 2 Nov', t:'PMI weekly alignment 15:30 Beijing · Monday pack 14:00' },
+        { d:'Wed 4 Nov', t:'Romania — Galați · Latvia window starts (to confirm)' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>OCS — Project workspace</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0;background:#f0f1f6}
+a{color:#005be6}a:hover{color:#0c1b2b}
+.nav a{display:flex;align-items:center;gap:10px;min-height:40px;padding:0 14px;color:#c9d3df;text-decoration:none;font-size:14px}
+.nav a:hover{background:#14273b;color:#ffffff}
+.chip{display:inline-block;padding:2px 8px;border-radius:5px;font-size:12px;font-weight:700;white-space:nowrap}
+.card{background:#ffffff;border:1px solid #d9d9d9;padding:20px;box-sizing:border-box}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:0 16px;border-radius:3.2rem;font-size:13px;font-weight:700;border:1px solid #0066ff;cursor:pointer;font-family:inherit;text-decoration:none}
+.g{display:inline-flex;align-items:center;justify-content:center;width:30px;height:24px;font-size:11px;font-weight:700;border-radius:5px}
+</style>
+</helmet>
+<div style="display: flex; flex-wrap: wrap; min-height: 100vh; font-family: Arial, 'Microsoft YaHei', 'PingFang SC', sans-serif; color: #000000; background: #f0f1f6">
+  <nav class="nav" aria-label="Main" style="flex: 1 1 232px; max-width: 260px; background: #0c1b2b; display: flex; flex-direction: column; gap: 2px; padding: 20px 10px; box-sizing: border-box">
+    <div style="padding: 4px 14px 22px 14px; display: flex; flex-direction: column; gap: 6px">
+      <img src="/_blob/c1964100bba4ba939b1b6cbb1559b622" alt="Vionvision" style="width: 140px; height: auto">
+      <span style="color: #66a3ff; font-size: 12px; letter-spacing: 1px">OCS · DELIVERY PLATFORM</span>
+    </div>
+    <sc-for list="{{nav}}" as="n" hint-placeholder-count="12">
+      <a href="{{n.href}}" style="{{n.style}}">{{n.label}}</a>
+    </sc-for>
+  </nav>
+
+  <main style="flex: 999 1 560px; min-width: 0; padding: 28px; box-sizing: border-box; display: flex; flex-direction: column; gap: 20px">
+    <div style="font-size: 13px; color: #666666"><a href="Portfolio.dc.html">Portfolio</a> / PMI / Location Transition Phase I</div>
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; align-items: flex-start">
+      <div style="display: flex; flex-direction: column; gap: 8px">
+        <h1 style="margin: 0; font-size: 30px; font-weight: 500">PMI — Location Transition Phase I</h1>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center; font-size: 13px">
+          <span class="chip" style="background: #fcefd9; color: #9a5b00">At risk</span>
+          <span>Rollout · 17 markets · 113 stores · 448 sensors (current designs)</span>
+          <span style="color: #666666">· PM Steve · Business owner Vlad · Client lead Josephine Schlinz, Francesca Versiglia</span>
+        </div>
+      </div>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap">
+        <button type="button" class="btn" style="background: #ffffff; color: #005be6">Monday pack</button>
+        <a href="Client.dc.html" class="btn" style="background: #ffffff; color: #005be6">Client view</a>
+        <button type="button" class="btn" style="background: #0066ff; color: #ffffff">Add update</button>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px">
+      <sc-for list="{{funnel}}" as="f" hint-placeholder-count="6">
+        <div class="card" style="padding: 14px 16px">
+          <div style="font-size: 12px; color: #666666">{{f.k}}</div>
+          <div style="font-size: 28px; font-weight: 500; color: #005be6">{{f.v}}</div>
+          <div style="font-size: 12px">{{f.s}}</div>
+        </div>
+      </sc-for>
+    </div>
+
+    <div role="tablist" aria-label="Project sections" style="display: flex; gap: 4px; flex-wrap: wrap; border-bottom: 1px solid #d9d9d9">
+      <sc-for list="{{tabs}}" as="t" hint-placeholder-count="5">
+        <button type="button" role="tab" onClick="{{t.pick}}" style="{{t.style}}">{{t.label}}</button>
+      </sc-for>
+    </div>
+
+    <sc-if value="{{showMarkets}}" hint-placeholder-val="{{true}}">
+      <section class="card" style="padding: 0" aria-label="Markets and gates">
+        <div style="overflow-x: auto">
+          <table style="width: 100%; border-collapse: collapse; font-size: 13px; min-width: 1100px">
+            <thead><tr style="background: #f2f2f2; text-align: left">
+              <th style="padding: 10px 12px">Market</th><th style="padding: 10px 12px">Stores · sensors</th><th style="padding: 10px 12px">Partner (internal)</th><th style="padding: 10px 12px">Gates G1–G5</th><th style="padding: 10px 12px">Quote · PO</th><th style="padding: 10px 12px">Installation window</th><th style="padding: 10px 12px">Next action</th>
+            </tr></thead>
+            <tbody>
+              <sc-for list="{{markets}}" as="m" hint-placeholder-count="10">
+                <tr style="border-bottom: 1px solid #d9d9d9; vertical-align: top">
+                  <td style="padding: 10px 12px; font-weight: 700">{{m.name}}</td>
+                  <td style="padding: 10px 12px">{{m.stores}} · {{m.sensors}}</td>
+                  <td style="padding: 10px 12px">{{m.partner}}</td>
+                  <td style="padding: 10px 12px"><div style="display: flex; gap: 4px">
+                    <sc-for list="{{m.gates}}" as="g" hint-placeholder-count="5"><span class="g" style="{{g.style}}" title="{{g.title}}">{{g.label}}</span></sc-for>
+                  </div></td>
+                  <td style="padding: 10px 12px">{{m.quote}}<div style="color: #666666; font-size: 12px">{{m.po}}</div></td>
+                  <td style="padding: 10px 12px">{{m.window}}</td>
+                  <td style="padding: 10px 12px">{{m.next}}</td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+        <div style="display: flex; gap: 16px; flex-wrap: wrap; padding: 12px 16px; font-size: 12px; color: #666666; align-items: center">
+          <span><span class="g" style="background: #e3f1e4; color: #1f7a3a">G1</span> passed</span>
+          <span><span class="g" style="background: #dce9f5; color: #005be6">G1</span> current</span>
+          <span><span class="g" style="background: #0c1b2b; color: #ffffff">G1</span> blocked</span>
+          <span><span class="g" style="background: #ffffff; color: #6e6e6e; border: 1px solid #d9d9d9">G1</span> not started</span>
+          <span>Partner names are internal; the client portal shows Partner A, B, C…</span>
+        </div>
+      </section>
+    </sc-if>
+
+    <sc-if value="{{showUpdates}}" hint-placeholder-val="{{false}}">
+      <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+        <section class="card" style="flex: 3 1 520px; min-width: 0" aria-label="Updates and comments">
+          <label for="cmt" style="font-size: 13px; font-weight: 700">Add a comment or update</label>
+          <textarea id="cmt" rows="3" placeholder="Write an update, @mention someone, attach a file…" style="width: 100%; box-sizing: border-box; margin-top: 8px; padding: 10px; border: 1px solid #d9d9d9; border-radius: 5px; font-family: inherit; font-size: 13px"></textarea>
+          <div style="display: flex; gap: 8px; margin: 8px 0 16px 0; flex-wrap: wrap"><button type="button" class="btn" style="background: #0066ff; color: #ffffff">Post</button><button type="button" class="btn" style="background: #ffffff; color: #005be6">Post as status update</button><button type="button" class="btn" style="background: #ffffff; color: #005be6">Turn into action</button></div>
+          <sc-for list="{{thread}}" as="c" hint-placeholder-count="5">
+            <div style="display: flex; gap: 12px; padding: 12px 0; border-top: 1px solid #d9d9d9">
+              <span style="flex: 0 0 36px; height: 36px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; {{c.avatar}}">{{c.ini}}</span>
+              <div style="flex: 1 1 auto; min-width: 0; font-size: 13px; line-height: 19px">
+                <div><span style="font-weight: 700">{{c.who}}</span> <span style="color: #666666">· {{c.when}} · {{c.where}}</span></div>
+                <div style="margin-top: 2px">{{c.text}}</div>
+                <div style="color: #005be6; font-size: 12px; margin-top: 4px">{{c.tag}}</div>
+              </div>
+            </div>
+          </sc-for>
+        </section>
+        <section class="card" style="flex: 2 1 300px; min-width: 0" aria-label="Key facts">
+          <h2 style="margin: 0 0 10px 0; font-size: 15px">Pinned facts</h2>
+          <sc-for list="{{pins}}" as="p" hint-placeholder-count="4">
+            <div style="padding: 8px 0; border-bottom: 1px solid #d9d9d9; font-size: 13px; line-height: 18px"><span style="font-weight: 700">{{p.k}}</span><br>{{p.v}}</div>
+          </sc-for>
+        </section>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{showDocs}}" hint-placeholder-val="{{false}}">
+      <section class="card" aria-label="Documents">
+        <div style="overflow-x: auto">
+        <table style="width: 100%; border-collapse: collapse; font-size: 13px; min-width: 720px">
+          <thead><tr style="background: #f2f2f2; text-align: left"><th style="padding: 8px 10px">Document</th><th style="padding: 8px 10px">Type</th><th style="padding: 8px 10px">Version</th><th style="padding: 8px 10px">Shared with client</th><th style="padding: 8px 10px">Updated</th></tr></thead>
+          <tbody>
+            <sc-for list="{{docs}}" as="d" hint-placeholder-count="6">
+              <tr style="border-bottom: 1px solid #d9d9d9"><td style="padding: 10px; font-weight: 700">{{d.n}}</td><td style="padding: 10px">{{d.t}}</td><td style="padding: 10px">{{d.v}}</td><td style="padding: 10px">{{d.s}}</td><td style="padding: 10px; color: #666666">{{d.u}}</td></tr>
+            </sc-for>
+          </tbody>
+        </table>
+        </div>
+      </section>
+    </sc-if>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1560}}'>
+class Component extends DCLogic {
+  constructor(p){ super(p); this.state = { tab: 'markets' }; }
+  renderVals() {
+    const navDef = [['Home','Main.dc.html'],['Portfolio','Portfolio.dc.html'],['Projects','Project.dc.html'],['Sites','Site.dc.html'],['Platform & algorithms','Platform.dc.html'],['Actions & alerts','Actions.dc.html'],['Cases','Cases.dc.html'],['Commercial','Commercial.dc.html'],['Client portal','Client.dc.html'],['Partner app','Partner.dc.html'],['Knowledge','#'],['Admin','#']];
+    const nav = navDef.map((n, i) => ({ label: n[0], href: n[1], style: i === 2 ? 'background:#0066ff;color:#ffffff;font-weight:700' : '' }));
+    const tabDef = [['markets','Markets & gates'],['updates','Updates & comments'],['docs','Documents']];
+    const tabs = tabDef.map(([id, label]) => ({ label, pick: () => this.setState({ tab: id }), style: 'min-height:44px;padding:0 18px;font-family:inherit;font-size:14px;cursor:pointer;background:none;border:none;border-bottom:' + (this.state.tab === id ? '3px solid #0066ff;color:#005be6;font-weight:700' : '3px solid transparent;color:#000000') }));
+    const GS = { D:['background:#e3f1e4;color:#1f7a3a','passed'], C:['background:#dce9f5;color:#005be6','current'], X:['background:#0c1b2b;color:#ffffff','blocked'], '-':['background:#ffffff;color:#6e6e6e;border:1px solid #d9d9d9','not started'] };
+    const gates = (code) => code.split('').map((c, i) => ({ label: 'G' + (i + 1), style: GS[c][0], title: 'G' + (i + 1) + ' ' + GS[c][1] }));
+    const M = [
+      ['Czech Republic',7,32,'EuroTSI','DDDC-','Quote OK','PO to confirm in OCS','19–26 Oct · in progress','Nový Smíchov brackets; remaining stores 4–5 h each'],
+      ['Romania',9,28,'EuroTSI','XDDC-','Quoted 32 — design 28','No PO yet','28 Oct – 6 Nov · tonight','Installing without PO — raise PO; correct quote'],
+      ['Poland',11,47,'EuroTSI','C----','+2 h travel missing','No PO','9–20 Nov · market to confirm','Fix title (11 stores); bill-to ERGO STORE?'],
+      ['Portugal',10,34,'EuroTSI','DC---','Quote OK','PO 5702005285','23 Nov – 3 Dec · nights','LPA subprocessors; PoE ports per store'],
+      ['Switzerland',4,21,'TSI / TVS','DC---','VAT 8.1% open','PO 5702013749','3–6 Dec · assumed','Decide import VAT with Benoit'],
+      ['Spain',7,33,'TSI','C----','v2 EUR 47,130 + IVA','PO pending','10–17 Dec · assumed','Confirm v2 figures; "Tenerife" row has Seville address'],
+      ['Italy',4,27,'Axitea / TSI','C----','Title says 5 stores','No PO','22–28 Dec','Surveys 5, 10, 12 Nov'],
+      ['Lithuania',14,50,'Forus','C----','Panorama 2 vs 5','No PO','From 16 Nov, weekdays','Akropolis double PO check; Forus hours'],
+      ['Latvia',8,31,'Forus','C----','Title says 9 stores','No PO','From 16 Nov, weekdays','Confirm window with Forus'],
+      ['Estonia',1,5,'Forus','X----','Quote missing','—','—','Send quote (due 23 Oct)'],
+      ['Greece',22,85,'TSI / Aikon','C----','Quote OK','No PO','2–23 Jan','Missing store info; Syntagma overlap'],
+      ['Bulgaria',3,13,'TVS / HTS','X----','Double count — 25 → 13','No PO','27–29 Jan','Re-issue at EUR 18,770'],
+      ['Serbia',2,6,'Verifone','C----','VAT label to fix','No PO','4–5 Jan · assumed','Use v2 (Niš entity)'],
+      ['Bosnia and Herzegovina',2,8,'Verifone / TVS','X----','10 → 8, subtotal typo','No PO','8–11 Jan · assumed','Re-issue with VAT line'],
+      ['Croatia',1,3,'TVS','DC---','Quote OK','PO 5702008476','12 Jan · assumed','Entrance on floor plan'],
+      ['Slovenia',3,11,'TVS','C----','Europapark 3 vs 4','No PO','13–15 Jan · assumed','Re-issue at 11 sensors'],
+      ['Slovakia',5,14,'TVS / Verifone','X----','18 → 14','No PO','18–25 Jan · confirmed','Košice move to 23 Jan']
+    ];
+    const markets = M.map((m) => ({ name:m[0], stores:m[1] + ' stores', sensors:m[2] + ' sensors', partner:m[3], gates:gates(m[4]), quote:m[5], po:m[6], window:m[7], next:m[8] }));
+    const av = (bg, fg) => 'background:' + bg + ';color:' + fg;
+    return {
+      nav, tabs, markets,
+      showMarkets: this.state.tab === 'markets', showUpdates: this.state.tab === 'updates', showDocs: this.state.tab === 'docs',
+      funnel: [
+        { k:'Markets', v:'17', s:'3 with PO' },
+        { k:'Stores', v:'113', s:'excl. stores with own POs' },
+        { k:'Sensors', v:'448', s:'current designs (quotes: 469)' },
+        { k:'Installing now', v:'16', s:'Czech 7 · Romania 9' },
+        { k:'Blocked at G1', v:'5', s:'quote errors or no PO' },
+        { k:'Live (G4)', v:'0', s:'first go-live: Czech' }
+      ],
+      thread: [
+        { ini:'VY', avatar:av('#0066ff','#ffffff'), who:'Vladyslav Yurchyna', when:'28 Oct 10:12', where:'Romania', text:'@Steve EuroTSI packs the devices tonight. Designs show 28 sensors, the quote 32. Confirm with Leon today and send the corrected quote with the PO request.', tag:'Action created · owner Steve · due today' },
+        { ini:'AI', avatar:av('#f0f1f6','#005be6'), who:'OCS assistant', when:'28 Oct 09:40', where:'Romania', text:'No PO is linked to the 9 Romania stores, and installation starts tonight. Rule R14 will fire after the first installation is recorded.', tag:'Proposed alert · approve or dismiss' },
+        { ini:'SY', avatar:av('#dce9f5','#005be6'), who:'System', when:'22 Oct 09:17', where:'Spain', text:'Quote v2 issued: EUR 47,130 net. Spanish IVA 21% to be added on the invoice.', tag:'Linked: quote HSC2026090119 v2' },
+        { ini:'SY', avatar:av('#dce9f5','#005be6'), who:'System', when:'22 Oct 08:39', where:'Slovakia', text:'Market confirmed the January timeline; asks to move IQOS Boutique Košice from 25 to 23 Jan.', tag:'From mail · Dominika Medzihradská' },
+        { ini:'VY', avatar:av('#0066ff','#ffffff'), who:'Vladyslav Yurchyna', when:'20 Oct 18:05', where:'Czech Republic', text:'Nový Smíchov stopped on the metal grid ceiling. Keep the store at G3 until PMI confirms the bracket design.', tag:'Status: G3 held' }
+      ],
+      pins: [
+        { k:'Pricing rule (23 Oct)', v:'Hardware DAP EUR 1,050 per sensor excl. VAT; non-EU DDP with local VAT on a separate line.' },
+        { k:'Weekly meeting', v:'Monday 15:30 Beijing; pack generated 14:00 from live data.' },
+        { k:'Calibration', v:'Only after written DPIA and PMI approval; out of store hours; 48-hour access.' },
+        { k:'Partners', v:'Never named to PMI — Partner A, B, C… in every client view.' }
+      ],
+      docs: [
+        { n:'Market input list (Part A / B / C)', t:'Client guide', v:'Draft v4', s:'Yes', u:'22 Oct' },
+        { n:'Gates and dependencies + diagram', t:'Process', v:'Draft v2', s:'Yes', u:'22 Oct' },
+        { n:'Quote register and VAT comparison', t:'Internal analysis', v:'v2', s:'No', u:'23 Oct' },
+        { n:'Solution proposals — 55 stores', t:'Designs (Yu / Leon)', v:'per store', s:'Yes', u:'21 Sep – 12 Oct' },
+        { n:'BR Tech × VionVision deployment process', t:'Client process (Josephine)', v:'Draft 20 Oct', s:'Client-owned', u:'20 Oct' },
+        { n:'CVA calibration access request guide', t:'Client guide', v:'V10', s:'Client-owned', u:'22 Oct' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

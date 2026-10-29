@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>OCS — Client portal (PMI)</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0;background:#ffffff}
+a{color:#005be6}a:hover{color:#0c1b2b}
+.chip{display:inline-block;padding:2px 8px;border-radius:5px;font-size:12px;font-weight:700;white-space:nowrap}
+.card{background:#ffffff;border:1px solid #d9d9d9;padding:20px;box-sizing:border-box}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:0 16px;border-radius:3.2rem;font-size:13px;font-weight:700;border:1px solid #0066ff;cursor:pointer;font-family:inherit;text-decoration:none}
+.bar{height:10px;background:#f0f1f6;position:relative}
+</style>
+</helmet>
+<div style="min-height: 100vh; font-family: Arial, 'Microsoft YaHei', 'PingFang SC', sans-serif; color: #000000; background: #ffffff; display: flex; flex-direction: column">
+  <header style="display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: space-between; padding: 16px 32px; border-bottom: 1px solid #d9d9d9">
+    <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap">
+      <img src="/_blob/e98f698adef92047fdd05f93daa8733c" alt="Vionvision" style="width: 140px; height: auto">
+      <span style="font-size: 15px; font-weight: 700; padding-left: 16px; border-left: 1px solid #d9d9d9">PMI Store Programmes</span>
+    </div>
+    <nav aria-label="Client" style="display: flex; gap: 4px; flex-wrap: wrap">
+      <sc-for list="{{tabs}}" as="t" hint-placeholder-count="5">
+        <button type="button" onClick="{{t.pick}}" style="{{t.style}}">{{t.label}}</button>
+      </sc-for>
+    </nav>
+    <div style="font-size: 12px; color: #666666; text-align: right">Signed in with PMI single sign-on<br>Francesca Versiglia · Transition Deployment Manager</div>
+  </header>
+
+  <main style="padding: 28px 32px; display: flex; flex-direction: column; gap: 24px; max-width: 1360px; width: 100%; box-sizing: border-box">
+    <div>
+      <div style="font-size: 13px; color: #666666">Location Transition Phase I · live data, updated continuously</div>
+      <h1 style="margin: 6px 0 0 0; font-size: 30px; font-weight: 500">Where Every Market Stands Today</h1>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px">
+      <sc-for list="{{kpis}}" as="k" hint-placeholder-count="4">
+        <div style="background: #f0f1f6; padding: 18px 20px">
+          <div style="font-size: 36px; font-weight: 500; color: #005be6">{{k.v}}</div>
+          <div style="font-size: 13px; font-weight: 700">{{k.k}}</div>
+          <div style="font-size: 12px; color: #666666">{{k.s}}</div>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start">
+      <section class="card" style="flex: 3 1 560px; min-width: 0; padding: 0" aria-labelledby="h-m">
+        <div style="padding: 16px 20px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; align-items: center">
+          <h2 id="h-m" style="margin: 0; font-size: 17px">Markets</h2>
+          <button type="button" class="btn" style="background: #ffffff; color: #005be6">Export to SharePoint</button>
+        </div>
+        <div style="overflow-x: auto">
+          <table style="width: 100%; border-collapse: collapse; font-size: 13px; min-width: 720px">
+            <thead><tr style="background: #f2f2f2; text-align: left"><th style="padding: 10px 12px">Market</th><th style="padding: 10px 12px">Stores</th><th style="padding: 10px 12px">Progress (gates passed)</th><th style="padding: 10px 12px">Installer</th><th style="padding: 10px 12px">Installation</th><th style="padding: 10px 12px">Waiting on</th></tr></thead>
+            <tbody>
+              <sc-for list="{{markets}}" as="m" hint-placeholder-count="8">
+                <tr style="border-bottom: 1px solid #d9d9d9"><td style="padding: 10px 12px; font-weight: 700">{{m.n}}</td><td style="padding: 10px 12px">{{m.s}}</td>
+                  <td style="padding: 10px 12px; min-width: 160px"><div class="bar"><div style="position: absolute; left: 0; top: 0; bottom: 0; background: #0066ff; width: {{m.pct}}"></div></div><div style="font-size: 12px; color: #666666; margin-top: 4px">{{m.g}}</div></td>
+                  <td style="padding: 10px 12px">{{m.p}}</td><td style="padding: 10px 12px">{{m.w}}</td><td style="padding: 10px 12px"><span class="chip" style="{{m.chip}}">{{m.wait}}</span></td></tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <div style="flex: 2 1 340px; min-width: 0; display: flex; flex-direction: column; gap: 24px">
+        <section class="card" aria-labelledby="h-a" style="border-color: #0066ff">
+          <h2 id="h-a" style="margin: 0 0 12px 0; font-size: 17px">Needs your decision</h2>
+          <sc-for list="{{approvals}}" as="a" hint-placeholder-count="3">
+            <div style="padding: 10px 0; border-bottom: 1px solid #d9d9d9; font-size: 13px; line-height: 18px">
+              <span style="font-weight: 700">{{a.t}}</span><div style="color: #666666; font-size: 12px; margin: 2px 0 8px 0">{{a.d}}</div>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap"><button type="button" class="btn" style="background: #0066ff; color: #ffffff">{{a.b1}}</button><button type="button" class="btn" style="background: #ffffff; color: #005be6">Comment</button></div>
+            </div>
+          </sc-for>
+        </section>
+        <section class="card" aria-labelledby="h-f">
+          <h2 id="h-f" style="margin: 0 0 12px 0; font-size: 17px">Market input forms</h2>
+          <sc-for list="{{forms}}" as="f" hint-placeholder-count="4">
+            <div style="display: flex; justify-content: space-between; gap: 12px; padding: 9px 0; border-bottom: 1px solid #d9d9d9; font-size: 13px"><span>{{f.t}}</span><span class="chip" style="{{f.chip}}">{{f.s}}</span></div>
+          </sc-for>
+          <p style="margin: 12px 0 0 0; font-size: 12px; color: #666666">Local markets fill Part A and Part B from a link — no account needed. PMI BR Tech checks completeness before it reaches Vionvision.</p>
+        </section>
+      </div>
+    </div>
+    <section class="card" style="padding: 0" aria-labelledby="h-r">
+      <div style="padding: 16px 20px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; align-items: center">
+        <div><h2 id="h-r" style="margin: 0; font-size: 17px">Your requests and issues</h2><div style="font-size: 12px; color: #666666; margin-top: 4px">Every question or problem you raise by mail or here gets a number, an owner team, a status and a committed date.</div></div>
+        <button type="button" class="btn" style="background: #0066ff; color: #ffffff">Raise a request</button>
+      </div>
+      <div style="overflow-x: auto">
+        <table style="width: 100%; border-collapse: collapse; font-size: 13px; min-width: 860px">
+          <thead><tr style="background: #f2f2f2; text-align: left"><th style="padding: 10px 12px">Request</th><th style="padding: 10px 12px">Market</th><th style="padding: 10px 12px">Status</th><th style="padding: 10px 12px">Committed date</th><th style="padding: 10px 12px">Latest update</th></tr></thead>
+          <tbody>
+            <sc-for list="{{reqs}}" as="r" hint-placeholder-count="4">
+              <tr style="border-bottom: 1px solid #d9d9d9; vertical-align: top"><td style="padding: 10px 12px"><b>{{r.id}}</b> · {{r.t}}</td><td style="padding: 10px 12px">{{r.m}}</td><td style="padding: 10px 12px"><span class="chip" style="{{r.chip}}">{{r.s}}</span></td><td style="padding: 10px 12px; font-weight: 700; white-space: nowrap">{{r.d}}</td><td style="padding: 10px 12px; color: #666666; line-height: 18px">{{r.u}}</td></tr>
+            </sc-for>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1640}}'>
+class Component extends DCLogic {
+  constructor(p){ super(p); this.state = { tab: 'Markets' }; }
+  renderVals() {
+    const tabs = ['Overview','Markets','Requests','Approvals','Forms','Reports'].map((t) => ({ label: t, pick: () => this.setState({ tab: t }), style: 'min-height:40px;padding:0 14px;font-family:inherit;font-size:14px;cursor:pointer;background:none;border:none;border-bottom:' + (this.state.tab === t ? '3px solid #0066ff;color:#005be6;font-weight:700' : '3px solid transparent;color:#000000') }));
+    const W = { pmi:'background:#dce9f5;color:#005be6', vv:'background:#f2f2f2;color:#000000', mk:'background:#fcefd9;color:#9a5b00', none:'background:#e3f1e4;color:#1f7a3a' };
+    const mk = (n, s, gp, p, w, wait, chip) => ({ n, s, pct: (gp * 20) + '%', g: gp + ' of 5', p, w, wait, chip });
+    return {
+      tabs,
+      kpis: [
+        { v:'113', k:'Stores in scope', s:'17 markets' },
+        { v:'16', k:'Installing now', s:'Czech Republic 7 · Romania 9' },
+        { v:'0', k:'Live', s:'first go-live expected: Czech Republic' },
+        { v:'6', k:'Waiting on PMI', s:'POs, approvals, store information' },
+        { v:'4', k:'Open requests', s:'1 waiting on PMI · next update 31 Oct' }
+      ],
+      markets: [
+        mk('Czech Republic','7',3,'Partner A','19–26 Oct','Bracket design — PMI CZ',W.pmi),
+        mk('Romania','9',2,'Partner A','28 Oct – 6 Nov','PO — PMI Romania',W.pmi),
+        mk('Portugal','10',1,'Partner A','23 Nov – 3 Dec','LPA answers — Vionvision',W.vv),
+        mk('Switzerland','4',1,'Partner B','3–6 Dec','Revised quote — Vionvision',W.vv),
+        mk('Spain','7',0,'Partner B','10–17 Dec','PO — PMI Spain',W.pmi),
+        mk('Lithuania','14',0,'Partner C','From 16 Nov','Installation hours — market',W.mk),
+        mk('Greece','22',0,'Partner B','2–23 Jan','Store information — market',W.mk),
+        mk('Slovakia','5',0,'Partner D','18–25 Jan','Revised quote — Vionvision',W.vv)
+      ],
+      approvals: [
+        { t:'Calibration — Czech Republic, Slovanský dům (7 sensors)', d:'Installed 21–22 Oct · written DPIA must be attached · out of store hours', b1:'Approve calibration' },
+        { t:'Date change — IQOS Boutique Košice', d:'25 Jan → 23 Jan 2027, consecutive days with Aupark Košice', b1:'Confirm date' },
+        { t:'Revised quotation — Bulgaria', d:'3 stores, 13 sensors; Paradise and Vitosha are on their own POs', b1:'Accept quotation' }
+      ],
+      reqs: [
+        { id:'CS-0412', t:'Age Alert — duplicate alerts', m:'Czech Republic', s:'Fix in progress', chip:'background:#dce9f5;color:#005be6', d:'Retest 10–11 Nov', u:'29 Oct · Cause found in the device software; fix and retest planned. Next update by 31 Oct.' },
+        { id:'CS-0418', t:'Dashboard and API figures differ', m:'DE, CZ, CH, JP', s:'Investigating', chip:'background:#dce9f5;color:#005be6', d:'31 Oct', u:'28 Oct · Comparing passers-by and visitor logic between the dashboard and OpenAPI v2.' },
+        { id:'CS-0421', t:'Calibration access from the EU', m:'All EU markets', s:'Waiting on PMI', chip:'background:#fcefd9;color:#9a5b00', d:'—', u:'27 Oct · Two options sent: EU access host or EU calibrator. Your choice needed.' },
+        { id:'CS-0435', t:'REST test environment returns HTTP 500', m:'Global', s:'Received', chip:'background:#f2f2f2;color:#000000', d:'Reply within 1 working day', u:'29 Oct · Logged from your mail of 28 Oct.' }
+      ],
+      forms: [
+        { t:'Greece — Part A (4 stores incomplete)', s:'Missing', chip:'background:#fcefd9;color:#9a5b00' },
+        { t:'Portugal — Part B (static IPs, D−2 check)', s:'Not started', chip:'background:#f2f2f2;color:#000000' },
+        { t:'Romania — Part B (D−2 checks per store)', s:'In progress', chip:'background:#dce9f5;color:#005be6' },
+        { t:'Estonia — Part A (all inputs provided, 22 Sep)', s:'Complete', chip:'background:#e3f1e4;color:#1f7a3a' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

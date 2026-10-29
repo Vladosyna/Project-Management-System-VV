@@ -1,0 +1,13 @@
+# SOP index — what OCS must execute
+
+Full texts in `sop/`. Converted from the approved-draft .docx files (SOP-DEL-01 v1.3, SOP-DEL-02 v1.4, SOP-DEL-03 v2.1, SOP-DEL-04 v1.0, CIP-L/S v1.0). Formal approval status: open question Q9. When a SOP version changes, update the rule configs that cite it and add a decisions-log entry.
+
+| SOP | What OCS does | Module | Key clauses |
+|---|---|---|---|
+| SOP-DEL-01 Project Intake & Handover (+ Annex B Handover Card) | Handover Card form; Full/Light; intake review decisions; conditions ≤ 5 wd; blocking items; Conditional Start (Hai Tao only); disputes 2 wd; Intake Register + monthly report; handover meeting minutes link; backfill of active projects in 10 wd | intake | §3 scope, §5 package home, §6 mandatory content (groups A–G), §7 procedure, §8 decisions, §9 Conditional Start & disputes, §11 register & transition |
+| SOP-DEL-02 Project Folder Standard | Project ID; L/S per site; hierarchy client → (programme) → country → (city) → site; folder numbers 00–11 / slot prefixes as document types; S→L upgrade; Site Register = site list; never delete; restricted notes; no passwords | org, projects, files | §2 standards, §3 hierarchy & Project ID, §4 L folders, §5 S slots, §6 shared folders / Site Register, §10 deletion exception |
+| SOP-DEL-03 Site Visit Reporting | Visit object; 5 visit types → folder; pre-visit checks (notice to security/facility manager; separate mails to installers vs client); coverage X of Y; agreed vs discussed; actions with owner/date; same-day record via DingTalk Action Record; no new commitments on site | visits, actions | §2 types, §3 before, §4 during, §5 record |
+| SOP-DEL-04 Client Information Requirements (+ CIP-L, CIP-S) | Client pack by standard; Site Information Card as a form by link (V1.1) and as tracked step (V1); completeness check; "no card, no installation date"; readiness checks; go/no-go day before; acceptance form/certificate | sites | §1 rule, §2 packs, §3 procedure steps 1–8, §4 card rules (no passwords, business contacts only) |
+| Change-management SOP (company 07) | Any change to live client devices: before/during/after checklist; client approval; incident branch; case log | changes (V1.1), cases | Part 1 SOP, Part 2 case log |
+| Communication norms (company 05) | No client/partner contact at night (outbound to Europe scheduled 14:00–15:00 Beijing); advance notice before visits; same-day post-visit briefing; separate threads for resource requests vs client authorisations | notifications, visits, cases (drafts) | §1–§4 |
+| SOP-DEL-05 Cases & Requests (to write) | Case/work-item rules | cases | domain/case-rules.md |

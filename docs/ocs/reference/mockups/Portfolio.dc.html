@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>OCS — Portfolio</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0;background:#f0f1f6}
+a{color:#005be6}a:hover{color:#0c1b2b}
+.nav a{display:flex;align-items:center;gap:10px;min-height:40px;padding:0 14px;color:#c9d3df;text-decoration:none;font-size:14px}
+.nav a:hover{background:#14273b;color:#ffffff}
+.chip{display:inline-block;padding:2px 8px;border-radius:5px;font-size:12px;font-weight:700;white-space:nowrap}
+.card{background:#ffffff;border:1px solid #d9d9d9;padding:20px;box-sizing:border-box}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:0 16px;border-radius:3.2rem;font-size:13px;font-weight:700;border:1px solid #0066ff;cursor:pointer;font-family:inherit;text-decoration:none}
+</style>
+</helmet>
+<div style="display: flex; flex-wrap: wrap; min-height: 100vh; font-family: Arial, 'Microsoft YaHei', 'PingFang SC', sans-serif; color: #000000; background: #f0f1f6">
+  <nav class="nav" aria-label="Main" style="flex: 1 1 232px; max-width: 260px; background: #0c1b2b; display: flex; flex-direction: column; gap: 2px; padding: 20px 10px; box-sizing: border-box">
+    <div style="padding: 4px 14px 22px 14px; display: flex; flex-direction: column; gap: 6px">
+      <img src="/_blob/c1964100bba4ba939b1b6cbb1559b622" alt="Vionvision" style="width: 140px; height: auto">
+      <span style="color: #66a3ff; font-size: 12px; letter-spacing: 1px">OCS · DELIVERY PLATFORM</span>
+    </div>
+    <sc-for list="{{nav}}" as="n" hint-placeholder-count="12">
+      <a href="{{n.href}}" style="{{n.style}}">{{n.label}}</a>
+    </sc-for>
+  </nav>
+
+  <main style="flex: 999 1 560px; min-width: 0; padding: 28px; box-sizing: border-box; display: flex; flex-direction: column; gap: 20px">
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 12px">
+      <div>
+        <div style="font-size: 13px; color: #666666">/ 02 Portfolio</div>
+        <h1 style="margin: 6px 0 0 0; font-size: 30px; font-weight: 500">All Projects in One View</h1>
+      </div>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap">
+        <button type="button" class="btn" style="background: #ffffff; color: #005be6">Export</button>
+        <button type="button" class="btn" style="background: #0066ff; color: #ffffff">New project</button>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px">
+      <sc-for list="{{phaseTiles}}" as="t" hint-placeholder-count="6">
+        <button type="button" onClick="{{t.pick}}" style="{{t.style}}">
+          <span style="display: block; font-size: 30px; font-weight: 500; color: #005be6">{{t.count}}</span>
+          <span style="display: block; font-size: 13px; font-weight: 700; color: #000000">{{t.label}}</span>
+        </button>
+      </sc-for>
+    </div>
+
+    <section class="card" aria-labelledby="h-p" style="padding: 0">
+      <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid #d9d9d9">
+        <h2 id="h-p" style="margin: 0; font-size: 17px">{{tableTitle}}</h2>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap; font-size: 13px">
+          <label style="display: flex; gap: 6px; align-items: center">Client <select style="min-height: 34px; border: 1px solid #d9d9d9; border-radius: 5px; font-family: inherit"><option>All</option><option>PMI</option><option>NEINVER</option><option>Watsons</option></select></label>
+          <label style="display: flex; gap: 6px; align-items: center">Region <select style="min-height: 34px; border: 1px solid #d9d9d9; border-radius: 5px; font-family: inherit"><option>All</option><option>Europe</option><option>APAC</option><option>Middle East</option></select></label>
+          <label style="display: flex; gap: 6px; align-items: center">Owner <select style="min-height: 34px; border: 1px solid #d9d9d9; border-radius: 5px; font-family: inherit"><option>All</option><option>Vlad</option><option>Steve</option><option>Wesley</option></select></label>
+        </div>
+      </div>
+      <div style="overflow-x: auto">
+        <table style="width: 100%; border-collapse: collapse; font-size: 13px; min-width: 1040px">
+          <thead><tr style="background: #f2f2f2; text-align: left">
+            <th style="padding: 10px 12px">Project</th><th style="padding: 10px 12px">Phase</th><th style="padding: 10px 12px">Countries</th><th style="padding: 10px 12px">Sites · devices</th><th style="padding: 10px 12px">Health</th><th style="padding: 10px 12px">Next milestone</th><th style="padding: 10px 12px">Owner</th><th style="padding: 10px 12px">Open</th><th style="padding: 10px 12px">Last update</th>
+          </tr></thead>
+          <tbody>
+            <sc-for list="{{rows}}" as="r" hint-placeholder-count="10">
+              <tr style="border-bottom: 1px solid #d9d9d9; vertical-align: top">
+                <td style="padding: 12px"><a href="{{r.href}}" style="font-weight: 700; text-decoration: none">{{r.name}}</a><div style="color: #666666; font-size: 12px; margin-top: 2px">{{r.client}}</div></td>
+                <td style="padding: 12px">{{r.phase}}</td>
+                <td style="padding: 12px">{{r.countries}}</td>
+                <td style="padding: 12px">{{r.sites}}</td>
+                <td style="padding: 12px"><span class="chip" style="{{r.chip}}">{{r.health}}</span></td>
+                <td style="padding: 12px">{{r.next}}</td>
+                <td style="padding: 12px">{{r.owner}}</td>
+                <td style="padding: 12px; font-weight: 700; color: #005be6">{{r.open}}</td>
+                <td style="padding: 12px; color: #666666; white-space: nowrap">{{r.last}}</td>
+              </tr>
+            </sc-for>
+          </tbody>
+        </table>
+      </div>
+      <div style="padding: 12px 20px; font-size: 12px; color: #666666">Health is set by rules: At risk = a P0 alert or a milestone more than 5 days late; Escalated = raised by the client. Owner "To assign" means no PM is named in OCS.</div>
+    </section>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1240}}'>
+class Component extends DCLogic {
+  constructor(p){ super(p); this.state = { phase: 'All' }; }
+  renderVals() {
+    const navDef = [['Home','Main.dc.html'],['Portfolio','Portfolio.dc.html'],['Projects','Project.dc.html'],['Sites','Site.dc.html'],['Platform & algorithms','Platform.dc.html'],['Actions & alerts','Actions.dc.html'],['Cases','Cases.dc.html'],['Commercial','Commercial.dc.html'],['Client portal','Client.dc.html'],['Partner app','Partner.dc.html'],['Knowledge','#'],['Admin','#']];
+    const nav = navDef.map((n, i) => ({ label: n[0], href: n[1], style: i === 1 ? 'background:#0066ff;color:#ffffff;font-weight:700' : '' }));
+    const H = { risk:'background:#fcefd9;color:#9a5b00', esc:'background:#0c1b2b;color:#ffffff', ok:'background:#dce9f5;color:#005be6', wind:'background:#f2f2f2;color:#000000', done:'background:#e3f1e4;color:#1f7a3a' };
+    const all = [
+      { name:'PMI — Location Transition Phase I', client:'Philip Morris International', phase:'Rollout', countries:'17 markets, Europe', sites:'~125 stores · ~470 sensors', health:'At risk', chip:H.risk, next:'Romania installs 28 Oct – 6 Nov', owner:'Steve · Vlad', open:'14', last:'28 Oct', href:'Project.dc.html' },
+      { name:'PMI — New store deployments', client:'Philip Morris International', phase:'Rollout', countries:'RO, PL, PT, AT, BG, UA, KR, RS, UK, LT, MT, ES', sites:'27 PO lines', health:'At risk', chip:H.risk, next:'Invoice 27 open PO lines', owner:'Wesley', open:'6', last:'22 Oct', href:'Commercial.dc.html' },
+      { name:'PMI Japan — SiS, Ginza, Shinsaibashi', client:'Philip Morris Japan', phase:'Pilot', countries:'JP', sites:'SiS batch 26 stores · 28 × G6 WiFi', health:'In progress', chip:H.ok, next:'SiS first batch scope', owner:'Steve', open:'4', last:'23 Oct', href:'#' },
+      { name:'NEINVER — outlet footfall rollout', client:'NEINVER', phase:'Rollout', countries:'ES, PL, IT, DE', sites:'SSRR 110 online · 19 offline', health:'Escalated', chip:H.esc, next:'SSRR switch fixes · Getafe and Alegra visits', owner:'Vlad', open:'5', last:'16 Oct', href:'Site.dc.html' },
+      { name:'Gebr. Heinemann — VIE 4020', client:'Gebr. Heinemann', phase:'Integration', countries:'AT', sites:'1 store · 19 zones', health:'In progress', chip:H.ok, next:'Separate CBox queue accuracy test', owner:'Vlad', open:'2', last:'16 Oct', href:'Platform.dc.html' },
+      { name:'Watsons — TW, MY, PH, ID, VN', client:'A.S. Watson', phase:'Rollout', countries:'TW, MY, PH, ID, VN', sites:'TW rollout store list (12 Oct)', health:'In progress', chip:H.ok, next:'MY server migration checklist', owner:'Steve', open:'—', last:'22 Oct', href:'#' },
+      { name:'Decathlon — Amiens, Stans; 950-store tender', client:'Decathlon', phase:'Tender', countries:'FR, CH', sites:'2 PoC stores', health:'In progress', chip:H.ok, next:'Tender response', owner:'To assign', open:'—', last:'Oct', href:'#' },
+      { name:'Inditex — Zara Men PoC', client:'Inditex', phase:'PoC', countries:'ES', sites:'1 store', health:'At risk', chip:H.risk, next:'Close security incident (since Jul 2026)', owner:'To assign', open:'—', last:'Oct', href:'#' },
+      { name:'Logista — Alcorcón PoC', client:'Logista', phase:'PoC', countries:'ES', sites:'1 site', health:'In progress', chip:H.ok, next:'Live theft test (plan v2)', owner:'To assign', open:'—', last:'9 Oct', href:'#' },
+      { name:'Super Retail Group — PoCs on other brands', client:'Super Retail Group', phase:'PoC', countries:'AU', sites:'Devices shipped', health:'In progress', chip:H.ok, next:'Install and configure', owner:'To assign', open:'—', last:'Oct', href:'#' },
+      { name:'Erajaya — "I’m Donut" CCTV AI', client:'Erajaya', phase:'PoC', countries:'ID', sites:'PoC since 28 Sep', health:'In progress', chip:H.ok, next:'PoC results', owner:'To assign', open:'—', last:'30 Sep', href:'#' },
+      { name:'Cainz — PoC selection', client:'Cainz', phase:'Pre-PoC', countries:'JP', sites:'2 stores to choose', health:'Not started', chip:H.wind, next:'Choose 2 PoC stores', owner:'To assign', open:'—', last:'Oct', href:'#' },
+      { name:'MasOrange — Madrid pilot', client:'MasOrange', phase:'Winding down', countries:'ES', sites:'2 stores (Sol, Alberto Aguilera)', health:'At risk', chip:H.risk, next:'Remove devices (announced 17 Sep)', owner:'To assign', open:'—', last:'17 Sep', href:'#' },
+      { name:'Unifree — PoC', client:'Unifree', phase:'PoC', countries:'—', sites:'1 store', health:'Not started', chip:H.wind, next:'—', owner:'To assign', open:'—', last:'—', href:'#' },
+      { name:'Aspire General Trading', client:'Aspire (Kuwait)', phase:'Pre-PoC', countries:'KW', sites:'—', health:'Not started', chip:H.wind, next:'—', owner:'To assign', open:'—', last:'—', href:'#' }
+    ];
+    const phases = ['All','Rollout','Pilot','Integration','PoC','Tender','Pre-PoC','Winding down'];
+    const phaseTiles = phases.map((ph) => ({
+      label: ph, count: ph === 'All' ? all.length : all.filter((r) => r.phase === ph).length,
+      pick: () => this.setState({ phase: ph }),
+      style: 'text-align:left;padding:14px 16px;cursor:pointer;font-family:inherit;min-height:72px;background:#ffffff;border:' + (this.state.phase === ph ? '2px solid #0066ff' : '1px solid #d9d9d9')
+    }));
+    const rows = all.filter((r) => this.state.phase === 'All' || r.phase === this.state.phase);
+    return { nav, phaseTiles, rows, tableTitle: (this.state.phase === 'All' ? 'All projects' : this.state.phase) + ' · ' + rows.length };
+  }
+}
+</script>
+</body>
+</html>

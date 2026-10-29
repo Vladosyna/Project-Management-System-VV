@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>OCS — Site NEINVER SSRR</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0;background:#f0f1f6}
+a{color:#005be6}a:hover{color:#0c1b2b}
+.nav a{display:flex;align-items:center;gap:10px;min-height:40px;padding:0 14px;color:#c9d3df;text-decoration:none;font-size:14px}
+.nav a:hover{background:#14273b;color:#ffffff}
+.chip{display:inline-block;padding:2px 8px;border-radius:5px;font-size:12px;font-weight:700;white-space:nowrap}
+.card{background:#ffffff;border:1px solid #d9d9d9;padding:20px;box-sizing:border-box}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:0 16px;border-radius:3.2rem;font-size:13px;font-weight:700;border:1px solid #0066ff;cursor:pointer;font-family:inherit;text-decoration:none}
+</style>
+</helmet>
+<div style="display: flex; flex-wrap: wrap; min-height: 100vh; font-family: Arial, 'Microsoft YaHei', 'PingFang SC', sans-serif; color: #000000; background: #f0f1f6">
+  <nav class="nav" aria-label="Main" style="flex: 1 1 232px; max-width: 260px; background: #0c1b2b; display: flex; flex-direction: column; gap: 2px; padding: 20px 10px; box-sizing: border-box">
+    <div style="padding: 4px 14px 22px 14px; display: flex; flex-direction: column; gap: 6px">
+      <img src="/_blob/c1964100bba4ba939b1b6cbb1559b622" alt="Vionvision" style="width: 140px; height: auto">
+      <span style="color: #66a3ff; font-size: 12px; letter-spacing: 1px">OCS · DELIVERY PLATFORM</span>
+    </div>
+    <sc-for list="{{nav}}" as="n" hint-placeholder-count="12">
+      <a href="{{n.href}}" style="{{n.style}}">{{n.label}}</a>
+    </sc-for>
+  </nav>
+
+  <main style="flex: 999 1 560px; min-width: 0; padding: 28px; box-sizing: border-box; display: flex; flex-direction: column; gap: 20px">
+    <div style="font-size: 13px; color: #666666"><a href="Portfolio.dc.html">Portfolio</a> / NEINVER / Spain / San Sebastián de los Reyes (SSRR)</div>
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px">
+      <div>
+        <h1 style="margin: 0; font-size: 30px; font-weight: 500">SSRR Outlet — Footfall Sensors</h1>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center; font-size: 13px; margin-top: 8px">
+          <span class="chip" style="background: #0c1b2b; color: #ffffff">Escalated</span>
+          <span>Stage: network recovery → calibration · Client contact Sergio (NEINVER) · VionVision owner Vlad</span>
+        </div>
+      </div>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap">
+        <button type="button" class="btn" style="background: #ffffff; color: #005be6">Weekly update draft</button>
+        <button type="button" class="btn" style="background: #0066ff; color: #ffffff">Request calibration access</button>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px">
+      <sc-for list="{{stats}}" as="s" hint-placeholder-count="5">
+        <div class="card" style="padding: 14px 16px">
+          <div style="font-size: 12px; color: #666666">{{s.k}}</div>
+          <div style="font-size: 28px; font-weight: 500; color: {{s.c}}">{{s.v}}</div>
+          <div style="font-size: 12px">{{s.s}}</div>
+        </div>
+      </sc-for>
+    </div>
+
+    <div role="tablist" aria-label="Site sections" style="display: flex; gap: 4px; flex-wrap: wrap; border-bottom: 1px solid #d9d9d9">
+      <sc-for list="{{tabs}}" as="t" hint-placeholder-count="3">
+        <button type="button" role="tab" onClick="{{t.pick}}" style="{{t.style}}">{{t.label}}</button>
+      </sc-for>
+    </div>
+
+    <sc-if value="{{showNet}}" hint-placeholder-val="{{true}}">
+      <section class="card" style="padding: 0" aria-labelledby="h-sw">
+        <div style="padding: 16px 20px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; align-items: center">
+          <h2 id="h-sw" style="margin: 0; font-size: 17px">Switches with offline sensors</h2>
+          <span style="font-size: 12px; color: #666666">Source: remote network mapping 13 Oct · weekly update 16 Oct</span>
+        </div>
+        <div style="overflow-x: auto">
+          <table style="width: 100%; border-collapse: collapse; font-size: 13px; min-width: 980px">
+            <thead><tr style="background: #f2f2f2; text-align: left"><th style="padding: 10px 12px">Switch</th><th style="padding: 10px 12px">Sensors (store)</th><th style="padding: 10px 12px">Finding</th><th style="padding: 10px 12px">Fix</th><th style="padding: 10px 12px">Status</th></tr></thead>
+            <tbody>
+              <sc-for list="{{switches}}" as="w" hint-placeholder-count="6">
+                <tr style="border-bottom: 1px solid #d9d9d9; vertical-align: top">
+                  <td style="padding: 10px 12px; font-weight: 700; white-space: nowrap">{{w.sw}}</td><td style="padding: 10px 12px">{{w.stores}}</td><td style="padding: 10px 12px">{{w.find}}</td><td style="padding: 10px 12px">{{w.fix}}</td>
+                  <td style="padding: 10px 12px"><span class="chip" style="{{w.chip}}">{{w.status}}</span></td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <section class="card" style="padding: 0" aria-labelledby="h-dev">
+        <div style="padding: 16px 20px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; align-items: center">
+          <h2 id="h-dev" style="margin: 0; font-size: 17px">Sensors</h2>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap; font-size: 13px"><span>Showing offline and watched sensors · 129 in total</span><button type="button" class="btn" style="background: #ffffff; color: #005be6">Import device list</button></div>
+        </div>
+        <div style="overflow-x: auto">
+          <table style="width: 100%; border-collapse: collapse; font-size: 13px; min-width: 980px">
+            <thead><tr style="background: #f2f2f2; text-align: left"><th style="padding: 10px 12px">Store / sensor</th><th style="padding: 10px 12px">Serial · MAC</th><th style="padding: 10px 12px">Switch · port</th><th style="padding: 10px 12px">IP</th><th style="padding: 10px 12px">Online (platform)</th><th style="padding: 10px 12px">Last seen</th><th style="padding: 10px 12px">Calibration</th></tr></thead>
+            <tbody>
+              <sc-for list="{{devices}}" as="d" hint-placeholder-count="8">
+                <tr style="border-bottom: 1px solid #d9d9d9">
+                  <td style="padding: 10px 12px; font-weight: 700">{{d.store}}</td><td style="padding: 10px 12px; color: #666666">[serial] · [MAC]</td><td style="padding: 10px 12px">{{d.sw}}</td><td style="padding: 10px 12px">{{d.ip}}</td>
+                  <td style="padding: 10px 12px"><span class="chip" style="{{d.chip}}">{{d.online}}</span></td><td style="padding: 10px 12px">{{d.seen}}</td><td style="padding: 10px 12px">{{d.cal}}</td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+        <div style="padding: 12px 20px; font-size: 12px; color: #666666">Serial, MAC and IP come from the device platform and the imported inventory. Online status refreshes every 5 minutes; offline over 24 hours after go-live raises alert R15.</div>
+      </section>
+    </sc-if>
+
+    <sc-if value="{{showAlgo}}" hint-placeholder-val="{{false}}">
+      <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+        <section class="card" style="flex: 1 1 420px; min-width: 0" aria-labelledby="h-al">
+          <h2 id="h-al" style="margin: 0 0 12px 0; font-size: 17px">Algorithm configuration</h2>
+          <sc-for list="{{algo}}" as="a" hint-placeholder-count="6">
+            <div style="display: flex; justify-content: space-between; gap: 12px; padding: 9px 0; border-bottom: 1px solid #d9d9d9; font-size: 13px"><span style="color: #666666">{{a.k}}</span><span style="font-weight: 700; text-align: right">{{a.v}}</span></div>
+          </sc-for>
+        </section>
+        <section class="card" style="flex: 1 1 420px; min-width: 0" aria-labelledby="h-cal">
+          <h2 id="h-cal" style="margin: 0 0 12px 0; font-size: 17px">Calibration and accuracy</h2>
+          <sc-for list="{{cal}}" as="c" hint-placeholder-count="5">
+            <div style="display: flex; gap: 12px; padding: 9px 0; border-bottom: 1px solid #d9d9d9; font-size: 13px; align-items: flex-start">
+              <span class="chip" style="{{c.chip}}">{{c.status}}</span><span><span style="font-weight: 700">{{c.k}}</span><br><span style="color: #666666">{{c.v}}</span></span>
+            </div>
+          </sc-for>
+        </section>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{showTime}}" hint-placeholder-val="{{false}}">
+      <section class="card" aria-labelledby="h-tl">
+        <h2 id="h-tl" style="margin: 0 0 12px 0; font-size: 17px">Timeline and comments</h2>
+        <sc-for list="{{timeline}}" as="e" hint-placeholder-count="6">
+          <div style="display: flex; gap: 16px; padding: 10px 0; border-bottom: 1px solid #d9d9d9; font-size: 13px; line-height: 19px">
+            <span style="flex: 0 0 70px; color: #005be6; font-weight: 700">{{e.d}}</span>
+            <span style="flex: 1 1 auto"><span style="font-weight: 700">{{e.who}}</span> · {{e.t}}</span>
+          </div>
+        </sc-for>
+        <label for="c2" style="display: block; margin-top: 16px; font-size: 13px; font-weight: 700">Comment</label>
+        <textarea id="c2" rows="2" placeholder="Write a comment, @mention, attach photos…" style="width: 100%; box-sizing: border-box; margin-top: 6px; padding: 10px; border: 1px solid #d9d9d9; border-radius: 5px; font-family: inherit; font-size: 13px"></textarea>
+      </section>
+    </sc-if>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1560}}'>
+class Component extends DCLogic {
+  constructor(p){ super(p); this.state = { tab: 'net' }; }
+  renderVals() {
+    const navDef = [['Home','Main.dc.html'],['Portfolio','Portfolio.dc.html'],['Projects','Project.dc.html'],['Sites','Site.dc.html'],['Platform & algorithms','Platform.dc.html'],['Actions & alerts','Actions.dc.html'],['Cases','Cases.dc.html'],['Commercial','Commercial.dc.html'],['Client portal','Client.dc.html'],['Partner app','Partner.dc.html'],['Knowledge','#'],['Admin','#']];
+    const nav = navDef.map((n, i) => ({ label: n[0], href: n[1], style: i === 3 ? 'background:#0066ff;color:#ffffff;font-weight:700' : '' }));
+    const tabDef = [['net','Devices & network'],['algo','Algorithms & calibration'],['time','Timeline & comments']];
+    const tabs = tabDef.map(([id, label]) => ({ label, pick: () => this.setState({ tab: id }), style: 'min-height:44px;padding:0 18px;font-family:inherit;font-size:14px;cursor:pointer;background:none;border:none;border-bottom:' + (this.state.tab === id ? '3px solid #0066ff;color:#005be6;font-weight:700' : '3px solid transparent;color:#000000') }));
+    const C = { off:'background:#0c1b2b;color:#ffffff', on:'background:#e3f1e4;color:#1f7a3a', wait:'background:#f2f2f2;color:#000000', risk:'background:#fcefd9;color:#9a5b00', prog:'background:#dce9f5;color:#005be6' };
+    return {
+      nav, tabs,
+      showNet: this.state.tab === 'net', showAlgo: this.state.tab === 'algo', showTime: this.state.tab === 'time',
+      stats: [
+        { k:'Sensors online', v:'110', s:'up from 89 on 13 Oct', c:'#005be6' },
+        { k:'Offline', v:'19', s:'13 located on a switch port', c:'#9a5b00' },
+        { k:'Normal network speed', v:'~60%', s:'ready for calibration', c:'#005be6' },
+        { k:'Switches to fix', v:'6', s:'2 need passwords from SSRR IT', c:'#005be6' },
+        { k:'Handover documents', v:'26 Oct', s:'due date passed — confirm status', c:'#9a5b00' }
+      ],
+      switches: [
+        { sw:'.196', stores:'Pedro del Hierro, Fifty2, Textura; Adidas2 behind it', find:'Ports throttled to 1 Mbps, 10 Mbps half duplex; PoE budget 18 W instead of 64 W', fix:'Remove limit, ports to Auto, restore PoE', status:'Waiting on NEINVER', chip:C.wait },
+        { sw:'.191 / .200', stores:'Most likely Zara Home, Tempe 2, Motostore, Tempe 1', find:'Login refused — ports cannot be read', fix:'Passwords from SSRR IT (by phone, not by mail)', status:'Waiting on NEINVER', chip:C.wait },
+        { sw:'.189', stores:'Harry 1, Harry 2, Desigual 2', find:'Forced port speeds; switch not on the drawings (drawn as sw111)', fix:'Ports to Auto; add to drawings', status:'In progress', chip:C.prog },
+        { sw:'.111', stores:'Álvaro Moreno, Visionlab', find:'Forced speed on two other ports', fix:'Check on site', status:'Not started', chip:C.wait },
+        { sw:'.107', stores:'Skechers 2', find:'PoE on one port shut down by overheating', fix:'Check cabinet temperature and ventilation', status:'At risk', chip:C.risk },
+        { sw:'—', stores:'Lola Casademunt', find:'Not seen on the network since 7 Oct', fix:'Check if unplugged or removed', status:'Not started', chip:C.wait }
+      ],
+      devices: [
+        { store:'Pedro del Hierro', sw:'.196 · [port]', ip:'Static', online:'Offline', chip:C.off, seen:'7 Oct', cal:'Blocked — network' },
+        { store:'Fifty2', sw:'.196 · [port]', ip:'Static', online:'Offline', chip:C.off, seen:'7 Oct', cal:'Blocked — network' },
+        { store:'Zara Home', sw:'.191 or .200', ip:'Static', online:'Offline', chip:C.off, seen:'7 Oct', cal:'Blocked — network' },
+        { store:'Harry 1', sw:'.189 · [port]', ip:'Static', online:'Offline', chip:C.off, seen:'7 Oct', cal:'Blocked — network' },
+        { store:'Skechers 2', sw:'.107 · [port]', ip:'Static', online:'Offline', chip:C.off, seen:'7 Oct', cal:'Blocked — PoE' },
+        { store:'Device A3FE-5F8C-DE99-6AE9', sw:'—', ip:'—', online:'Unknown', chip:C.risk, seen:'—', cal:'Not on installation list — confirm' },
+        { store:'Ingles 1', sw:'[switch] · [port]', ip:'Static', online:'Online', chip:C.on, seen:'now', cal:'Ready — speed restored' },
+        { store:'Ingles 2', sw:'[switch] · [port]', ip:'Static', online:'Online', chip:C.on, seen:'now', cal:'Ready — speed restored' }
+      ],
+      algo: [
+        { k:'Product', v:'Footfall sensors + V-store' },
+        { k:'Counting lines', v:'Configured on the 21 sensors back online (16 Oct)' },
+        { k:'Firmware', v:'[version] — from device platform' },
+        { k:'Algorithm package', v:'[package / model version]' },
+        { k:'Data centre', v:'Re-assigned for 21 sensors (13 Oct)' },
+        { k:'Change log', v:'Every config change recorded with user and time' }
+      ],
+      cal: [
+        { k:'Calibration', v:'Start with the sensors that have normal speed (~60%)', status:'Ready', chip:C.prog },
+        { k:'Calibration access', v:'48-hour request per batch; approver notified, reminder 6 h before expiry', status:'Not started', chip:C.wait },
+        { k:'Accuracy test', v:'Manual count in agreed window; results per store and per line', status:'Not started', chip:C.wait },
+        { k:'Accuracy report', v:'Generated from the test with our template', status:'Not started', chip:C.wait },
+        { k:'Handover pack', v:'Device list, as-built switches, accuracy report — due 26 Oct', status:'At risk', chip:C.risk }
+      ],
+      timeline: [
+        { d:'7 Oct', who:'Device platform', t:'18 of the 19 now-offline sensors still online; they dropped after this date.' },
+        { d:'13 Oct', who:'Network team', t:'Remote mapping of the SSRR network; full device report produced.' },
+        { d:'13 Oct', who:'Vionvision', t:'21 sensors back online by re-assigning devices to the correct data centre (89 → 110).' },
+        { d:'16 Oct', who:'Vlad', t:'Weekly update sent to Sergio: two on-site actions fix most offline sensors.' },
+        { d:'22 Oct', who:'Plan', t:'SSRR due to finish.' },
+        { d:'26 Oct', who:'Plan', t:'Handover documents due.' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>
