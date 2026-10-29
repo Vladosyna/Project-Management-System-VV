@@ -4,6 +4,9 @@ name: ci
 
 on:
   pull_request:
+    # labeled/unlabeled: a size-exception label must re-run pr-rules. All jobs re-run on purpose —
+    # a skipped required job would report success and could hide an earlier failure on the same commit.
+    types: [opened, synchronize, reopened, labeled, unlabeled]
   push:
     branches: [main]
 
