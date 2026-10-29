@@ -30,4 +30,8 @@ OCS is built mostly by Vionvision PMs who are not professional engineers, workin
 - Exact library versions live in the `package.json` files (no ranges, `savePrefix: ''`) and `pnpm-lock.yaml` — that is the single source of truth. pnpm refuses any version younger than 7 days (`minimumReleaseAge`), and install scripts run only for allow-listed packages (`onlyBuiltDependencies`).
 - TypeScript is held at 6.0.x: typescript-eslint supports `<6.1`. TypeScript 7 (native compiler) is re-evaluated when typescript-eslint supports it.
 - Node ≥ 22.12 (Vitest 5 requirement; CI and dev on Node 22 LTS) — stricter than the "Node ≥ 20" in 11-kickoff.
+- Implementation notes (Phase 0, within P-01…P-08):
+  - **Migrations are hand-written SQL** (`packages/db/migrations/NNNN_name.up.sql` + `.down.sql`) applied by a small runner in `@ocs/db`. drizzle-kit generates no down migrations, and 04-testing §3 requires up → down → up; RLS policies and grants are clearer in SQL. Drizzle is used for typed queries; a schema-drift test keeps the Drizzle definitions equal to the migrated tables.
+  - **Every transaction runs `SET LOCAL ROLE ocs_app`** (non-owner, `NOBYPASSRLS`) before setting the actor context, so RLS applies even if the service logs in with a privileged role.
+  - **Relative imports carry `.ts`** and TypeScript is limited to erasable syntax (`erasableSyntaxOnly`: no enums, no constructor parameter properties). Node 22 runs the sources directly; no build step for internal packages.
 - Changing any line of this ADR requires a new decisions-log entry with Vlad's OK.

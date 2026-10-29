@@ -9,29 +9,31 @@ export abstract class DomainError extends Error {
 
 export class NotFound extends DomainError {
   readonly code = 'not_found';
-  constructor(
-    readonly entity: string,
-    readonly id: string,
-  ) {
+  readonly entity: string;
+  readonly id: string;
+  constructor(entity: string, id: string) {
     super(`${entity} ${id} not found`);
+    this.entity = entity;
+    this.id = id;
   }
 }
 
 export class Forbidden extends DomainError {
   readonly code = 'forbidden';
-  constructor(readonly permission: string) {
+  readonly permission: string;
+  constructor(permission: string) {
     super(`Missing permission: ${permission}`);
+    this.permission = permission;
   }
 }
 
 /** A business rule refused the operation. `clause` cites the SOP, e.g. "SOP-DEL-01 §8". */
 export class RuleViolation extends DomainError {
   readonly code = 'rule_violation';
-  constructor(
-    readonly clause: string,
-    message: string,
-  ) {
+  readonly clause: string;
+  constructor(clause: string, message: string) {
     super(`Blocked by ${clause}: ${message}`);
+    this.clause = clause;
   }
 }
 
@@ -39,9 +41,16 @@ export class Conflict extends DomainError {
   readonly code = 'conflict';
 }
 
+export interface ValidationIssue {
+  readonly path: string;
+  readonly message: string;
+}
+
 export class ValidationFailed extends DomainError {
   readonly code = 'validation_failed';
-  constructor(readonly issues: readonly { path: string; message: string }[]) {
+  readonly issues: readonly ValidationIssue[];
+  constructor(issues: readonly ValidationIssue[]) {
     super(`Validation failed: ${issues.map((i) => `${i.path} ${i.message}`).join('; ')}`);
+    this.issues = issues;
   }
 }

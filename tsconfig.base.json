@@ -9,7 +9,8 @@
     "isolatedModules": true,
     "resolveJsonModule": true,
     "noEmit": true,
-
+    "allowImportingTsExtensions": true,
+    "erasableSyntaxOnly": true,
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
@@ -18,7 +19,6 @@
     "noFallthroughCasesInSwitch": true,
     "useUnknownInCatchVariables": true,
     "forceConsistentCasingInFileNames": true,
-
     "skipLibCheck": true,
     "types": []
   }

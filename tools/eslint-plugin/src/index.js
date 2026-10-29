@@ -10,7 +10,8 @@ const HEX = /#(?:[0-9a-f]{8}|[0-9a-f]{6}|[0-9a-f]{3,4})\b/i;
 const COLOUR_FN = /\b(?:rgba?|hsla?|hwb|lab|lch|oklab|oklch)\s*\(/i;
 const FONT = /\b(?:Arial|Helvetica|Microsoft YaHei|PingFang SC|font-family)\b/i;
 const HAS_LETTER = /\p{L}/u;
-const SQL_DELETE = /\b(?:DELETE\s+FROM|TRUNCATE(?:\s+TABLE)?\s+\w)/i;
+const SQL_DELETE =
+  /\b(?:DELETE\s+FROM\s+["\w.]+|TRUNCATE\s+(?:TABLE\s+)?(?:ONLY\s+)?["\w.]+\s*(?:;|,|$|\b(?:CASCADE|RESTRICT|RESTART|CONTINUE)\b))/i;
 const DB_HANDLE = /^(?:db|tx|trx|database|sql|repo|repository)$/i;
 const DB_MODULES = /^(?:@ocs\/db(?:\/.*)?|drizzle-orm(?:\/.*)?|pg|postgres|pg-boss)$/;
 const VISIBLE_ATTRS = new Set(['title', 'alt', 'placeholder', 'label', 'aria-label', 'aria-description']);

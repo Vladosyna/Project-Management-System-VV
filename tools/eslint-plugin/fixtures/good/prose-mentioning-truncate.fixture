@@ -1,0 +1,3 @@
+// path: packages/core/cases/rules/text.ts
+// expect: none
+export const note = 'ocs_app has no TRUNCATE privilege on any table';

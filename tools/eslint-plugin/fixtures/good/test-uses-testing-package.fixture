@@ -1,0 +1,4 @@
+// path: packages/core/cases/__tests__/set-eta.int.test.ts
+// expect: none
+import { createTestDatabase } from '@ocs/testing';
+export const x = createTestDatabase;
