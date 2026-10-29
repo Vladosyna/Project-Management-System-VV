@@ -29,3 +29,6 @@ Policy: one skill per topic (overlapping skills give contradictory instructions)
 - Commit project-level skills (`.claude/skills/<name>/` + `VENDOR.md` with repo, commit, date, reviewer).
 - Record plugin names and versions in this file.
 - Run `claude-code-setup` once and compare its recommendations with this list; adopt nothing without review.
+
+## Installed — 29 Oct 2026 (arch/phase-0-skeleton)
+All "Enable at kickoff" items are installed. Exact commits, versions, review notes and the one local patch (`web-design-guidelines` pinned rules) are in `.claude/skills/VENDOR.md`; plugin pins are in `.claude/settings.json` (`ocs-vetted` catalogue). `typescript-lsp`, `claude-md-management`, `claude-code-setup` come from the official marketplace (name/LSP limitation — see VENDOR.md). `claude-code-setup` comparison: pending, run once the skeleton exists.
