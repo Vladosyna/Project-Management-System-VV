@@ -1,0 +1,3 @@
+// path: packages/core/cases/rules/eta.ts
+// expect: @typescript-eslint/no-non-null-assertion
+export const first = (xs: string[]): string => xs[0]!;

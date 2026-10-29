@@ -1,0 +1,4 @@
+// path: packages/core/cases/rules/eta.ts
+// expect: @typescript-eslint/ban-ts-comment
+// @ts-ignore
+export const x: number = 'not a number';

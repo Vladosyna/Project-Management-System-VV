@@ -1,0 +1,4 @@
+// path: packages/core/cases/commands/close-case.ts
+// expect: ocs/no-db-import
+import { eq } from 'drizzle-orm';
+export const x = eq;

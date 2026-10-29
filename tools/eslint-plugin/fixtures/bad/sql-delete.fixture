@@ -1,0 +1,3 @@
+// path: packages/core/devices/repository.ts
+// expect: ocs/no-business-delete
+export const purge = 'DELETE FROM devices WHERE site_id = $1';

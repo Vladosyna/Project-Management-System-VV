@@ -1,0 +1,4 @@
+// path: packages/ui/src/Button.ts
+// expect: boundaries/dependencies
+import { schema } from '@ocs/contracts';
+export const x = schema;

@@ -1,0 +1,4 @@
+// path: packages/core/cases/repository.ts
+// expect: ocs/no-business-delete
+import { db, cases } from '@ocs/db';
+export const removeCase = (id: string) => db.delete(cases).where(id);

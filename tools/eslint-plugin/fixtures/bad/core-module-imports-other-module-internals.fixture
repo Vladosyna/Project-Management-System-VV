@@ -1,0 +1,4 @@
+// path: packages/core/cases/commands/set-eta.ts
+// expect: ocs/public-api-only
+import { findAction } from '../../actions/repository';
+export const x = findAction;

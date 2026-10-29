@@ -1,0 +1,7 @@
+// path: packages/core/cases/rules/dedupe.ts
+// expect: none
+export function dedupe(ids: string[]): string[] {
+  const seen = new Map<string, boolean>();
+  for (const id of ids) seen.delete(id);
+  return ids;
+}

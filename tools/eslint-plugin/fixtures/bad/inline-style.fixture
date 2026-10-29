@@ -1,0 +1,3 @@
+// path: apps/web/src/routes/Cases.tsx
+// expect: ocs/no-inline-style
+export const Box = () => <div style={{ padding: 4 }} />;
