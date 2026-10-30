@@ -12,7 +12,7 @@ export type {
 } from './define.ts';
 export { createKernel } from './kernel.ts';
 export type { Kernel, KernelDeps } from './kernel.ts';
-export { denyAll, permission, registeredPermissions } from './permissions.ts';
-export type { PermissionChecker, PermissionKey } from './permissions.ts';
+export { denyAll, grantOf, permission, registeredPermissions } from './permissions.ts';
+export type { PermissionChecker, PermissionGrant, PermissionKey } from './permissions.ts';
 export { DomainError, NotFound, Forbidden, RuleViolation, Conflict, ValidationFailed } from './errors.ts';
 export type { DomainErrorCode, ValidationIssue } from './errors.ts';

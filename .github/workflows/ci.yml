@@ -40,6 +40,8 @@ jobs:
         run: pnpm lint
       - name: Typecheck, unit and integration tests (PostgreSQL via Testcontainers)
         run: pnpm exec turbo run typecheck test test:integration
+      - name: Permission matrix (role × permission, matrix file up to date)
+        run: pnpm test:matrix
       - name: Claude Code hooks self-test
         run: pnpm test:hooks
 

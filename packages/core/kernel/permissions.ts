@@ -1,31 +1,58 @@
 // Permission keys and the checker the kernel calls before every command and query (deny by default).
-// The role → permission map lives in core/permissions (protected); the kernel only knows the interface.
-import type { Actor } from '@ocs/contracts';
+// Each module declares its keys in its permissions.ts together with the roles that hold them; the
+// registry is the source of the permission matrix (core/permissions, docs/ocs/permission-matrix.md).
+import type { Actor, Role } from '@ocs/contracts';
 
 declare const permissionBrand: unique symbol;
 
 /** A registered permission key, `<module>.<object>.<action>`. Only `permission()` produces one. */
 export type PermissionKey = string & { readonly [permissionBrand]: true };
 
-const registry = new Set<string>();
+export interface PermissionGrant {
+  readonly key: string;
+  /** What the holder may do, in plain English — shown in the permission matrix. */
+  readonly description: string;
+  /** Roles that hold the permission. Empty = nobody yet (reserved). */
+  readonly roles: readonly Role[];
+}
 
-/** Registers a permission key. Modules call this in their permissions.ts. */
-export function permission(key: `${string}.${string}.${string}`): PermissionKey {
-  if (!/^[a-z][a-zA-Z]*(\.[a-z][a-zA-Z]*){2,}$/.test(key)) {
+const registry = new Map<string, PermissionGrant>();
+
+/** Registers a permission key and the roles that hold it. Modules call this in their permissions.ts. */
+export function permission(
+  key: `${string}.${string}.${string}`,
+  grant: { description: string; roles: readonly Role[] },
+): PermissionKey {
+  const parts = key.split('.');
+  if (parts.length < 3 || !parts.every((p) => /^[a-z][a-zA-Z]*$/.test(p))) {
     throw new Error(`Invalid permission key "${key}": use <module>.<object>.<action> in camelCase`);
   }
-  registry.add(key);
+  const entry: PermissionGrant = {
+    key,
+    description: grant.description,
+    roles: [...new Set(grant.roles)].sort(),
+  };
+  const existing = registry.get(key);
+  if (existing && JSON.stringify(existing) !== JSON.stringify(entry)) {
+    throw new Error(`Permission "${key}" is registered twice with different grants`);
+  }
+  registry.set(key, entry);
   return key as PermissionKey;
 }
 
-/** All registered keys — source for the permission matrix suite (04-testing §3). */
-export function registeredPermissions(): readonly string[] {
-  return [...registry].sort();
+/** All registered permissions, sorted by key — source for the permission matrix (04-testing §3). */
+export function registeredPermissions(): readonly PermissionGrant[] {
+  return [...registry.values()].sort((a, b) => a.key.localeCompare(b.key));
+}
+
+/** The grant behind a key, or undefined for a key nobody registered. */
+export function grantOf(key: PermissionKey): PermissionGrant | undefined {
+  return registry.get(key);
 }
 
 export interface PermissionChecker {
   has(actor: Actor, key: PermissionKey): boolean | Promise<boolean>;
 }
 
-/** Grants nothing. The default until identity/permissions (F0.8) provides the real checker. */
+/** Grants nothing. */
 export const denyAll: PermissionChecker = { has: () => false };
