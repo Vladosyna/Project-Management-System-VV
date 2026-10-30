@@ -19,6 +19,11 @@
     "test:hooks": "node .claude/hooks/selftest.mjs",
     "test:matrix": "pnpm --filter @ocs/core exec vitest run --project unit permissions",
     "gen:matrix": "tsx packages/core/permissions/gen-matrix.ts",
+    "gen:module": "tsx tools/generators/src/cli.ts module",
+    "gen:command": "tsx tools/generators/src/cli.ts command",
+    "gen:query": "tsx tools/generators/src/cli.ts query",
+    "gen:rule": "tsx tools/generators/src/cli.ts rule",
+    "gen:selftest": "tsx tools/generators/src/selftest.ts",
     "verify": "pnpm format:check && pnpm lint && turbo run typecheck test test:integration && pnpm test:hooks",
     "verify:quick": "pnpm lint && turbo run typecheck test"
   },

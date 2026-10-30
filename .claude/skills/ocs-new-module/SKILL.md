@@ -6,9 +6,10 @@ description: Use when adding a new OCS core module or a new command/query to an 
 
 1. Confirm the epic/AC (`docs/ocs/05-roadmap.md`) and the SOP clause it serves. No AC → ask.
 2. Generate, never hand-build:
-   - module: `pnpm gen:module <name>`
-   - command: `pnpm gen:command <module> <verb-noun>` (e.g. `set-eta`)
-   - query: `pnpm gen:query <module> <noun>`
+   - module: `pnpm gen:module <name> "<one-line purpose>"` (touches protected `permissions/all.ts` → `arch/` branch)
+   - command: `pnpm gen:command <module> <verb-noun> [--roles pm,director]` (e.g. `set-eta` → key `<module>.eta.set`)
+   - query: `pnpm gen:query <module> <noun> [--roles …]` (key `<module>.<noun>.read`)
+   - each adds the permission (no roles unless `--roles`), the export, the file and a guard test (`*.int.test.ts`), and refreshes the permission matrix.
 3. Fill the generated parts:
    - input schema in `packages/contracts` (if new shared shape → `arch/` branch) or module-local schema;
    - permission key `<module>.<object>.<action>` in `permissions.ts`, with roles that get it;
