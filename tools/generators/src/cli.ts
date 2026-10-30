@@ -1,9 +1,11 @@
 // pnpm gen:<kind> … — see docs/ocs/03-engineering-rules.md §2 and the ocs-new-module / ocs-sop-rule skills.
 import { execFileSync } from 'node:child_process';
+import { readdirSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseArgs } from 'node:util';
 import { commandPlan, modulePlan, queryPlan, rulePlan } from './core.ts';
+import { migrationPlan, nextMigrationNumber } from './db.ts';
 import { applyPlan, type Plan } from './plan.ts';
 import { screenPlan } from './web.ts';
 
@@ -14,7 +16,8 @@ const USAGE = `Usage:
   pnpm gen:command <module> <verb-noun> [--roles pm,director] [--description "…"] [--key m.object.action]
   pnpm gen:query <module> <noun> [--roles …] [--description "…"] [--key m.object.read]
   pnpm gen:rule <module> <rule-key> --cite "SOP-DEL-01 §8" --sop-version 1.3
-  pnpm gen:screen <route> --title "Cases" --title-zh "案件"`;
+  pnpm gen:screen <route> --title "Cases" --title-zh "案件"
+  pnpm gen:migration <name> [--table <table-name>]`;
 
 export function planFor(argv: readonly string[]): Plan {
   const { values, positionals } = parseArgs({
@@ -28,9 +31,10 @@ export function planFor(argv: readonly string[]): Plan {
       'sop-version': { type: 'string' },
       title: { type: 'string' },
       'title-zh': { type: 'string' },
+      table: { type: 'string' },
     },
   });
-  // For `screen` the first argument is the route, not a module.
+  // For `screen` and `migration` the first argument is the route or migration name, not a module.
   const [kind, module = '', name = ''] = positionals;
   const access = {
     key: values.key,
@@ -49,6 +53,10 @@ export function planFor(argv: readonly string[]): Plan {
       return queryPlan(module, name, access);
     case 'screen':
       return screenPlan(module, values.title ?? '', values['title-zh'] ?? '');
+    case 'migration': {
+      const number = nextMigrationNumber(readdirSync(path.join(repoRoot, 'packages/db/migrations')));
+      return migrationPlan(module, number, values.table);
+    }
     case 'rule':
       return rulePlan(module, name, values.cite ?? '', values['sop-version'] ?? '');
     default:
@@ -61,7 +69,7 @@ export function generate(argv: readonly string[]): string[] {
   const plan = planFor(argv);
   const touched = applyPlan(repoRoot, plan);
   const run = (args: string[]) => execFileSync('pnpm', args, { cwd: repoRoot, stdio: 'inherit' });
-  run(['exec', 'prettier', '--write', '--log-level=warn', ...touched]);
+  run(['exec', 'prettier', '--write', '--ignore-unknown', '--log-level=warn', ...touched]);
   if (plan.permissionsChanged) {
     run(['gen:matrix']);
     touched.push('docs/ocs/permission-matrix.md');

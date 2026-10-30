@@ -24,6 +24,7 @@
     "gen:query": "tsx tools/generators/src/cli.ts query",
     "gen:rule": "tsx tools/generators/src/cli.ts rule",
     "gen:screen": "tsx tools/generators/src/cli.ts screen",
+    "gen:migration": "tsx tools/generators/src/cli.ts migration",
     "gen:selftest": "tsx tools/generators/src/selftest.ts",
     "verify": "pnpm format:check && pnpm lint && turbo run typecheck test test:integration && pnpm test:hooks",
     "verify:quick": "pnpm lint && turbo run typecheck test"
