@@ -45,6 +45,11 @@ const DEPENDENCY_POLICIES = [
   { from: { element: { type: 'db' } }, allow: to(['db']) },
   { from: { element: { type: 'i18n' } }, allow: to(['i18n']) },
   { from: { element: { type: 'tool' } }, allow: to(['tool']) },
+  // Browser e2e drives the real stack: it may start the runtime and use test infrastructure.
+  {
+    from: { element: { type: 'tool', captured: { tool: 'e2e' } } },
+    allow: to(['tool', 'core-module', 'core-kernel', 'contracts', 'testing']),
+  },
 ];
 
 /** Tests and vitest configs may additionally use the test infrastructure. */
@@ -160,6 +165,16 @@ export default tseslint.config(
   {
     files: ['**/*.js', '**/*.mjs'],
     languageOptions: { globals: globals.node },
+  },
+  {
+    // TanStack Router redirects by throwing its Redirect object (documented pattern), nothing else.
+    files: ['apps/web/**/*.{ts,tsx}'],
+    rules: {
+      '@typescript-eslint/only-throw-error': [
+        'error',
+        { allow: [{ from: 'package', package: '@tanstack/router-core', name: 'Redirect' }] },
+      ],
+    },
   },
   ...ocsRules,
   prettier,
