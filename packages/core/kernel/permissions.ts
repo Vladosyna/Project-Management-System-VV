@@ -23,7 +23,8 @@ export function permission(
   key: `${string}.${string}.${string}`,
   grant: { description: string; roles: readonly Role[] },
 ): PermissionKey {
-  if (!/^[a-z][a-zA-Z]*(\.[a-z][a-zA-Z]*){2,}$/.test(key)) {
+  const parts = key.split('.');
+  if (parts.length < 3 || !parts.every((p) => /^[a-z][a-zA-Z]*$/.test(p))) {
     throw new Error(`Invalid permission key "${key}": use <module>.<object>.<action> in camelCase`);
   }
   const entry: PermissionGrant = {
