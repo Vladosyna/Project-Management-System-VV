@@ -7,6 +7,7 @@ import { parseArgs } from 'node:util';
 import { commandPlan, modulePlan, queryPlan, rulePlan } from './core.ts';
 import { migrationPlan, nextMigrationNumber } from './db.ts';
 import { applyPlan, type Plan } from './plan.ts';
+import { screenPlan } from './web.ts';
 
 export const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
 
@@ -15,6 +16,7 @@ const USAGE = `Usage:
   pnpm gen:command <module> <verb-noun> [--roles pm,director] [--description "…"] [--key m.object.action]
   pnpm gen:query <module> <noun> [--roles …] [--description "…"] [--key m.object.read]
   pnpm gen:rule <module> <rule-key> --cite "SOP-DEL-01 §8" --sop-version 1.3
+  pnpm gen:screen <route> --title "Cases" --title-zh "案件"
   pnpm gen:migration <name> [--table <table-name>]`;
 
 export function planFor(argv: readonly string[]): Plan {
@@ -27,10 +29,12 @@ export function planFor(argv: readonly string[]): Plan {
       key: { type: 'string' },
       cite: { type: 'string' },
       'sop-version': { type: 'string' },
+      title: { type: 'string' },
+      'title-zh': { type: 'string' },
       table: { type: 'string' },
     },
   });
-  // For `migration` the first argument is the migration name, not a module.
+  // For `screen` and `migration` the first argument is the route or migration name, not a module.
   const [kind, module = '', name = ''] = positionals;
   const access = {
     key: values.key,
@@ -47,6 +51,8 @@ export function planFor(argv: readonly string[]): Plan {
       return commandPlan(module, name, access);
     case 'query':
       return queryPlan(module, name, access);
+    case 'screen':
+      return screenPlan(module, values.title ?? '', values['title-zh'] ?? '');
     case 'migration': {
       const number = nextMigrationNumber(readdirSync(path.join(repoRoot, 'packages/db/migrations')));
       return migrationPlan(module, number, values.table);

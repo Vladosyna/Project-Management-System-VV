@@ -84,4 +84,7 @@ export const zh = {
   'home.security.passkeyAdded': '已添加通行密钥。',
   'home.security.signOut': '退出登录',
   'page.notYet': '该页面将随对应的功能模块上线，详见路线图。',
+  'page.empty': '暂无内容。',
+
+  // gen:screen-titles — `pnpm gen:screen` adds screen titles above this line.
 } as const satisfies Catalog;

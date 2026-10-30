@@ -82,4 +82,7 @@ export const en = {
   'home.security.passkeyAdded': 'Passkey added.',
   'home.security.signOut': 'Sign out',
   'page.notYet': 'This screen arrives with its epic — see the roadmap.',
+  'page.empty': 'Nothing here yet.',
+
+  // gen:screen-titles — `pnpm gen:screen` adds screen titles above this line.
 } as const;

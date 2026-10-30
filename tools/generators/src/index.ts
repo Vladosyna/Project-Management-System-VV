@@ -2,4 +2,5 @@
 export { commandPlan, modulePlan, queryPlan, rulePlan } from './core.ts';
 export { migrationPlan, nextMigrationNumber } from './db.ts';
 export { applyPlan } from './plan.ts';
+export { screenPlan } from './web.ts';
 export type { Change, Plan } from './plan.ts';

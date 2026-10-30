@@ -57,7 +57,9 @@ jobs:
           node-version-file: .nvmrc
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - name: Generator output passes verify unchanged (F0.10)
+      - name: Install Chromium for Playwright
+        run: pnpm --filter @ocs/e2e exec playwright install --with-deps chromium
+      - name: Generator output passes verify and e2e unchanged (F0.10)
         run: pnpm gen:selftest
 
   e2e:

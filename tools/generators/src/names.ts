@@ -27,6 +27,9 @@ export const camel = (ws: readonly string[]): string => ws.map((w, i) => (i === 
 /** ['set', 'eta'] → Set eta */
 export const sentence = (ws: readonly string[]): string => upper(ws.join(' '));
 
+/** A single-quoted TypeScript string literal. */
+export const quote = (s: string): string => `'${s.replace(/\\/g, '\\\\').replace(/'/g, "\\'")}'`;
+
 /** A permission key for `module`: `<module>.<object>.<action>`, camelCase segments. */
 export function assertPermissionKey(key: string, module: string): void {
   const parts = key.split('.');
