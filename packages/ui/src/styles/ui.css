@@ -1,0 +1,248 @@
+/* OCS components. Values only through the token variables in tokens.css (03-engineering-rules §9).
+   Layout follows the Main mockup (docs/ocs/reference/mockups/Main.dc.html). */
+
+body {
+  margin: 0;
+  background: var(--ocs-surface-alt);
+  color: var(--ocs-ink);
+  font-family: var(--ocs-font-sans);
+}
+
+a {
+  color: var(--ocs-brand-text);
+}
+a:hover {
+  color: var(--ocs-navy);
+}
+
+:focus-visible {
+  outline: 2px solid var(--ocs-brand);
+  outline-offset: 2px;
+}
+
+.ocs-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* App shell */
+.ocs-shell {
+  display: flex;
+  flex-wrap: wrap;
+  min-height: 100vh;
+}
+
+.ocs-nav {
+  flex: 1 1 232px;
+  max-width: 260px;
+  background: var(--ocs-nav-bg);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 20px 10px;
+  box-sizing: border-box;
+}
+
+.ocs-nav__brand {
+  padding: 4px 14px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ocs-nav__logo {
+  width: 140px;
+  height: auto;
+}
+
+.ocs-nav__tagline {
+  color: var(--ocs-nav-accent);
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+
+.ocs-nav__link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 40px;
+  padding: 0 14px;
+  color: var(--ocs-nav-text);
+  text-decoration: none;
+  font-size: 14px;
+}
+.ocs-nav__link:hover {
+  background: var(--ocs-nav-hover);
+  color: var(--ocs-on-brand);
+}
+.ocs-nav__link[aria-current='page'] {
+  background: var(--ocs-brand);
+  color: var(--ocs-on-brand);
+  font-weight: 700;
+}
+
+.ocs-nav__user {
+  margin-top: auto;
+  padding: 14px;
+  border-top: 1px solid var(--ocs-nav-rule);
+  color: var(--ocs-nav-muted);
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.ocs-main {
+  flex: 999 1 560px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.ocs-topbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 28px;
+  background: var(--ocs-surface);
+  border-bottom: 1px solid var(--ocs-rule);
+}
+
+.ocs-topbar__search {
+  flex: 1 1 320px;
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--ocs-rule);
+  border-radius: var(--ocs-radius-sm);
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.ocs-topbar__clocks {
+  font-size: 13px;
+  color: var(--ocs-ink-muted);
+}
+
+.ocs-icon-box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--ocs-rule);
+  border-radius: var(--ocs-radius-sm);
+}
+
+.ocs-content {
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  box-sizing: border-box;
+  max-width: 1240px;
+  width: 100%;
+}
+
+/* Page header: "/ 01 Home" eyebrow over the title */
+.ocs-page-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 12px;
+}
+.ocs-page-header__eyebrow {
+  font-size: 13px;
+  color: var(--ocs-ink-muted);
+}
+.ocs-page-header__title {
+  margin: 6px 0 0;
+  font-size: 30px;
+  font-weight: 500;
+  font-family: var(--ocs-font-display);
+}
+.ocs-page-header__actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* Buttons are the only pills (radius-pill); everything else is square */
+.ocs-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 0 16px;
+  border-radius: var(--ocs-radius-pill);
+  font-size: 13px;
+  font-weight: 700;
+  border: 1px solid var(--ocs-brand);
+  cursor: pointer;
+  font-family: inherit;
+  text-decoration: none;
+}
+.ocs-button--primary {
+  background: var(--ocs-brand);
+  color: var(--ocs-on-brand);
+}
+.ocs-button--primary:hover {
+  box-shadow: var(--ocs-shadow-brand-glow);
+}
+.ocs-button--secondary {
+  background: var(--ocs-surface);
+  color: var(--ocs-brand-text);
+}
+.ocs-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.ocs-card {
+  background: var(--ocs-surface);
+  border: 1px solid var(--ocs-rule);
+  border-radius: var(--ocs-radius-0);
+  padding: 20px;
+  box-sizing: border-box;
+}
+.ocs-card__title {
+  margin: 0 0 12px;
+  font-size: 17px;
+}
+
+/* Status chips: semantic tones, always with a word (never colour alone) */
+.ocs-chip {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: var(--ocs-radius-sm);
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.ocs-chip--ok {
+  background: var(--ocs-success-tint);
+  color: var(--ocs-success-ink);
+}
+.ocs-chip--progress {
+  background: var(--ocs-brand-tint);
+  color: var(--ocs-brand-text);
+}
+.ocs-chip--risk {
+  background: var(--ocs-warning-tint);
+  color: var(--ocs-warning-ink);
+}
+.ocs-chip--wait {
+  background: var(--ocs-neutral-tint);
+  color: var(--ocs-ink);
+}
+.ocs-chip--breach {
+  background: var(--ocs-danger-tint);
+  color: var(--ocs-danger-ink);
+}
+.ocs-chip--escalated {
+  background: var(--ocs-navy);
+  color: var(--ocs-on-brand);
+}
