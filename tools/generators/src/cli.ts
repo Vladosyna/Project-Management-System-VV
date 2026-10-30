@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { parseArgs } from 'node:util';
 import { commandPlan, modulePlan, queryPlan, rulePlan } from './core.ts';
 import { applyPlan, type Plan } from './plan.ts';
+import { screenPlan } from './web.ts';
 
 export const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
 
@@ -12,7 +13,8 @@ const USAGE = `Usage:
   pnpm gen:module <module> "<one-line purpose>"
   pnpm gen:command <module> <verb-noun> [--roles pm,director] [--description "…"] [--key m.object.action]
   pnpm gen:query <module> <noun> [--roles …] [--description "…"] [--key m.object.read]
-  pnpm gen:rule <module> <rule-key> --cite "SOP-DEL-01 §8" --sop-version 1.3`;
+  pnpm gen:rule <module> <rule-key> --cite "SOP-DEL-01 §8" --sop-version 1.3
+  pnpm gen:screen <route> --title "Cases" --title-zh "案件"`;
 
 export function planFor(argv: readonly string[]): Plan {
   const { values, positionals } = parseArgs({
@@ -24,8 +26,11 @@ export function planFor(argv: readonly string[]): Plan {
       key: { type: 'string' },
       cite: { type: 'string' },
       'sop-version': { type: 'string' },
+      title: { type: 'string' },
+      'title-zh': { type: 'string' },
     },
   });
+  // For `screen` the first argument is the route, not a module.
   const [kind, module = '', name = ''] = positionals;
   const access = {
     key: values.key,
@@ -42,6 +47,8 @@ export function planFor(argv: readonly string[]): Plan {
       return commandPlan(module, name, access);
     case 'query':
       return queryPlan(module, name, access);
+    case 'screen':
+      return screenPlan(module, values.title ?? '', values['title-zh'] ?? '');
     case 'rule':
       return rulePlan(module, name, values.cite ?? '', values['sop-version'] ?? '');
     default:

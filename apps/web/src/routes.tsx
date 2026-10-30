@@ -7,6 +7,7 @@ import {
   Outlet,
   redirect,
   useRouterState,
+  type RouteComponent,
 } from '@tanstack/react-router';
 import { AppShell, type LinkRenderer, type NavItem } from '@ocs/ui';
 import { loadSession, type Me } from './api.ts';
@@ -14,6 +15,7 @@ import { AcceptInvitationPage } from './pages/accept-invitation.tsx';
 import { HomePage, NotYetPage } from './pages/home.tsx';
 import { LoginPage } from './pages/login.tsx';
 import { SetupMfaPage } from './pages/setup-mfa.tsx';
+// gen:screen-imports
 
 /** Navigation as in the Main mockup. Screens other than Home arrive with their epics. */
 const NAV: readonly Omit<NavItem, 'active'>[] = [
@@ -30,6 +32,11 @@ const NAV: readonly Omit<NavItem, 'active'>[] = [
   { label: 'nav.knowledge', href: '/knowledge' },
   { label: 'nav.admin', href: '/admin' },
 ];
+
+/** Screens built so far, by path (`pnpm gen:screen` adds entries). Other NAV entries show NotYetPage. */
+const SCREENS: Record<string, RouteComponent> = {
+  // gen:screens
+};
 
 const routerLink: LinkRenderer = ({ href, className, current, children }) => (
   <Link to={href} className={className} aria-current={current ? 'page' : undefined}>
@@ -74,12 +81,16 @@ function Home() {
 }
 const homeRoute = createRoute({ getParentRoute: () => shellRoute, path: '/', component: Home });
 
-const notYetRoutes = NAV.filter((n) => n.href !== '/').map((n) =>
+const screenRoutes = Object.entries(SCREENS).map(([path, component]) =>
+  createRoute({ getParentRoute: () => shellRoute, path, component }),
+);
+
+const notYetRoutes = NAV.filter((n) => n.href !== '/' && !(n.href in SCREENS)).map((n) =>
   createRoute({ getParentRoute: () => shellRoute, path: n.href, component: NotYetPage }),
 );
 
 const routeTree = rootRoute.addChildren([
-  shellRoute.addChildren([homeRoute, ...notYetRoutes]),
+  shellRoute.addChildren([homeRoute, ...screenRoutes, ...notYetRoutes]),
   createRoute({ getParentRoute: () => rootRoute, path: '/login', component: LoginPage }),
   createRoute({
     getParentRoute: () => rootRoute,

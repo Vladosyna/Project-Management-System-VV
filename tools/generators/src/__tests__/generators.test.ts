@@ -5,6 +5,7 @@ import path from 'node:path';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { commandPlan, modulePlan, queryPlan, rulePlan } from '../core.ts';
 import { applyPlan } from '../plan.ts';
+import { screenPlan } from '../web.ts';
 
 let root: string;
 const read = (file: string) => readFileSync(path.join(root, file), 'utf8');
@@ -95,5 +96,38 @@ describe('gen:rule', () => {
   it('refuses a rule without a clause or version', () => {
     expect(() => rulePlan('intake', 'blocking-items', 'SOP-DEL-01', '1.3')).toThrow(/clause/);
     expect(() => rulePlan('intake', 'blocking-items', 'SOP-DEL-01 §8', 'v1')).toThrow(/sop-version/);
+  });
+});
+
+describe('gen:screen', () => {
+  beforeEach(() => {
+    const files: Record<string, string> = {
+      'apps/web/src/routes.tsx': '// gen:screen-imports\nconst SCREENS = {\n  // gen:screens\n};\n',
+      'packages/i18n/src/catalog/en.ts': 'export const en = {\n  // gen:screen-titles\n};\n',
+      'packages/i18n/src/catalog/zh.ts': 'export const zh = {\n  // gen:screen-titles\n};\n',
+      'tools/e2e/tests/smoke.spec.ts': 'const SCREENS = [\n  // gen:screens\n];\n',
+    };
+    for (const [file, content] of Object.entries(files)) {
+      mkdirSync(path.dirname(path.join(root, file)), { recursive: true });
+      writeFileSync(path.join(root, file), content);
+    }
+  });
+
+  it('adds the page, the route, the title in EN and 中文, and the e2e entry', () => {
+    applyPlan(root, screenPlan('site-board', "Site's board", '站点看板'));
+    expect(read('apps/web/src/pages/site-board.tsx')).toContain('export function SiteBoardPage()');
+    expect(read('apps/web/src/routes.tsx')).toContain(
+      "import { SiteBoardPage } from './pages/site-board.tsx';",
+    );
+    expect(read('apps/web/src/routes.tsx')).toContain("'/site-board': SiteBoardPage,");
+    expect(read('packages/i18n/src/catalog/en.ts')).toContain("'siteBoard.title': 'Site\\'s board',");
+    expect(read('packages/i18n/src/catalog/zh.ts')).toContain("'siteBoard.title': '站点看板',");
+    expect(read('tools/e2e/tests/smoke.spec.ts')).toContain(
+      "{ path: '/site-board', heading: 'Site\\'s board' },",
+    );
+  });
+
+  it('refuses a screen without both titles', () => {
+    expect(() => screenPlan('site-board', 'Board', ' ')).toThrow(/both languages/);
   });
 });
