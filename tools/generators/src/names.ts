@@ -12,10 +12,11 @@ export function assertModule(name: string): void {
 
 /** `set-eta` → ['set', 'eta']. Lowercase words separated by hyphens, letters only. */
 export function words(name: string, what: string): string[] {
-  if (!/^[a-z]+(-[a-z]+)*$/.test(name)) {
+  const ws = name.split('-');
+  if (!ws.every((w) => /^[a-z]+$/.test(w))) {
     throw new Error(`${what} "${name}": lowercase words separated by hyphens, letters only (e.g. set-eta)`);
   }
-  return name.split('-');
+  return ws;
 }
 
 const upper = (w: string): string => w.charAt(0).toUpperCase() + w.slice(1);
