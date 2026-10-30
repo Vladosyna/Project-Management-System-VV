@@ -5,7 +5,7 @@ import { describe, expect, it } from 'vitest';
 import { z } from 'zod';
 import { defineCommand, defineQuery, permission, registeredPermissions } from '../index.ts';
 
-const canCreate = permission('probe.note.create');
+const canCreate = permission('probe.note.create', { description: 'Create probe notes', roles: ['pm'] });
 const input = z.object({ body: z.string().min(1) });
 const handle = () =>
   Promise.resolve({
@@ -66,13 +66,23 @@ describe('defineQuery', () => {
 });
 
 describe('permission()', () => {
-  it('registers keys for the permission matrix', () => {
-    expect(registeredPermissions()).toContain('probe.note.create');
+  it('registers keys with their roles for the permission matrix', () => {
+    expect(registeredPermissions()).toContainEqual({
+      key: 'probe.note.create',
+      description: 'Create probe notes',
+      roles: ['pm'],
+    });
+  });
+
+  it('refuses the same key registered twice with different roles', () => {
+    expect(() =>
+      permission('probe.note.create', { description: 'Create probe notes', roles: ['admin'] }),
+    ).toThrow(/registered twice/);
   });
 
   it('rejects keys that are not <module>.<object>.<action>', () => {
     // @ts-expect-error — needs at least three dot-separated parts
-    expect(() => permission('probe.create')).toThrow();
-    expect(() => permission('Probe.Note.Create')).toThrow(/camelCase/);
+    expect(() => permission('probe.create', { description: 'x', roles: [] })).toThrow();
+    expect(() => permission('Probe.Note.Create', { description: 'x', roles: [] })).toThrow(/camelCase/);
   });
 });

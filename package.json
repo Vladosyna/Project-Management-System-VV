@@ -2,7 +2,7 @@
   "name": "ocs",
   "private": true,
   "type": "module",
-  "description": "Vionvision Operations & Collaboration System — modular monolith (docs/ocs/02-architecture.md)",
+  "description": "Vionvision Operations & Collaboration System \u2014 modular monolith (docs/ocs/02-architecture.md)",
   "packageManager": "pnpm@10.28.0",
   "engines": {
     "node": ">=22.12.0"
@@ -16,6 +16,8 @@
     "test": "turbo run test",
     "test:integration": "turbo run test:integration",
     "test:hooks": "node .claude/hooks/selftest.mjs",
+    "test:matrix": "pnpm --filter @ocs/core exec vitest run --project unit permissions",
+    "gen:matrix": "tsx packages/core/permissions/gen-matrix.ts",
     "verify": "pnpm format:check && pnpm lint && turbo run typecheck test test:integration && pnpm test:hooks",
     "verify:quick": "pnpm lint && turbo run typecheck test"
   },

@@ -20,17 +20,17 @@ export const siteLabel = (n: number): string => `Site ${String(n).padStart(3, '0
 export const personLabel = (n: number): string => `Person ${String(n).padStart(2, '0')}`;
 
 export function aStaffActor(overrides: Partial<Actor> = {}): Actor {
-  return { id: randomUUID(), kind: 'staff', clientIds: [], ...overrides };
+  return { id: randomUUID(), kind: 'staff', clientIds: [], roles: ['pm'], ...overrides };
 }
 
 export function aClientActor(clientId: string, overrides: Partial<Actor> = {}): Actor {
-  return { id: randomUUID(), kind: 'client', clientIds: [clientId], ...overrides };
+  return { id: randomUUID(), kind: 'client', clientIds: [clientId], roles: ['client'], ...overrides };
 }
 
 export function aPartnerActor(clientIds: readonly string[], overrides: Partial<Actor> = {}): Actor {
-  return { id: randomUUID(), kind: 'partner', clientIds, ...overrides };
+  return { id: randomUUID(), kind: 'partner', clientIds, roles: ['partner'], ...overrides };
 }
 
 export function aSystemActor(overrides: Partial<Actor> = {}): Actor {
-  return { id: randomUUID(), kind: 'system', clientIds: [], ...overrides };
+  return { id: randomUUID(), kind: 'system', clientIds: [], roles: ['system'], ...overrides };
 }

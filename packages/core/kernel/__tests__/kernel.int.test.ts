@@ -21,12 +21,12 @@ import {
 
 const clientA = randomUUID();
 const clientB = randomUUID();
-const staff: Actor = { id: randomUUID(), kind: 'staff', clientIds: [] };
-const clientUser: Actor = { id: randomUUID(), kind: 'client', clientIds: [clientA] };
+const staff: Actor = { id: randomUUID(), kind: 'staff', clientIds: [], roles: ['pm'] };
+const clientUser: Actor = { id: randomUUID(), kind: 'client', clientIds: [clientA], roles: ['client'] };
 const fixedNow = new Date('2026-11-02T09:00:00Z');
 
-const canCreate = permission('probe.note.create');
-const canRead = permission('probe.note.read');
+const canCreate = permission('probe.note.create', { description: 'Create probe notes', roles: ['pm'] });
+const canRead = permission('probe.note.read', { description: 'Read probe notes', roles: ['pm', 'client'] });
 
 const createNote = defineCommand({
   name: 'probe.note.create',
