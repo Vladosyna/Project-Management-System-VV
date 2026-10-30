@@ -113,16 +113,6 @@ export const ocsRules = [
     rules: { 'ocs/no-raw-colour': 'error', 'ocs/no-inline-style': 'error' },
   },
   {
-    // TanStack Router redirects by throwing its Redirect object (documented pattern), nothing else.
-    files: ['apps/web/**/*.{ts,tsx}'],
-    rules: {
-      '@typescript-eslint/only-throw-error': [
-        'error',
-        { allow: [{ from: 'package', package: '@tanstack/router-core', name: 'Redirect' }] },
-      ],
-    },
-  },
-  {
     files: ['apps/web/**/*.{tsx,jsx}', 'packages/ui/**/*.{tsx,jsx}'],
     plugins: { ocs },
     rules: { 'ocs/no-literal-string': 'error' },
@@ -175,6 +165,16 @@ export default tseslint.config(
   {
     files: ['**/*.js', '**/*.mjs'],
     languageOptions: { globals: globals.node },
+  },
+  {
+    // TanStack Router redirects by throwing its Redirect object (documented pattern), nothing else.
+    files: ['apps/web/**/*.{ts,tsx}'],
+    rules: {
+      '@typescript-eslint/only-throw-error': [
+        'error',
+        { allow: [{ from: 'package', package: '@tanstack/router-core', name: 'Redirect' }] },
+      ],
+    },
   },
   ...ocsRules,
   prettier,
