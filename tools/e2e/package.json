@@ -1,0 +1,17 @@
+{
+  "name": "@ocs/e2e",
+  "private": true,
+  "type": "module",
+  "description": "Browser end-to-end tests: real API + web app + PostgreSQL (Playwright)",
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "e2e": "playwright test"
+  },
+  "devDependencies": {
+    "@ocs/contracts": "workspace:*",
+    "@ocs/core": "workspace:*",
+    "@ocs/testing": "workspace:*",
+    "@playwright/test": "1.63.0",
+    "otpauth": "9.5.2"
+  }
+}

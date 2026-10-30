@@ -1,4 +1,4 @@
-# OCS CI (F0.5, 03-engineering-rules §1 layer 4). Required checks on main: verify, security, pr-rules.
+# OCS CI (F0.5, 03-engineering-rules §1 layer 4). Required checks on main: verify, e2e, security, pr-rules.
 # Third-party actions are pinned to commit SHAs; tools run from pinned container images.
 name: ci
 
@@ -45,6 +45,30 @@ jobs:
       - name: Claude Code hooks self-test
         run: pnpm test:hooks
 
+  e2e:
+    name: e2e
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Install Chromium for Playwright
+        run: pnpm --filter @ocs/e2e exec playwright install --with-deps chromium
+      - name: Browser e2e smoke (PostgreSQL + API + web)
+        run: pnpm e2e
+      - name: Keep traces and screenshots
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: e2e-results
+          path: tools/e2e/test-results
+          retention-days: 7
+
   security:
     name: security
     runs-on: ubuntu-24.04
@@ -62,7 +86,7 @@ jobs:
       - name: Static analysis (Semgrep)
         run: >
           docker run --rm -v "$PWD:/src" -w /src semgrep/semgrep:1.181.0
-          semgrep scan --config p/typescript --config p/javascript --config p/nodejsscan
+          semgrep scan --config p/typescript --config p/javascript --config p/nodejsscan --config p/react
           --error --metrics=off --exclude node_modules --exclude docs --exclude .claude/skills
       - name: Dependency audit
         run: pnpm audit --audit-level=high

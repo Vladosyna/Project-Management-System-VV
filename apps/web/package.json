@@ -3,11 +3,29 @@
   "private": true,
   "type": "module",
   "description": "React SPA: internal UI, later client portal and partner app as routes",
-  "exports": {
-    ".": "./src/index.ts"
-  },
   "scripts": {
     "typecheck": "tsc -p tsconfig.json",
-    "test": "vitest run --passWithNoTests"
+    "test": "vitest run --passWithNoTests",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@better-auth/passkey": "1.7.12",
+    "@ocs/contracts": "workspace:*",
+    "@ocs/i18n": "workspace:*",
+    "@ocs/ui": "workspace:*",
+    "@tanstack/react-router": "1.170.46",
+    "better-auth": "1.7.12",
+    "qrcode": "1.5.4",
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
+  },
+  "devDependencies": {
+    "@types/qrcode": "1.5.6",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vitejs/plugin-react": "6.1.2",
+    "vite": "8.3.5"
   }
 }
