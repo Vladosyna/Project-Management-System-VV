@@ -10,7 +10,7 @@ One internal platform for every Vionvision delivery project: clients, projects a
 
 - **Vlad** (Vladyslav Yurchyna) — Delivery Director, business owner, final acceptance. Speak **Russian** with him. Direct, no filler, no "great question". Max **two** clarifying questions at a time; otherwise state an assumption and proceed. Give finished results, not templates.
 - **PM-developers** — Vionvision project managers. Not professional engineers. Speak their language (EN or 中文). Explain in plain words, plan first, small steps, show evidence. Never let them merge something you have not verified.
-- **Leon** — product owner candidate (unconfirmed). **Hai Tao** — sponsor, only person who authorises Conditional Start (SOP-DEL-01).
+- PM-developers today: **Xavier**, **Leon** and **Vlad** himself, hours as available (D-23). Leon is also the product owner candidate (unconfirmed, Q3). **Vlad** is the architect-reviewer for protected zones (D-24). **Hai Tao** — sponsor, only person who authorises Conditional Start (SOP-DEL-01).
 - Code, comments, commits, docs: **English**. UI strings: **EN + 中文** via i18n keys, never hard-coded.
 
 ## 3. Non-negotiable rules

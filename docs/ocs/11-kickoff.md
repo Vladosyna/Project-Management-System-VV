@@ -6,7 +6,7 @@
 2. **Check the environment**: Node ≥ 20, pnpm, git branch. Run `node .claude/hooks/selftest.mjs` — all hook cases must pass. Report the result.
 3. **Confirm with Vlad (in Russian, one message)**:
    - ADR-001: table of P-01…P-10 from `01-decisions.md` with a one-line reason each; ask for "OK" or changes line by line.
-   - Max two open questions: Q1 (which PMs, hours/week) and Q2 (human architect-reviewer). Everything else: note owner, continue.
+   - Max two open questions: Q1 (which PMs, hours/week) and Q2 (human architect-reviewer) — answered 30 Oct 2026 as D-23 and D-24. Everything else: note owner, continue.
 4. **Install vetted skills/plugins** per `10-skills.md`; record versions.
 5. **Branch** `arch/phase-0-skeleton` and execute Phase 0 (05-roadmap.md F0.2 → F0.12) in this order:
    1. F0.2 skeleton → `pnpm verify` green on empty modules

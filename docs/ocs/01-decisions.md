@@ -18,7 +18,7 @@ Rules: a decision here is not re-opened without Vlad's explicit OK. New decision
 | D-12 | 29 Oct 2026 | Client specifics are **templates**: PMI gates G1–G5 and the D−2 check are a gate template on the PMI programme. Base site steps come from SOP-DEL-04: card received → card complete → readiness confirmed → go/no-go (working day before) → installed → accepted. PMI "Part A/B" market forms are replaced by CIP-S / CIP-L forms. | Vlad |
 | D-13 | 29 Oct 2026 | Pilot projects: NEINVER (Standard L), Gebr. Heinemann (platform/algorithms), PMI Transition (Standard S). Not PMI-centric. | Vlad / Claude |
 | D-14 | 29 Oct 2026 | Do not rebuild Kingdee ERP (stock, invoices) or DingTalk OA approvals; integrate read-only later. Do not build a warehouse module in V1. | Vlad / Claude |
-| D-15 | 29 Oct 2026 | Developers are Vionvision PMs working with Claude. Claude builds, coaches and reviews. Protection is mechanical: hooks, lint boundaries, CI, CODEOWNERS, RLS, generators. A human architect-reviewer is still required for protected zones (open: who). | Vlad |
+| D-15 | 29 Oct 2026 | Developers are Vionvision PMs working with Claude. Claude builds, coaches and reviews. Protection is mechanical: hooks, lint boundaries, CI, CODEOWNERS, RLS, generators. A human architect-reviewer is still required for protected zones (Vlad, D-24). | Vlad |
 | D-16 | 28 Oct 2026 | EU hosting (Frankfurt or Amsterdam region); no client data replicated to China; development environments in the EU cloud. | Vlad |
 | D-17 | 28 Oct 2026 | Dates (Leon's, kept): 10 Nov scope & UI sign-off · 10 Nov–5 Dec two sprints · 7 Dec pilot · 10 Dec V1 feature-complete · 22 Dec pilot review · 20 Jan 2027 internal go-live · Feb–Mar V1.1. CNY freeze ≈ 5–13 Feb 2027. | Leon / Vlad |
 | D-18 | 29 Oct 2026 | Project ID format from SOP-DEL-02: `CLIENT-CC-CITY-NNN` (client short code ≤ 8 letters, ISO country, 3-letter city / IATA, running number). It is the primary business key for projects/sites in OCS, in mail subjects and in DingTalk folder names. | SOP-DEL-02 |
@@ -26,6 +26,8 @@ Rules: a decision here is not re-opened without Vlad's explicit OK. New decision
 | D-20 | 29 Oct 2026 | The knowledge base stores credentials in full; credentials are **never** imported into OCS as text. Only into a secret store, if at all. | Claude |
 | D-21 | 29 Oct 2026 | **ADR-001 accepted**: P-01…P-09 below are binding (`docs/ocs/adr/ADR-001-technology-stack.md`). P-10 hosting is deferred to Q4; until then local docker compose only, F0.12 preview/staging waits. | Vlad |
 | D-22 | 29 Oct 2026 | Branches: `main` starts at the bootstrap-pack commit and changes only through PRs; Phase 0 work on `arch/phase-0-skeleton`. Until Q2 is answered Vlad is the interim architect role in CODEOWNERS. | Vlad |
+| D-23 | 30 Oct 2026 | Answers Q1: the PMs who write code are **Xavier, Vlad and Leon**, hours as available (no fixed weekly allocation). They work on `feat/` and `fix/` branches after Phase 0; protected zones stay `arch/`. | Vlad |
+| D-24 | 30 Oct 2026 | Answers Q2: **Vlad is the architect-reviewer** (CODEOWNERS for protected zones), replacing the interim role of D-22. PRs by Xavier or Leon need Vlad's approval. GitHub does not let an author approve their own PR, so Vlad's own `arch/` PRs (including those Claude opens from his account) merge once the required checks are green, with Claude's review in the PR as the second pair of eyes. | Vlad |
 
 ## Proposed at kickoff (ADR-001) — accepted 29 Oct 2026 as D-21 (P-10 deferred)
 
@@ -46,8 +48,6 @@ Rules: a decision here is not re-opened without Vlad's explicit OK. New decision
 
 | # | Question | Owner |
 |---|---|---|
-| Q1 | Which PMs write code, and how many hours per week each? | Vlad |
-| Q2 | Who is the human architect-reviewer for protected zones (platform-team engineer or external)? | Vlad / Hai Tao |
 | Q3 | Is Leon the product owner, with allocated time? | Vlad |
 | Q4 | Hosting provider and region; AI provider with EU endpoint; budget | Hai Tao |
 | Q5 | DingTalk internal app approval and permissions (work notices, bot, cards, Drive read, OA events) | Hai Tao / DingTalk admin |
