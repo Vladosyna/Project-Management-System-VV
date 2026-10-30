@@ -60,7 +60,7 @@ One internal platform for every Vionvision delivery project: clients, projects a
 ## 6. Protected zones (hooks enforce this)
 
 Edits to these paths are blocked unless the branch name starts with `arch/` and the change is reviewed by the architect role (CODEOWNERS):
-`packages/db/**`, `packages/core/identity/**`, `packages/core/permissions/**`, `packages/core/runtime/**`, `packages/contracts/**`, `infra/**`, `.github/**`, `.claude/**`, `CLAUDE.md`, `docs/ocs/01-decisions.md`, every `package.json` and lockfile.
+`packages/db/**`, `packages/core/kernel/**`, `packages/core/identity/**`, `packages/core/permissions/**`, `packages/core/runtime/**`, `packages/contracts/**`, `infra/**`, `.github/**`, `.claude/**`, `docs/ocs/adr/**`, `tools/eslint-plugin/**`, `tools/ci/**`, `tools/generators/**`, `CLAUDE.md`, `docs/ocs/01-decisions.md`, `eslint.config.js`, `turbo.json`, `tsconfig.base.json`, `tsconfig.paths.json`, `pnpm-workspace.yaml`, every `package.json` and lockfile. The list lives in `.claude/hooks/lib.mjs`; `.github/CODEOWNERS` must match it (hooks self-test).
 In Phase 0 Vlad and you work on `arch/` branches to build the skeleton. After Phase 0, PM-developers work on `feat/` and `fix/` branches only.
 
 ## 7. Skills

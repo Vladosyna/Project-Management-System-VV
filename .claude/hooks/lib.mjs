@@ -34,9 +34,11 @@ export function currentBranch(dir) {
 
 export const isArchBranch = (b) => b.startsWith('arch/');
 
-// Protected zones (CLAUDE.md §6). Paths are repo-relative, POSIX separators.
+// Protected zones (CLAUDE.md §6). Paths are repo-relative, POSIX separators. .github/CODEOWNERS must list
+// exactly the same paths — selftest.mjs fails when the two disagree.
 export const PROTECTED_PREFIXES = [
   'packages/db/',
+  'packages/core/kernel/',
   'packages/core/runtime/',
   'packages/core/identity/',
   'packages/core/permissions/',
@@ -44,6 +46,10 @@ export const PROTECTED_PREFIXES = [
   'infra/',
   '.github/',
   '.claude/',
+  'docs/ocs/adr/',
+  'tools/eslint-plugin/',
+  'tools/ci/',
+  'tools/generators/',
 ];
 export const PROTECTED_FILES = [
   'CLAUDE.md',
@@ -54,6 +60,8 @@ export const PROTECTED_FILES = [
   'pnpm-workspace.yaml',
   'turbo.json',
   'tsconfig.base.json',
+  'tsconfig.paths.json',
+  'eslint.config.js',
 ];
 export const PROTECTED_BASENAMES = ['package.json'];
 

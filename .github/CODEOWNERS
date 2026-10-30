@@ -1,7 +1,9 @@
-# Protected zones (CLAUDE.md §6) need the architect role. Interim architect: Vlad (D-22) until Q2 is answered.
+# Protected zones (CLAUDE.md §6) need the architect role: Vlad (D-24). The same paths as
+# .claude/hooks/lib.mjs (PROTECTED_*): the hooks self-test fails when the two lists differ.
 # Enforced only with branch protection "Require review from Code Owners" on main.
 
 /packages/db/                   @Vladosyna
+/packages/core/kernel/          @Vladosyna
 /packages/core/identity/        @Vladosyna
 /packages/core/permissions/     @Vladosyna
 /packages/core/runtime/         @Vladosyna
@@ -14,6 +16,8 @@
 /docs/ocs/adr/                  @Vladosyna
 **/package.json                 @Vladosyna
 /pnpm-lock.yaml                 @Vladosyna
+/package-lock.json              @Vladosyna
+/yarn.lock                      @Vladosyna
 /pnpm-workspace.yaml            @Vladosyna
 /turbo.json                     @Vladosyna
 /tsconfig.base.json             @Vladosyna
@@ -21,3 +25,4 @@
 /eslint.config.js               @Vladosyna
 /tools/eslint-plugin/           @Vladosyna
 /tools/ci/                      @Vladosyna
+/tools/generators/              @Vladosyna
