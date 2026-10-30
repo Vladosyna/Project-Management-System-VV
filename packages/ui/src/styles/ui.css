@@ -246,3 +246,85 @@ a:hover {
   background: var(--ocs-navy);
   color: var(--ocs-on-brand);
 }
+
+/* Sign-in screens */
+.ocs-auth {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  box-sizing: border-box;
+}
+.ocs-auth__card {
+  width: 100%;
+  max-width: 420px;
+  background: var(--ocs-surface);
+  border: 1px solid var(--ocs-rule);
+  padding: 32px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.ocs-auth__logo {
+  width: 160px;
+  height: auto;
+}
+.ocs-auth__title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 500;
+  font-family: var(--ocs-font-display);
+}
+
+.ocs-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.ocs-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.ocs-field__label {
+  font-size: 13px;
+  font-weight: 700;
+}
+.ocs-field__input {
+  min-height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--ocs-rule);
+  border-radius: var(--ocs-radius-sm);
+  font-size: 14px;
+  font-family: inherit;
+}
+.ocs-field__hint {
+  font-size: 12px;
+  color: var(--ocs-ink-muted);
+}
+.ocs-form-message {
+  margin: 0;
+  padding: 10px 12px;
+  font-size: 13px;
+}
+.ocs-form-message--error {
+  background: var(--ocs-danger-tint);
+  color: var(--ocs-danger-ink);
+}
+.ocs-form-message--ok {
+  background: var(--ocs-success-tint);
+  color: var(--ocs-success-ink);
+}
+.ocs-qr {
+  width: 192px;
+  height: 192px;
+}
+.ocs-secret {
+  font-family: monospace;
+  font-size: 13px;
+  word-break: break-all;
+  background: var(--ocs-surface-alt);
+  padding: 8px;
+}

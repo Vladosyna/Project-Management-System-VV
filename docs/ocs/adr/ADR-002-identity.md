@@ -16,7 +16,7 @@
 ## Known gaps — for the security review before any external user (03 §7)
 
 - TOTP codes are not single-use within their 30-second window (better-auth 1.7 has no replay check).
-- Passkey ceremonies are not yet covered by automated tests (needs a browser; Playwright virtual authenticator in the e2e suite, F0.9).
+- ~~Passkey ceremonies not covered by automated tests~~ — covered since F0.9b: `tools/e2e` registers a passkey on a Chromium virtual authenticator and signs in with it.
 - Rate limiting relies on better-auth's built-in limiter (in-memory per instance); a shared store is needed with more than one API instance.
 - No self-service password reset yet (needs staff email sending; until then an admin re-invites).
 - Archiving and role changes are admin commands in a follow-up slice; the archive flag is honoured everywhere already.

@@ -15,6 +15,7 @@
     "format:check": "prettier --check .",
     "test": "turbo run test",
     "test:integration": "turbo run test:integration",
+    "e2e": "pnpm --filter @ocs/e2e e2e",
     "test:hooks": "node .claude/hooks/selftest.mjs",
     "test:matrix": "pnpm --filter @ocs/core exec vitest run --project unit permissions",
     "gen:matrix": "tsx packages/core/permissions/gen-matrix.ts",
