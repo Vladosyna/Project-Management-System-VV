@@ -20,3 +20,11 @@ export function createDatabase(connectionString: string): Database {
     close: () => pool.end(),
   };
 }
+
+/**
+ * Pool for better-auth (identity). Every connection runs as role ocs_auth with search_path auth, so the
+ * login tables are reachable only through it and business tables not at all — whatever the login role.
+ */
+export function createAuthPool(connectionString: string): pg.Pool {
+  return new pg.Pool({ connectionString, max: 5, options: '-c role=ocs_auth -c search_path=auth' });
+}

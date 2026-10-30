@@ -2,7 +2,7 @@
   "name": "ocs",
   "private": true,
   "type": "module",
-  "description": "Vionvision Operations & Collaboration System \u2014 modular monolith (docs/ocs/02-architecture.md)",
+  "description": "Vionvision Operations & Collaboration System — modular monolith (docs/ocs/02-architecture.md)",
   "packageManager": "pnpm@10.28.0",
   "engines": {
     "node": ">=22.12.0"

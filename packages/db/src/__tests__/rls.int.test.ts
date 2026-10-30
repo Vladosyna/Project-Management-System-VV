@@ -59,10 +59,10 @@ afterAll(async () => {
 });
 
 describe('catalogue guarantees (apply to every table, present and future)', () => {
-  it('every table in the public schema has row-level security enabled', async () => {
+  it('every table in the public and auth schemas has row-level security enabled', async () => {
     const res = await database.pool.query<{ relname: string }>(
       `SELECT c.relname FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace
-       WHERE n.nspname = 'public' AND c.relkind = 'r' AND NOT c.relrowsecurity`,
+       WHERE n.nspname IN ('public', 'auth') AND c.relkind = 'r' AND NOT c.relrowsecurity`,
     );
     expect(res.rows.map((r) => r.relname)).toEqual([]);
   });
@@ -77,19 +77,49 @@ describe('catalogue guarantees (apply to every table, present and future)', () =
     expect(res.rows.map((r) => r.table_name)).toEqual([]);
   });
 
-  it('ocs_app is not a superuser, cannot bypass RLS and owns no table', async () => {
-    const role = await database.pool.query<{ rolsuper: boolean; rolbypassrls: boolean }>(
-      `SELECT rolsuper, rolbypassrls FROM pg_roles WHERE rolname = 'ocs_app'`,
+  it('ocs_app and ocs_auth are not superusers, cannot bypass RLS and own no table', async () => {
+    const roles = await database.pool.query<{ rolname: string; rolsuper: boolean; rolbypassrls: boolean }>(
+      `SELECT rolname, rolsuper, rolbypassrls FROM pg_roles WHERE rolname IN ('ocs_app', 'ocs_auth') ORDER BY rolname`,
     );
-    expect(role.rows).toEqual([{ rolsuper: false, rolbypassrls: false }]);
-    const owned = await database.pool.query(`SELECT 1 FROM pg_tables WHERE tableowner = 'ocs_app'`);
+    expect(roles.rows).toEqual([
+      { rolname: 'ocs_app', rolsuper: false, rolbypassrls: false },
+      { rolname: 'ocs_auth', rolsuper: false, rolbypassrls: false },
+    ]);
+    const owned = await database.pool.query(
+      `SELECT 1 FROM pg_tables WHERE tableowner IN ('ocs_app', 'ocs_auth')`,
+    );
     expect(owned.rowCount).toBe(0);
+  });
+
+  it('business code (ocs_app) cannot read credentials: no access to accounts, TOTP secrets, passkeys or sessions', async () => {
+    const res = await database.pool.query<{ table_name: string }>(
+      `SELECT DISTINCT table_name FROM information_schema.role_table_grants
+       WHERE grantee = 'ocs_app' AND table_schema = 'auth' ORDER BY table_name`,
+    );
+    expect(res.rows.map((r) => r.table_name)).toEqual(['invitation', 'user_role']);
+    const columns = await database.pool.query<{ column_name: string }>(
+      `SELECT column_name FROM information_schema.column_privileges
+       WHERE grantee = 'ocs_app' AND table_schema = 'auth' AND table_name = 'user' ORDER BY column_name`,
+    );
+    expect(columns.rows.map((r) => r.column_name)).toEqual([
+      'archivedAt',
+      'createdAt',
+      'email',
+      'id',
+      'kind',
+      'name',
+      'twoFactorEnabled',
+    ]);
   });
 
   it('ocs_app has no DELETE or TRUNCATE privilege on any table (archive, never delete)', async () => {
     const res = await database.pool.query<{ table_name: string; privilege_type: string }>(
       `SELECT table_name, privilege_type FROM information_schema.role_table_grants
-       WHERE grantee = 'ocs_app' AND privilege_type IN ('DELETE', 'TRUNCATE')`,
+       WHERE grantee = 'ocs_app' AND privilege_type IN ('DELETE', 'TRUNCATE')
+       UNION ALL
+       SELECT table_name, privilege_type FROM information_schema.role_table_grants
+       WHERE grantee = 'ocs_auth' AND privilege_type IN ('DELETE', 'TRUNCATE')
+         AND table_name NOT IN ('session', 'verification', 'twoFactor', 'passkey')`,
     );
     expect(res.rows).toEqual([]);
   });

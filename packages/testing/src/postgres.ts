@@ -56,3 +56,30 @@ export async function createTestDatabase(serverUrl: string): Promise<TestDatabas
     },
   };
 }
+
+/** Counts rows as the database owner (bypassing RLS) — for tests that check what was really stored. */
+export async function countRows(databaseUrl: string, from: string, params: unknown[] = []): Promise<number> {
+  const client = new pg.Client({ connectionString: databaseUrl });
+  await client.connect();
+  try {
+    const res = await client.query<{ n: number }>(`SELECT count(*)::int AS n FROM ${from}`, params);
+    return res.rows[0]?.n ?? 0;
+  } finally {
+    await client.end();
+  }
+}
+
+/** Runs one statement as the database owner — test set-up only, e.g. a state no command produces yet. */
+export async function runAsOwner(
+  databaseUrl: string,
+  statement: string,
+  params: unknown[] = [],
+): Promise<void> {
+  const client = new pg.Client({ connectionString: databaseUrl });
+  await client.connect();
+  try {
+    await client.query(statement, params);
+  } finally {
+    await client.end();
+  }
+}

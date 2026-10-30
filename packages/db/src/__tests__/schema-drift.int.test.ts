@@ -3,7 +3,16 @@
 import { afterAll, beforeAll, expect, inject, it } from 'vitest';
 import { getTableConfig, type PgTable } from 'drizzle-orm/pg-core';
 import { createTestDatabase, type TestDatabase } from '@ocs/testing';
-import { auditEvent, createDatabase, migrateUp, outbox, type Database } from '../index.ts';
+import {
+  auditEvent,
+  authUser,
+  createDatabase,
+  invitation,
+  migrateUp,
+  outbox,
+  userRole,
+  type Database,
+} from '../index.ts';
 
 let testDb: TestDatabase;
 let database: Database;
@@ -19,18 +28,20 @@ afterAll(async () => {
   await testDb.drop();
 });
 
-it.each([auditEvent, outbox].map((t) => [getTableConfig(t as PgTable).name, t] as const))(
-  'Drizzle definition of %s matches the migrated table',
-  async (name, table) => {
-    const res = await database.pool.query<{ column_name: string; is_nullable: 'YES' | 'NO' }>(
-      `SELECT column_name, is_nullable FROM information_schema.columns
-       WHERE table_schema = 'public' AND table_name = $1 ORDER BY column_name`,
-      [name],
-    );
-    const inDb = res.rows.map((r) => `${r.column_name}${r.is_nullable === 'NO' ? ' not null' : ''}`);
-    const inDrizzle = getTableConfig(table)
-      .columns.map((c) => `${c.name}${c.notNull ? ' not null' : ''}`)
-      .sort();
-    expect(inDrizzle).toEqual(inDb);
-  },
-);
+it.each(
+  [auditEvent, outbox, authUser, invitation, userRole].map((t) => {
+    const c = getTableConfig(t as PgTable);
+    return [`${c.schema ?? 'public'}.${c.name}`, t] as const;
+  }),
+)('Drizzle definition of %s matches the migrated table', async (name, table) => {
+  const res = await database.pool.query<{ column_name: string; is_nullable: 'YES' | 'NO' }>(
+    `SELECT column_name, is_nullable FROM information_schema.columns
+       WHERE table_schema = $1 AND table_name = $2 ORDER BY column_name`,
+    name.split('.'),
+  );
+  const inDb = res.rows.map((r) => `${r.column_name}${r.is_nullable === 'NO' ? ' not null' : ''}`);
+  const inDrizzle = getTableConfig(table)
+    .columns.map((c) => `${c.name}${c.notNull ? ' not null' : ''}`)
+    .sort();
+  expect(inDrizzle).toEqual(inDb);
+});

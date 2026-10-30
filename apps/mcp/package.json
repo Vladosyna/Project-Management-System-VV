@@ -2,7 +2,7 @@
   "name": "@ocs/mcp",
   "private": true,
   "type": "module",
-  "description": "MCP server for personal AI agents, OAuth as the user \u2014 January 2027",
+  "description": "MCP server for personal AI agents, OAuth as the user — January 2027",
   "exports": {
     ".": "./src/index.ts"
   },

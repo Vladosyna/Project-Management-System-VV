@@ -37,6 +37,7 @@ export const isArchBranch = (b) => b.startsWith('arch/');
 // Protected zones (CLAUDE.md §6). Paths are repo-relative, POSIX separators.
 export const PROTECTED_PREFIXES = [
   'packages/db/',
+  'packages/core/runtime/',
   'packages/core/identity/',
   'packages/core/permissions/',
   'packages/contracts/',

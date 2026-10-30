@@ -5,6 +5,9 @@ External roles (`client`, `partner`) are switched off in the checker until the V
 
 | Permission | What it allows | director | pm | sales | rnd | finance | management | sponsor | admin | client | partner | system |
 |---|---|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| `identity.invitation.accept` | Grant the invited roles once the invited person has set a password (system only) |  |  |  |  |  |  |  |  |  |  | ✓ |
+| `identity.invitation.bootstrapAdmin` | Invite the first admin while no user exists (system only, installation) |  |  |  |  |  |  |  |  |  |  | ✓ |
+| `identity.invitation.readByToken` | Look up an open invitation by its link token (system only) |  |  |  |  |  |  |  |  |  |  | ✓ |
 | `identity.self.read` | See own profile, roles and sessions | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |  |
 | `identity.user.archive` | Archive (deactivate) a user — never delete |  |  |  |  |  |  |  | ✓ |  |  |  |
 | `identity.user.assignRoles` | Grant or remove roles of a user |  |  |  |  |  |  |  | ✓ |  |  |  |

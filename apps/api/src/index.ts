@@ -1,2 +1,2 @@
-// @ocs/api — HTTP API (Hono + zod-openapi). Thin: auth session → core → error mapping.
-export {};
+// @ocs/api — HTTP API (Hono). Thin: auth session → core → error mapping.
+export { createApp } from './app.ts';

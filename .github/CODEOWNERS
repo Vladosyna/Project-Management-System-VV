@@ -4,6 +4,7 @@
 /packages/db/                   @Vladosyna
 /packages/core/identity/        @Vladosyna
 /packages/core/permissions/     @Vladosyna
+/packages/core/runtime/         @Vladosyna
 /packages/contracts/            @Vladosyna
 /infra/                         @Vladosyna
 /.github/                       @Vladosyna

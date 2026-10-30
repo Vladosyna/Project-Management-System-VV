@@ -30,6 +30,7 @@ const cases = [
   ['protect-paths.mjs', f('apps/web/src/App.tsx'), 'feat/x', 0, 'normal file on feat'],
   ['protect-paths.mjs', f('packages/db/schema.ts'), 'feat/x', 2, 'db on feat blocked'],
   ['protect-paths.mjs', f('packages/db/schema.ts'), 'arch/x', 0, 'db on arch allowed'],
+  ['protect-paths.mjs', f('packages/core/runtime/index.ts'), 'feat/x', 2, 'runtime on feat blocked'],
   ['protect-paths.mjs', f('apps/web/package.json'), 'feat/x', 2, 'package.json blocked'],
   ['protect-paths.mjs', f('.claude/settings.json'), 'feat/x', 2, '.claude blocked'],
   ['protect-paths.mjs', f('CLAUDE.md'), 'main', 2, 'CLAUDE.md on main blocked'],

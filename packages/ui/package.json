@@ -2,7 +2,7 @@
   "name": "@ocs/ui",
   "private": true,
   "type": "module",
-  "description": "Components on Vionvision design tokens \u2014 the only place for colours and fonts",
+  "description": "Components on Vionvision design tokens — the only place for colours and fonts",
   "exports": {
     ".": "./src/index.ts"
   },

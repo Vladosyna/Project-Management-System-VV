@@ -1,0 +1,52 @@
+// HTTP API (ADR-001 P-03). Thin: session → actor → core command/query → JSON. No business logic here.
+import { Hono } from 'hono';
+import type { Actor } from '@ocs/contracts';
+import { inviteUser, me } from '@ocs/core/identity';
+import type { Runtime } from '@ocs/core/runtime';
+import { errorResponse } from './errors.ts';
+
+interface Env {
+  Variables: { actor: Actor };
+}
+
+export function createApp(rt: Runtime): Hono {
+  const app = new Hono();
+  app.onError((err, c) => errorResponse(err, c));
+
+  // better-auth: sign-in, sign-out, session, TOTP, passkeys. Direct sign-up is refused (invitation only).
+  app.on(['GET', 'POST'], '/api/auth/*', (c) => rt.auth.handler(c.req.raw));
+
+  app.post('/api/invitations/accept', async (c) => {
+    const { userId, headers } = await rt.identity.acceptInvitation(await c.req.json(), c.req.raw.headers);
+    const res = c.json({ userId }, 201);
+    for (const cookie of headers.getSetCookie()) res.headers.append('set-cookie', cookie);
+    return res;
+  });
+
+  // Everything else needs a signed-in, unarchived user with MFA set up.
+  const api = new Hono<Env>();
+  api.use('*', async (c, next) => {
+    const session = await rt.auth.api.getSession({ headers: c.req.raw.headers });
+    if (!session) return c.json({ error: 'unauthenticated' }, 401);
+    if (session.user.twoFactorEnabled !== true) {
+      return c.json({ error: 'mfa_required', message: 'Set up two-factor authentication first' }, 403);
+    }
+    const actor = await rt.identity.loadActor(session.user.id);
+    if (!actor) return c.json({ error: 'unauthenticated' }, 401);
+    c.set('actor', actor);
+    await next();
+    return undefined;
+  });
+
+  api.get('/me', async (c) => c.json(await rt.kernel.read(me, c.get('actor'), {})));
+
+  api.post('/users/invitations', async (c) => {
+    const result = await rt.kernel.execute(inviteUser, c.get('actor'), await c.req.json(), 'web');
+    // The token travels in the URL fragment, so it never reaches server or proxy logs.
+    const link = `${rt.baseURL}/accept-invitation#${result.token}`;
+    return c.json({ invitationId: result.invitationId, expiresAt: result.expiresAt, link }, 201);
+  });
+
+  app.route('/api', api);
+  return app;
+}
