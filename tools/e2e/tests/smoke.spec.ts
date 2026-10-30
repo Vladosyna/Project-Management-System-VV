@@ -80,6 +80,20 @@ test('a passkey can be added and then used to sign in', async ({ page }) => {
   await expectShell(page);
 });
 
+/** Screens built with `pnpm gen:screen` — each must open for a signed-in user and show its title. */
+const SCREENS: { path: string; heading: string }[] = [
+  // gen:screens
+];
+
+test('every built screen opens and shows its title', async ({ page }) => {
+  test.skip(SCREENS.length === 0, 'no screens built yet');
+  await signInWithPassword(page);
+  for (const screen of SCREENS) {
+    await page.goto(screen.path);
+    await expect(page.getByRole('heading', { level: 1, name: screen.heading })).toBeVisible();
+  }
+});
+
 async function signInWithPassword(page: Page) {
   await page.goto('/login');
   await page.getByLabel('Email').fill(process.env.OCS_E2E_ADMIN_EMAIL ?? '');

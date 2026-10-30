@@ -1,6 +1,6 @@
 // Generators for packages/core: module, command, query, rule (02-architecture §3, ocs-new-module, ocs-sop-rule).
 // Output must pass `pnpm verify` unchanged — `pnpm gen:selftest` proves it in CI.
-import { assertModule, assertPermissionKey, camel, sentence, words } from './names.ts';
+import { assertModule, assertPermissionKey, camel, quote, sentence, words } from './names.ts';
 import type { Change, Plan } from './plan.ts';
 
 /** Generated permissions.ts files keep this line; gen:command and gen:query add entries above it. */
@@ -17,7 +17,6 @@ export interface AccessOptions {
 }
 
 const dir = (module: string): string => `packages/core/${module}`;
-const quote = (s: string): string => `'${s.replace(/\\/g, '\\\\').replace(/'/g, "\\'")}'`;
 
 export function modulePlan(module: string, purpose: string): Plan {
   assertModule(module);
