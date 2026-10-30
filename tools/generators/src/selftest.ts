@@ -1,5 +1,6 @@
 // F0.10 acceptance: every generator's output passes `pnpm verify` unchanged. Generates a throw-away module
-// with a command, a query and a rule, runs verify and the permission matrix, then restores the tree.
+// with a command, a query and a rule, and a client-data table migration; runs verify and the permission
+// matrix, then puts the tree back exactly as it was (it starts clean).
 // Needs a clean working tree (CI checkout, or commit/stash first) and Docker for the integration tests.
 import { execFileSync } from 'node:child_process';
 import { rmSync } from 'node:fs';
@@ -18,14 +19,19 @@ const runs = [
   ['command', 'genprobe', 'close-probe', '--roles', 'pm'],
   ['query', 'genprobe', 'probe-list', '--roles', 'pm,director'],
   ['rule', 'genprobe', 'probe-limit', '--cite', 'SOP-DEL-01 §8', '--sop-version', '1.3'],
+  ['migration', 'add-genprobe-note', '--table', 'genprobe-note'],
 ];
 
 try {
   for (const argv of runs) generate(argv);
   execFileSync('pnpm', ['verify'], { cwd: repoRoot, stdio: 'inherit' });
   execFileSync('pnpm', ['test:matrix'], { cwd: repoRoot, stdio: 'inherit' });
-  console.log('\ngen:selftest: generated module, command, query and rule pass verify unchanged.');
+  console.log('\ngen:selftest: generated module, command, query, rule and migration pass verify unchanged.');
 } finally {
+  // Also after a failure half-way: every change since the clean start is generator output.
+  git('checkout', '--', '.');
+  for (const file of git('ls-files', '--others', '--exclude-standard').split('\n').filter(Boolean)) {
+    rmSync(path.join(repoRoot, file), { force: true });
+  }
   rmSync(path.join(repoRoot, 'packages/core/genprobe'), { recursive: true, force: true });
-  git('checkout', '--', 'packages/core/permissions/all.ts', 'docs/ocs/permission-matrix.md');
 }

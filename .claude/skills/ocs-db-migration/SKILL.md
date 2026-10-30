@@ -6,7 +6,7 @@ description: Use for any database schema change in OCS — additive, reversible 
 
 Only on an `arch/` branch; needs architect review (CODEOWNERS).
 
-1. `pnpm gen:migration <name>` — creates up/down SQL (Drizzle) + RLS policy template + policy test stub.
+1. `pnpm gen:migration <name> [--table <table-name>]` — next-numbered up/down SQL. With `--table`: a client-data table (`client_id`, `visibility`, `archived_at`, RLS for staff and clients, no DELETE grant), its Drizzle definition in `schema.ts` and export, and an RLS test (staff / own client / other client / partner / client write).
 2. Rules:
    - Additive first: add nullable column → backfill (command or migration script) → constrain later.
    - No destructive change without a down path and Vlad's OK; never drop a column with data in the same release that stops writing it.

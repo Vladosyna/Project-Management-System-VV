@@ -4,6 +4,7 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { commandPlan, modulePlan, queryPlan, rulePlan } from '../core.ts';
+import { migrationPlan, nextMigrationNumber } from '../db.ts';
 import { applyPlan } from '../plan.ts';
 
 let root: string;
@@ -95,5 +96,45 @@ describe('gen:rule', () => {
   it('refuses a rule without a clause or version', () => {
     expect(() => rulePlan('intake', 'blocking-items', 'SOP-DEL-01', '1.3')).toThrow(/clause/);
     expect(() => rulePlan('intake', 'blocking-items', 'SOP-DEL-01 §8', 'v1')).toThrow(/sop-version/);
+  });
+});
+
+describe('gen:migration', () => {
+  beforeEach(() => {
+    mkdirSync(path.join(root, 'packages/db/src'), { recursive: true });
+    writeFileSync(
+      path.join(root, 'packages/db/src/schema.ts'),
+      "import { pgTable } from 'drizzle-orm/pg-core';\n",
+    );
+    writeFileSync(
+      path.join(root, 'packages/db/src/index.ts'),
+      "export { createDatabase } from './client.ts';\n",
+    );
+  });
+
+  it('numbers after the existing migrations', () => {
+    expect(nextMigrationNumber(['0001_platform.up.sql', '0002_identity.down.sql', '.gitkeep'])).toBe('0003');
+    expect(nextMigrationNumber([])).toBe('0001');
+  });
+
+  it('a plain migration is an empty up/down pair', () => {
+    const touched = applyPlan(root, migrationPlan('add-index', '0003'));
+    expect(touched).toEqual([
+      'packages/db/migrations/0003_add_index.up.sql',
+      'packages/db/migrations/0003_add_index.down.sql',
+    ]);
+  });
+
+  it('--table adds a client-data table with RLS, its Drizzle definition, export and RLS test', () => {
+    applyPlan(root, migrationPlan('add-site-note', '0003', 'site-note'));
+    const up = read('packages/db/migrations/0003_add_site_note.up.sql');
+    expect(up).toContain('client_id   uuid NOT NULL');
+    expect(up).toContain('ALTER TABLE site_note ENABLE ROW LEVEL SECURITY;');
+    expect(up).toContain('GRANT SELECT, INSERT, UPDATE ON site_note TO ocs_app;');
+    expect(up).not.toMatch(/GRANT[^;]*DELETE/);
+    expect(read('packages/db/migrations/0003_add_site_note.down.sql')).toContain('DROP TABLE site_note;');
+    expect(read('packages/db/src/schema.ts')).toContain("export const siteNote = pgTable('site_note', {");
+    expect(read('packages/db/src/index.ts')).toContain("export { siteNote } from './schema.ts';");
+    expect(read('packages/db/src/__tests__/site_note.rls.int.test.ts')).toContain('a partner sees nothing');
   });
 });
