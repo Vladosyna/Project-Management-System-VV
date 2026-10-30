@@ -3,8 +3,7 @@
 import { randomUUID } from 'node:crypto';
 import { afterAll, beforeAll, beforeEach, describe, expect, inject, it } from 'vitest';
 import { z } from 'zod';
-import { sql } from 'drizzle-orm';
-import { createDatabase, migrateUp, type Database } from '@ocs/db';
+import { createDatabase, migrateUp, sql, type Database } from '@ocs/db';
 import type { Actor } from '@ocs/contracts';
 import { createTestDatabase, type TestDatabase } from '@ocs/testing';
 import {

@@ -18,6 +18,18 @@ export const identityPermissions = {
     description: 'Archive (deactivate) a user — never delete',
     roles: ['admin'],
   }),
+  acceptInvitation: permission('identity.invitation.accept', {
+    description: 'Grant the invited roles once the invited person has set a password (system only)',
+    roles: ['system'],
+  }),
+  readInvitationByToken: permission('identity.invitation.readByToken', {
+    description: 'Look up an open invitation by its link token (system only)',
+    roles: ['system'],
+  }),
+  bootstrapAdmin: permission('identity.invitation.bootstrapAdmin', {
+    description: 'Invite the first admin while no user exists (system only, installation)',
+    roles: ['system'],
+  }),
   readSelf: permission('identity.self.read', {
     description: 'See own profile, roles and sessions',
     roles: [

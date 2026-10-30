@@ -16,3 +16,4 @@ export { denyAll, grantOf, permission, registeredPermissions } from './permissio
 export type { PermissionChecker, PermissionGrant, PermissionKey } from './permissions.ts';
 export { DomainError, NotFound, Forbidden, RuleViolation, Conflict, ValidationFailed } from './errors.ts';
 export type { DomainErrorCode, ValidationIssue } from './errors.ts';
+export { systemActor } from './system-actor.ts';

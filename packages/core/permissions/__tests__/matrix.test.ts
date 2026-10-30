@@ -34,7 +34,7 @@ describe('registry', () => {
       (d) =>
         !d.startsWith('.') &&
         statSync(path.join(coreDir, d)).isDirectory() &&
-        !['kernel', 'permissions', 'node_modules'].includes(d),
+        !['kernel', 'permissions', 'runtime', 'node_modules'].includes(d),
     );
     const all = readFileSync(path.join(coreDir, 'permissions/all.ts'), 'utf8');
     const missing = modules.filter((m) => !all.includes(`'../${m}/index.ts'`));

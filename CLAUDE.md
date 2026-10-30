@@ -59,7 +59,7 @@ One internal platform for every Vionvision delivery project: clients, projects a
 ## 6. Protected zones (hooks enforce this)
 
 Edits to these paths are blocked unless the branch name starts with `arch/` and the change is reviewed by the architect role (CODEOWNERS):
-`packages/db/**`, `packages/core/identity/**`, `packages/core/permissions/**`, `packages/contracts/**`, `infra/**`, `.github/**`, `.claude/**`, `CLAUDE.md`, `docs/ocs/01-decisions.md`, every `package.json` and lockfile.
+`packages/db/**`, `packages/core/identity/**`, `packages/core/permissions/**`, `packages/core/runtime/**`, `packages/contracts/**`, `infra/**`, `.github/**`, `.claude/**`, `CLAUDE.md`, `docs/ocs/01-decisions.md`, every `package.json` and lockfile.
 In Phase 0 Vlad and you work on `arch/` branches to build the skeleton. After Phase 0, PM-developers work on `feat/` and `fix/` branches only.
 
 ## 7. Skills

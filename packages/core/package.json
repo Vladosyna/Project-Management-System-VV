@@ -12,9 +12,10 @@
     "test:integration": "vitest run --project integration"
   },
   "dependencies": {
+    "@better-auth/passkey": "1.7.12",
     "@ocs/contracts": "workspace:*",
     "@ocs/db": "workspace:*",
-    "drizzle-orm": "0.45.4",
+    "better-auth": "1.7.12",
     "uuid": "14.0.3",
     "zod": "4.6.7"
   },

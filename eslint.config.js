@@ -126,7 +126,13 @@ export const ocsRules = [
   },
   {
     files: CODE,
-    ignores: ['**/repository.ts', 'packages/db/**', 'packages/core/kernel/**', 'packages/testing/**'],
+    ignores: [
+      '**/repository.ts',
+      'packages/db/**',
+      'packages/core/kernel/**',
+      'packages/core/runtime/**',
+      'packages/testing/**',
+    ],
     plugins: { ocs },
     rules: { 'ocs/no-db-import': 'error' },
   },
