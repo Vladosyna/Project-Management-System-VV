@@ -44,6 +44,7 @@ One internal platform for every Vionvision delivery project: clients, projects a
 | How you review and control results | `docs/ocs/09-review-protocol.md` |
 | Third-party skills and plugins (vetted list) | `docs/ocs/10-skills.md` |
 | Session kickoff and Phase 0 plan | `docs/ocs/11-kickoff.md` |
+| How PM-developers contribute (EN + 中文) | `docs/ocs/contributing.md` |
 | Mockups (12 screens) and PRD v0.3 | `docs/ocs/reference/` |
 
 ## 5. How every task runs
