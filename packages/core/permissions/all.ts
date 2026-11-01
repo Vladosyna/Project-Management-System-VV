@@ -2,3 +2,4 @@
 // permissions). `pnpm gen:module` appends a line; matrix.test.ts fails when a module is missing here.
 import '../calendar/index.ts';
 import '../identity/index.ts';
+import '../org/index.ts';

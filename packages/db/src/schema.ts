@@ -74,3 +74,12 @@ export const userRole = authSchema.table('user_role', {
   grantedAt: timestamp('granted_at', { withTimezone: true }).notNull().defaultNow(),
   revokedAt: timestamp('revoked_at', { withTimezone: true }),
 });
+
+/** Migration 0003. The tenant: its id is the client id other tables carry. Archive, never delete. */
+export const client = pgTable('client', {
+  id: uuid('id').primaryKey(),
+  shortCode: text('short_code').notNull().unique(),
+  name: text('name').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  archivedAt: timestamp('archived_at', { withTimezone: true }),
+});
