@@ -10,3 +10,4 @@ export { actorKinds, auditEvent, authUser, invitation, outbox, userRole } from '
 export type { ActorKind } from './schema.ts';
 // Query helpers, re-exported so every package uses this package's drizzle-orm instance.
 export { and, asc, desc, eq, inArray, isNull, isNotNull, or, sql } from 'drizzle-orm';
+export { client } from './schema.ts';
