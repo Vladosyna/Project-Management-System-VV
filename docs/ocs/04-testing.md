@@ -45,6 +45,8 @@
 | `pnpm e2e` | Playwright against local stack with seed | Before PR touching UI or flows |
 | `pnpm test:matrix` | permission matrix + RLS suite | Every PR (CI) |
 
+Integration tests and `pnpm e2e` start PostgreSQL with Testcontainers (Docker). To use an existing server instead, set `OCS_TEST_DATABASE_URL` (a role with CREATEDB and CREATEROLE; never a database with real data). Turbo runs tasks in strict env mode, so the variable reaches `test:integration` only because `turbo.json` lists it in `passThroughEnv`; `pnpm e2e` does not run through turbo and reads it directly.
+
 ## 6. Coverage
 
 Changed lines ≥ 80% (CI, diff coverage). Rules and permissions modules ≥ 95%. Coverage never replaces rule 4.

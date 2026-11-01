@@ -9,7 +9,8 @@
     "typecheck": {},
     "test": {},
     "test:integration": {
-      "cache": false
+      "cache": false,
+      "passThroughEnv": ["OCS_TEST_DATABASE_URL"]
     }
   }
 }

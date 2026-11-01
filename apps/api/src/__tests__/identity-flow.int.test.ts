@@ -236,10 +236,40 @@ describe('identity (F0.8)', () => {
     expect(signIn.status).toBeGreaterThanOrEqual(400);
   });
 
+  it('when granting the roles fails after the account exists, the same link and password finish joining', async () => {
+    const LATE = { email: 'person07@example.test', name: 'Person 07', password: 'late joiner passphrase' };
+    const invite = await admin.post('/api/users/invitations', { email: LATE.email, roles: ['finance'] });
+    const token = tokenOf((invite.json as { link: string }).link);
+
+    // The grant step breaks after better-auth has created the account.
+    await runAsOwner(testDb.url, 'REVOKE INSERT ON auth.user_role FROM ocs_app');
+    const failed = await new Browser().post('/api/invitations/accept', { token, ...LATE });
+    await runAsOwner(testDb.url, 'GRANT INSERT ON auth.user_role TO ocs_app');
+    expect(failed.status).toBe(500);
+    expect(await count('auth."user" WHERE email = $1', [LATE.email])).toBe(1);
+    expect(
+      await count('auth.user_role r JOIN auth."user" u ON u.id = r.user_id WHERE u.email = $1', [LATE.email]),
+    ).toBe(0);
+
+    // Someone else holding the link cannot take the half-created account.
+    const intruder = await new Browser().post('/api/invitations/accept', {
+      token,
+      name: 'Person 08',
+      password: 'not the right passphrase',
+    });
+    expect(intruder.status).toBe(401);
+
+    const late = new Browser();
+    expect((await late.post('/api/invitations/accept', { token, ...LATE })).status).toBe(201);
+    await enableTotp(late, LATE.password);
+    expect((await late.get('/api/me')).json).toMatchObject({ email: LATE.email, roles: ['finance'] });
+    expect((await new Browser().post('/api/invitations/accept', { token, ...LATE })).status).toBe(404);
+  });
+
   it('every change was audited: invitations and joins, with no token in the audit log', async () => {
     expect(await count(`audit_event WHERE command = 'identity.invitation.bootstrapAdmin'`)).toBe(1);
-    expect(await count(`audit_event WHERE command = 'identity.user.invite'`)).toBe(4);
-    expect(await count(`audit_event WHERE command = 'identity.invitation.accept'`)).toBe(4);
+    expect(await count(`audit_event WHERE command = 'identity.user.invite'`)).toBe(5);
+    expect(await count(`audit_event WHERE command = 'identity.invitation.accept'`)).toBe(5);
     expect(await count(`audit_event WHERE after::text ILIKE '%token%'`)).toBe(0);
   });
 
