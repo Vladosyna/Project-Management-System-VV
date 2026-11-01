@@ -2,15 +2,15 @@
 import { RuleViolation } from '../../kernel/index.ts';
 import { clientShortCodeRule } from './client-short-code.config.ts';
 
-export interface ClientShortCodeInput {
-  readonly value: number;
-}
-
-export function checkClientShortCode(input: ClientShortCodeInput): void {
-  if (input.value > clientShortCodeRule.limit) {
+/** Throws unless `code` is 1 to 8 Latin capital letters. Callers upper-case the input first. */
+export function checkClientShortCode(code: string): void {
+  const { maxLetters, letters, cite } = clientShortCodeRule;
+  let onlyLetters = true;
+  for (const c of code) if (!letters.includes(c)) onlyLetters = false;
+  if (code.length === 0 || code.length > maxLetters || !onlyLetters) {
     throw new RuleViolation(
-      clientShortCodeRule.cite,
-      `${String(input.value)} is above ${String(clientShortCodeRule.limit)}`,
+      cite,
+      `client short code "${code}" must be 1 to ${String(maxLetters)} letters A–Z`,
     );
   }
 }

@@ -75,13 +75,11 @@ export const userRole = authSchema.table('user_role', {
   revokedAt: timestamp('revoked_at', { withTimezone: true }),
 });
 
-/** Migration 0003. Client data: RLS in the migration; archive, never delete. */
+/** Migration 0003. The tenant: its id is the client id other tables carry. Archive, never delete. */
 export const client = pgTable('client', {
   id: uuid('id').primaryKey(),
-  clientId: uuid('client_id').notNull(),
-  visibility: text('visibility', { enum: ['internal', 'client'] })
-    .notNull()
-    .default('internal'),
+  shortCode: text('short_code').notNull().unique(),
+  name: text('name').notNull(),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   archivedAt: timestamp('archived_at', { withTimezone: true }),
 });
