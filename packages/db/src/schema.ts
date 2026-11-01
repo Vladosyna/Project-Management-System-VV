@@ -83,3 +83,21 @@ export const client = pgTable('client', {
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   archivedAt: timestamp('archived_at', { withTimezone: true }),
 });
+
+/** Migration 0004. One SOP-DEL-02 project/site; project_id is immutable (trigger). Archive, never delete. */
+export const site = pgTable('site', {
+  id: uuid('id').primaryKey(),
+  clientId: uuid('client_id').notNull(),
+  projectId: text('project_id').notNull().unique(),
+  countryCode: text('country_code').notNull(),
+  cityCode: text('city_code').notNull(),
+  cityName: text('city_name').notNull(),
+  runningNo: integer('running_no').notNull(),
+  name: text('name').notNull(),
+  standard: text('standard', { enum: ['L', 'S'] }).notNull(),
+  visibility: text('visibility', { enum: ['internal', 'client'] })
+    .notNull()
+    .default('internal'),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  archivedAt: timestamp('archived_at', { withTimezone: true }),
+});
