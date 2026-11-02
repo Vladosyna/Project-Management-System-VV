@@ -28,3 +28,4 @@ External roles (`client`, `partner`) are switched off in the checker until the V
 | `work.action.list` | See open actions by project or owner | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |  |  |  |
 | `work.comment.add` | Comment on a project, @mentioning staff (E5 AC2) | ✓ | ✓ | ✓ | ✓ | ✓ |  | ✓ |  |  |  |  |
 | `work.comment.toAction` | Turn a comment into an action with an owner and a due date (E5 AC2) | ✓ | ✓ |  |  |  |  |  |  |  |  |  |
+| `work.visit.record` | Record a site visit and its action items the same day (SOP-DEL-03 §5.1) | ✓ | ✓ |  | ✓ |  |  |  |  |  |  |  |

@@ -1,5 +1,5 @@
 // work repository — the only place in this module that touches tables.
-import { action, and, asc, authUser, comment, eq, inArray, isNull, site, type Tx } from '@ocs/db';
+import { action, and, asc, authUser, comment, eq, inArray, isNull, site, visit, type Tx } from '@ocs/db';
 
 export type ActionRow = typeof action.$inferSelect;
 export type CommentRow = typeof comment.$inferSelect;
@@ -76,4 +76,12 @@ export async function findActiveComment(tx: Tx, id: string): Promise<CommentRow 
       .from(comment)
       .where(and(eq(comment.id, id), isNull(comment.archivedAt)))
   )[0];
+}
+
+export async function insertVisit(tx: Tx, row: typeof visit.$inferInsert): Promise<void> {
+  await tx.insert(visit).values(row);
+}
+
+export async function insertActions(tx: Tx, rows: (typeof action.$inferInsert)[]): Promise<void> {
+  if (rows.length > 0) await tx.insert(action).values(rows);
 }
