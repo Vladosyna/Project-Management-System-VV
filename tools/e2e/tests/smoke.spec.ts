@@ -118,6 +118,45 @@ test('a Site page shows its timeline with the source on every item (E5 AC4)', as
   await page.screenshot({ path: 'test-results/site-en.png', fullPage: true });
 });
 
+test('a PM comments on a Site with a mention; an admin may not (E5 AC2)', async ({ page, browser }) => {
+  await signInWithPassword(page);
+  await page.getByRole('link', { name: 'Sites' }).click();
+  await page.getByRole('link', { name: 'CLIENTA-ES-MAD-002' }).click();
+  await page.getByLabel('Comment', { exact: true }).fill('Admins do not comment');
+  await page.getByRole('button', { name: 'Add comment' }).click();
+  await expect(page.getByText('Your role may not comment on projects.')).toBeVisible();
+
+  // The admin invites a PM, who joins with password + TOTP and comments, mentioning the admin.
+  const res = await page.request.post('/api/users/invitations', {
+    data: { email: 'pm.e2e@example.com', roles: ['pm'] },
+  });
+  expect(res.status()).toBe(201);
+  const { link } = (await res.json()) as { link: string };
+  const pm = await (await browser.newContext()).newPage();
+  await pm.goto(link);
+  await pm.getByLabel('Your name').fill('Person 02');
+  await pm.getByLabel('Password').fill(PASSWORD);
+  await pm.getByRole('button', { name: 'Create account' }).click();
+  await pm.getByLabel('Password').fill(PASSWORD);
+  await pm.getByRole('button', { name: 'Continue' }).click();
+  const secret = (await pm.getByTestId('totp-secret').textContent()) ?? '';
+  const pmTotp = new TOTP({ secret: Secret.fromBase32(secret.trim()) });
+  await pm.getByLabel('Code from your authenticator app').fill(pmTotp.generate());
+  await pm.getByRole('button', { name: 'Confirm' }).click();
+  await expect(pm.getByRole('heading', { level: 1 })).toContainText('Person 02');
+
+  await pm.getByRole('link', { name: 'Sites' }).click();
+  await pm.getByRole('link', { name: 'CLIENTA-ES-MAD-002' }).click();
+  await pm.getByLabel('Comment', { exact: true }).fill('Ceiling height checked — 4.2 m');
+  await pm.getByRole('checkbox', { name: 'Person 01' }).check();
+  await pm.getByRole('button', { name: 'Add comment' }).click();
+  const item = pm.getByRole('listitem').filter({ hasText: 'Ceiling height checked — 4.2 m' });
+  await expect(item).toBeVisible();
+  await expect(item.getByText('Source: Entered by hand')).toBeVisible();
+  await expect(pm.getByLabel('Comment', { exact: true })).toHaveValue('');
+  await pm.screenshot({ path: 'test-results/site-comment-en.png', fullPage: true });
+});
+
 /** Screens built with `pnpm gen:screen` — each must open for a signed-in user and show its title. */
 const SCREENS: { path: string; heading: string }[] = [
   { path: '/portfolio', heading: 'Portfolio' },

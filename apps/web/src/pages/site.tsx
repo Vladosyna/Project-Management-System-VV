@@ -1,8 +1,27 @@
 // /sites/$siteId — one project/site, from the Site mockup. Today: header and "Timeline & comments" (the
-// project feed, E5 AC4, source on every item). Devices & network arrive with E4, algorithms with E7.
-import { useEffect, useState } from 'react';
-import { Card, FormMessage, PageHeader, StatusChip, useI18n } from '@ocs/ui';
-import { loadSite, type ClientSummary, type FeedItem, type SiteSummary } from '../api.ts';
+// project feed, E5 AC4, source on every item) with a comment box that can @mention staff (AC2).
+// Devices & network arrive with E4, algorithms with E7.
+import { useCallback, useEffect, useState } from 'react';
+import {
+  Button,
+  Card,
+  CheckboxGroup,
+  Form,
+  FormMessage,
+  PageHeader,
+  StatusChip,
+  TextArea,
+  useI18n,
+} from '@ocs/ui';
+import {
+  addComment,
+  loadSite,
+  loadStaff,
+  type ClientSummary,
+  type FeedItem,
+  type SiteSummary,
+  type StaffMember,
+} from '../api.ts';
 
 type State =
   | { kind: 'loading' }
@@ -19,7 +38,12 @@ export function SitePage(props: { siteId: string }) {
   const { t } = useI18n();
   const [state, setState] = useState<State>({ kind: 'loading' });
 
-  useEffect(() => {
+  const [staff, setStaff] = useState<StaffMember[]>([]);
+  const [body, setBody] = useState('');
+  const [mentions, setMentions] = useState<string[]>([]);
+  const [commentError, setCommentError] = useState<'failed' | 'forbidden' | null>(null);
+
+  const reload = useCallback(() => {
     loadSite(props.siteId).then(
       (data) => {
         setState(data ? { kind: 'loaded', ...data } : { kind: 'missing' });
@@ -29,6 +53,28 @@ export function SitePage(props: { siteId: string }) {
       },
     );
   }, [props.siteId]);
+
+  useEffect(() => {
+    reload();
+    loadStaff().then(setStaff, () => {
+      setStaff([]);
+    });
+  }, [reload]);
+
+  const submit = async () => {
+    setCommentError(null);
+    try {
+      if ((await addComment(props.siteId, body, mentions)) === 'forbidden') {
+        setCommentError('forbidden');
+        return;
+      }
+      setBody('');
+      setMentions([]);
+      reload();
+    } catch {
+      setCommentError('failed');
+    }
+  };
 
   if (state.kind === 'loading') return <p>{t('common.loading')}</p>;
   if (state.kind === 'failed') return <FormMessage tone="error">{t('site.failed')}</FormMessage>;
@@ -46,6 +92,35 @@ export function SitePage(props: { siteId: string }) {
           <p>{t('site.devicesSoon')}</p>
         </Card>
         <Card title={t('site.timeline')} titleId="site-timeline">
+          <Form onSubmit={submit}>
+            <TextArea
+              id="comment-body"
+              label={t('site.comment')}
+              value={body}
+              required
+              onChange={(e) => {
+                setBody(e.currentTarget.value);
+              }}
+            />
+            {staff.length > 0 ? (
+              <CheckboxGroup
+                legend={t('site.mention')}
+                options={staff.map((s) => ({ id: s.id, label: s.name }))}
+                value={mentions}
+                onChange={setMentions}
+              />
+            ) : null}
+            {commentError ? (
+              <FormMessage tone="error">
+                {t(commentError === 'forbidden' ? 'site.commentForbidden' : 'site.commentFailed')}
+              </FormMessage>
+            ) : null}
+            <div>
+              <Button type="submit" disabled={body.trim() === ''}>
+                {t('site.addComment')}
+              </Button>
+            </div>
+          </Form>
           {feed.length === 0 ? <p>{t('site.timelineEmpty')}</p> : null}
           <ul className="ocs-board__list">
             {feed.map((item) => (

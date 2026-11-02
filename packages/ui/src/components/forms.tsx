@@ -1,5 +1,5 @@
 // Sign-in style screens: a centred card with the blue wordmark, labelled fields and announced messages.
-import type { InputHTMLAttributes, ReactNode, SyntheticEvent } from 'react';
+import type { InputHTMLAttributes, ReactNode, SyntheticEvent, TextareaHTMLAttributes } from 'react';
 import logoBlue from '../assets/vionvision-logo-blue.svg';
 import { useI18n } from '../i18n-context.tsx';
 
@@ -54,6 +54,46 @@ export function TextField(
         </span>
       ) : null}
     </div>
+  );
+}
+
+export function TextArea(props: TextareaHTMLAttributes<HTMLTextAreaElement> & { id: string; label: string }) {
+  const { label, id, ...area } = props;
+  return (
+    <div className="ocs-field">
+      <label className="ocs-field__label" htmlFor={id}>
+        {label}
+      </label>
+      <textarea {...area} id={id} className="ocs-field__input ocs-field__input--multiline" />
+    </div>
+  );
+}
+
+/** A labelled group of checkboxes; `value` holds the checked ids. */
+export function CheckboxGroup(props: {
+  legend: string;
+  options: readonly { id: string; label: string }[];
+  value: readonly string[];
+  onChange: (value: string[]) => void;
+}) {
+  return (
+    <fieldset className="ocs-field ocs-checkboxes">
+      <legend className="ocs-field__label">{props.legend}</legend>
+      {props.options.map((o) => (
+        <label key={o.id} className="ocs-checkboxes__option">
+          <input
+            type="checkbox"
+            checked={props.value.includes(o.id)}
+            onChange={(e) => {
+              props.onChange(
+                e.currentTarget.checked ? [...props.value, o.id] : props.value.filter((v) => v !== o.id),
+              );
+            }}
+          />{' '}
+          {o.label}
+        </label>
+      ))}
+    </fieldset>
   );
 }
 

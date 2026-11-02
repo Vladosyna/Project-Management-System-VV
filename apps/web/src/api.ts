@@ -101,3 +101,29 @@ export async function loadSite(
   const site = sites.find((s) => s.id === siteId);
   return site ? { site, client: clients.find((c) => c.id === site.clientId), feed } : undefined;
 }
+
+export interface StaffMember {
+  readonly id: string;
+  readonly name: string;
+}
+
+export async function loadStaff(): Promise<StaffMember[]> {
+  return getJson<StaffMember[]>('/api/staff');
+}
+
+/** Adds a comment to a project, @mentioning these staff members. 'forbidden' when the user may not comment. */
+export async function addComment(
+  siteId: string,
+  body: string,
+  mentions: readonly string[],
+): Promise<'ok' | 'forbidden'> {
+  const res = await fetch(`/api/sites/${encodeURIComponent(siteId)}/comments`, {
+    method: 'POST',
+    credentials: 'same-origin',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ body, mentions }),
+  });
+  if (res.status === 403) return 'forbidden';
+  if (!res.ok) throw new Error(`POST comment → ${String(res.status)}`);
+  return 'ok';
+}
