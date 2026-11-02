@@ -316,3 +316,14 @@ export const comment = pgTable('comment', {
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   archivedAt: timestamp('archived_at', { withTimezone: true }),
 });
+
+/** Migration 0013. Client data: RLS in the migration; archive, never delete. */
+export const visit = pgTable('visit', {
+  id: uuid('id').primaryKey(),
+  clientId: uuid('client_id').notNull(),
+  visibility: text('visibility', { enum: ['internal', 'client'] })
+    .notNull()
+    .default('internal'),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  archivedAt: timestamp('archived_at', { withTimezone: true }),
+});
