@@ -146,3 +146,29 @@ export async function commentToAction(
   if (!res.ok) throw new Error(`POST action → ${String(res.status)}`);
   return 'ok';
 }
+
+export interface VisitInput {
+  readonly type: string;
+  readonly visitDate: string;
+  readonly attendees: readonly { readonly name: string; readonly side: string }[];
+  readonly summary: string;
+  readonly decided: readonly { readonly text: string; readonly agreedWith: string }[];
+  readonly discussed: readonly string[];
+  readonly coverage: { readonly done: number; readonly total: number; readonly gap?: string };
+  readonly actions: readonly { readonly title: string; readonly owner: ActionOwner; readonly due: string }[];
+  readonly escalate: boolean;
+  readonly minutesRef?: string;
+}
+
+/** Records a site visit with its action items. 'rejected' when the record breaks a rule or the role may not. */
+export async function recordVisit(siteId: string, input: VisitInput): Promise<'ok' | 'rejected'> {
+  const res = await fetch(`/api/sites/${encodeURIComponent(siteId)}/visits`, {
+    method: 'POST',
+    credentials: 'same-origin',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(input),
+  });
+  if ([400, 403, 422].includes(res.status)) return 'rejected';
+  if (!res.ok) throw new Error(`POST visit → ${String(res.status)}`);
+  return 'ok';
+}

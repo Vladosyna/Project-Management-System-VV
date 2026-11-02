@@ -118,7 +118,7 @@ test('a Site page shows its timeline with the source on every item (E5 AC4)', as
   await page.screenshot({ path: 'test-results/site-en.png', fullPage: true });
 });
 
-test('a PM comments on a Site with a mention and turns it into an action; an admin may not (E5 AC2)', async ({
+test('a PM comments on a Site with a mention turns it into an action and records a visit; an admin may not comment (E5 AC2, AC3)', async ({
   page,
   browser,
 }) => {
@@ -176,6 +176,36 @@ test('a PM comments on a Site with a mention and turns it into an action; an adm
   await pm.getByRole('button', { name: 'Mine' }).click();
   await expect(pm.getByText('Ceiling height checked — 4.2 m')).toBeVisible();
   await expect(pm.getByText('Person 02 · due 2099-11-20')).toBeVisible();
+
+  // Record a visit (SOP-DEL-03 §5.1): a shortfall without a reason is refused; with it, the record and its
+  // action item land on the timeline.
+  await pm.getByRole('link', { name: 'Sites' }).click();
+  await pm.getByRole('link', { name: 'CLIENTA-ES-MAD-002' }).click();
+  await pm.getByRole('button', { name: 'Record a visit' }).click();
+  await pm.getByLabel('Attendee').fill('Person 02');
+  await pm.getByRole('button', { name: 'Add attendee' }).click();
+  await pm.getByLabel('Attendee').nth(1).fill('Person B');
+  await pm.getByLabel(/^Executive summary/).fill('Coverage checked after the switch upgrade');
+  await pm.getByLabel(/^Decided/).fill('Remaining zones checked next visit');
+  await pm.getByLabel(/^Agreed with/).fill('Person B');
+  await pm.getByLabel('Covered (X)').fill('6');
+  await pm.getByLabel('Of (Y)').fill('20');
+  await pm.getByLabel('Action item').fill('Send the fibre spec to client IT');
+  await pm.getByLabel('Owner').selectOption({ label: 'Person 02' });
+  await pm.getByLabel('Due date').fill('2099-11-27');
+  await pm.getByRole('button', { name: 'Save visit record' }).click();
+  await expect(pm.getByText(/^The record was not accepted/)).toBeVisible();
+  await pm.getByLabel('Why the rest was not covered').fill('No access to the top floor');
+  await pm.getByRole('button', { name: 'Save visit record' }).click();
+  const visit = pm.getByRole('listitem').filter({ hasText: 'Coverage checked after the switch upgrade' });
+  await expect(visit.getByText(/Site visit · coverage 6 of 20/)).toBeVisible();
+  await expect(
+    pm
+      .getByRole('listitem')
+      .filter({ hasText: 'Send the fibre spec to client IT' })
+      .getByText('Source: Site visit'),
+  ).toBeVisible();
+  await pm.screenshot({ path: 'test-results/site-visit-en.png', fullPage: true });
 });
 
 /** Screens built with `pnpm gen:screen` — each must open for a signed-in user and show its title. */

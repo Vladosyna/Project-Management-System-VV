@@ -4,17 +4,13 @@
 import { useEffect, useState } from 'react';
 import { Button, Card, FormMessage, PageHeader, StatusChip, useI18n } from '@ocs/ui';
 import { loadActions, type OpenAction } from '../api.ts';
+import { sourceLabel } from '../source.ts';
 
 type State = { kind: 'loading' } | { kind: 'failed' } | { kind: 'loaded'; actions: OpenAction[] };
 
 /** The mockup's columns: open, in progress, and waiting on someone outside OCS. */
 const COLUMNS = ['open', 'progress', 'waiting'] as const;
 type Column = (typeof COLUMNS)[number];
-
-const SOURCES = ['manual', 'mail', 'dingtalk', 'meeting', 'visit', 'alert', 'comment'] as const;
-type SourceKind = (typeof SOURCES)[number];
-const sourceKind = (kind: string): SourceKind =>
-  (SOURCES as readonly string[]).includes(kind) ? (kind as SourceKind) : 'manual';
 
 function columnOf(a: OpenAction): Column {
   if (!('userId' in a.owner)) return 'waiting';
@@ -88,12 +84,7 @@ export function ActionsPage() {
                       <div className="ocs-board__meta">
                         {t('actions.ownerDue', { owner: a.owner.name ?? '—', due: a.due })}
                       </div>
-                      <div className="ocs-board__meta">
-                        {t('actions.source', {
-                          source: t(`source.${sourceKind(a.source.kind)}`),
-                          ref: a.source.ref ? ` · ${a.source.ref}` : '',
-                        })}
-                      </div>
+                      <div className="ocs-board__meta">{sourceLabel(t, a.source)}</div>
                     </li>
                   ))}
                 </ul>
