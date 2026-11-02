@@ -29,7 +29,7 @@ Conventions: UUID v7 `id`; `created_at/by`, `updated_at/by`; `archived_at` (no d
 
 ## Work
 - **Action**: title, owner (owner_id of an OCS user, or owner_name of a person outside OCS — exactly one), due, status (open | in_progress | done | cancelled), source_kind, source_ref, linked object (one typed FK per kind: site now, case and visit with their tables), visibility.
-- **Comment / Update**: object ref, body, mentions, source_kind, visibility.
+- **Comment / Update**: linked object (typed FK: site now, case and visit later), body, mentions (user ids), author, source_kind, source_ref, visibility. An action turned from a comment carries `comment_id` and source `comment`.
 - **Visit** (SOP-DEL-03): site_id, type, date, attendees [{name, side}], coverage_done, coverage_total, summary, decided[], discussed[], minutes_ref.
 
 ## Cases
