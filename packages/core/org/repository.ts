@@ -1,5 +1,5 @@
 // org repository — the only place in this module that touches tables.
-import { and, asc, client, eq, isNull, site, sql, type Tx } from '@ocs/db';
+import { and, asc, client, eq, isNull, programme, site, sql, type Tx } from '@ocs/db';
 
 export type ClientRow = typeof client.$inferSelect;
 export type SiteRow = typeof site.$inferSelect;
@@ -65,4 +65,27 @@ export async function lockActiveSite(tx: Tx, id: string): Promise<SiteRow | unde
 
 export async function setSiteStandard(tx: Tx, id: string, standard: SiteRow['standard']): Promise<void> {
   await tx.update(site).set({ standard }).where(eq(site.id, id));
+}
+
+export async function findProgrammeByName(tx: Tx, clientId: string, name: string) {
+  return (
+    await tx
+      .select({ id: programme.id })
+      .from(programme)
+      .where(and(eq(programme.clientId, clientId), eq(programme.name, name)))
+  )[0];
+}
+
+/** The active programme if it belongs to this client. */
+export async function findActiveProgrammeOf(tx: Tx, clientId: string, id: string) {
+  return (
+    await tx
+      .select({ id: programme.id })
+      .from(programme)
+      .where(and(eq(programme.id, id), eq(programme.clientId, clientId), isNull(programme.archivedAt)))
+  )[0];
+}
+
+export async function insertProgramme(tx: Tx, row: typeof programme.$inferInsert): Promise<void> {
+  await tx.insert(programme).values(row);
 }

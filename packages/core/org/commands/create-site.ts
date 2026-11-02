@@ -4,7 +4,7 @@
 import { z } from 'zod';
 import { defineCommand, NotFound } from '../../kernel/index.ts';
 import { orgPermissions } from '../permissions.ts';
-import { insertSite, lockActiveClient, maxRunningNo } from '../repository.ts';
+import { findActiveProgrammeOf, insertSite, lockActiveClient, maxRunningNo } from '../repository.ts';
 import { projectIdOf } from '../rules/project-id.ts';
 
 const code = z.string().trim().toUpperCase();
@@ -14,6 +14,8 @@ export const createSite = defineCommand({
   permission: orgPermissions.createSite,
   input: z.object({
     clientId: z.uuid(),
+    /** Optional level 1a (SOP-DEL-02 §3); must be a programme of the same client. */
+    programmeId: z.uuid().optional(),
     countryCode: code,
     cityCode: code,
     cityName: z.string().trim().min(1).max(100),
@@ -25,6 +27,9 @@ export const createSite = defineCommand({
   handle: async (ctx, i) => {
     const owner = await lockActiveClient(ctx.tx, i.clientId);
     if (!owner) throw new NotFound('client', i.clientId);
+    if (i.programmeId && !(await findActiveProgrammeOf(ctx.tx, owner.id, i.programmeId))) {
+      throw new NotFound('programme', i.programmeId);
+    }
     const runningNo = (await maxRunningNo(ctx.tx, owner.id, i.cityCode)) + 1;
     const projectId = projectIdOf({
       shortCode: owner.shortCode,
@@ -42,6 +47,7 @@ export const createSite = defineCommand({
       runningNo,
       name: i.name,
       standard: i.standard,
+      programmeId: i.programmeId ?? null,
     };
     await insertSite(ctx.tx, { ...row, createdAt: ctx.now });
     ctx.emit('org.site.created', { siteId: row.id, projectId }, owner.id);

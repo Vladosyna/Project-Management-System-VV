@@ -95,6 +95,7 @@ export const site = pgTable('site', {
   runningNo: integer('running_no').notNull(),
   name: text('name').notNull(),
   standard: text('standard', { enum: ['L', 'S'] }).notNull(),
+  programmeId: uuid('programme_id'),
   visibility: text('visibility', { enum: ['internal', 'client'] })
     .notNull()
     .default('internal'),
@@ -102,13 +103,11 @@ export const site = pgTable('site', {
   archivedAt: timestamp('archived_at', { withTimezone: true }),
 });
 
-/** Migration 0005. Client data: RLS in the migration; archive, never delete. */
+/** Migration 0005. Optional level under a client (SOP-DEL-02 §3). Archive, never delete. */
 export const programme = pgTable('programme', {
   id: uuid('id').primaryKey(),
   clientId: uuid('client_id').notNull(),
-  visibility: text('visibility', { enum: ['internal', 'client'] })
-    .notNull()
-    .default('internal'),
+  name: text('name').notNull(),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   archivedAt: timestamp('archived_at', { withTimezone: true }),
 });
