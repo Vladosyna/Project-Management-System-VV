@@ -4,3 +4,11 @@ export type { Actor, CommandSource } from './actor.ts';
 export { externalRoles, RoleSchema, roles, staffRoles, systemRoles } from './roles.ts';
 export type { Role } from './roles.ts';
 export { AcceptInvitationRequest, InviteUserRequest } from './identity.ts';
+export {
+  HandoverCardContent,
+  HandoverField,
+  IntakeReview,
+  intakeDecisions,
+  projectTypes,
+  stakeholderRoles,
+} from './handover-card.ts';
