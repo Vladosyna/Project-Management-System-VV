@@ -3,6 +3,7 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { aStaffActor } from '@ocs/testing';
 import { Forbidden } from '../../kernel/index.ts';
+import { completeAction } from '../commands/complete-action.ts';
 import { createAction } from '../commands/create-action.ts';
 import { openActions } from '../queries/open-actions.ts';
 import { openWorkWorld, type WorkWorld } from './fixture.ts';
@@ -23,10 +24,12 @@ const create = async (title: string, due: string, owner: { userId: string } | { 
 
 beforeAll(async () => {
   w = await openWorkWorld();
-  w.t.grant(pm, createAction.permission, openActions.permission);
+  w.t.grant(pm, createAction.permission, completeAction.permission, openActions.permission);
   w.t.grant(sales, openActions.permission);
   await create('Later', '2099-01-10', { userId: sales.id });
   await create('Long overdue', '2000-01-10', { name: 'Person A (client IT)' });
+  const done = await create('Already done', '2000-01-05', { userId: pm.id });
+  await w.t.kernel.execute(completeAction, pm, { actionId: done }, 'test');
 });
 
 afterAll(async () => {
@@ -38,7 +41,7 @@ describe('work.action.list', () => {
     await expect(w.t.kernel.read(openActions, outsider, {})).rejects.toBeInstanceOf(Forbidden);
   });
 
-  it('lists open actions of a project, earliest due first, overdue marked', async () => {
+  it('lists open actions of a project, earliest due first, overdue marked, done ones left out', async () => {
     const list = await w.t.kernel.read(openActions, pm, { siteId: w.siteId });
     expect(list.map((a) => [a.title, a.overdue])).toEqual([
       ['Long overdue', true],

@@ -20,6 +20,21 @@ export async function insertAction(tx: Tx, row: typeof action.$inferInsert): Pro
   await tx.insert(action).values(row);
 }
 
+/** The active action, locked until the transaction ends. */
+export async function lockActiveAction(tx: Tx, id: string): Promise<ActionRow | undefined> {
+  return (
+    await tx
+      .select()
+      .from(action)
+      .where(and(eq(action.id, id), isNull(action.archivedAt)))
+      .for('update')
+  )[0];
+}
+
+export async function markActionDone(tx: Tx, id: string, at: Date): Promise<void> {
+  await tx.update(action).set({ status: 'done', doneAt: at }).where(eq(action.id, id));
+}
+
 /** Open and in-progress actions the actor may see, earliest due first. */
 export async function listOpenActions(
   tx: Tx,
