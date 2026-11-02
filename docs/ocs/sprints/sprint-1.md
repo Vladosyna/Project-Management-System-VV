@@ -54,6 +54,7 @@ Moved to Sprint 2 if time runs out: AC5 disputes (2-working-day timer), AC6 Inta
 | E5.2b | Claude, `feat/`: `work.comment.add` (mentions = active staff only, one notice event each), `work.comment.toAction` (owner, due, linked to the comment) | AC2 | SOP-DEL-03 |
 | E5.2 | Comment with @mention; "turn into action" | AC2 | — |
 | E5.3a | Claude, `arch/`: **visit** table + RLS: type (5), date, attendees VV/client/third party, summary, decided (with whom) vs discussed, key points, coverage X of Y with the gap explained, follow-up, escalate flag, minutes link, SVR-NN per project; `action.visit_id` (source `visit`) | AC3 | SOP-DEL-03 §2, §4, §5 |
+| E5.3b | Claude, `feat/`: `work.visit.record` — record + its Key Action Items as actions (owner, due, `visit_id`) in one command; not dated in the future; escalation event (§7) | AC3 | SOP-DEL-03 §4, §5.1, §7 |
 | E5.3 | Visit record: 5 visit types, coverage X of Y, agreed vs discussed, attendees VV / client / third party, minutes link | AC3 | SOP-DEL-03 §2, §5 |
 | E5.4 | Feed per project/site with the source on every item | AC4 | — |
 
