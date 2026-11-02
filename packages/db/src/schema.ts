@@ -1,6 +1,6 @@
 // Drizzle table definitions. Source of truth for the database is migrations/*.sql;
 // schema-drift.int.test.ts fails when these definitions and the migrated database disagree.
-import { boolean, integer, jsonb, pgSchema, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
+import { boolean, inet, integer, jsonb, pgSchema, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
 
 export const actorKinds = ['staff', 'client', 'partner', 'system'] as const;
 export type ActorKind = (typeof actorKinds)[number];
@@ -127,6 +127,39 @@ export const partnerAssignment = pgTable('partner_assignment', {
   clientId: uuid('client_id').notNull(),
   partnerId: uuid('partner_id').notNull(),
   letter: text('letter').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  archivedAt: timestamp('archived_at', { withTimezone: true }),
+});
+
+/** Device life cycle (data-model.md "Device"); the CHECK in migration 0007 lists the same values. */
+export const DEVICE_STATUSES = [
+  'planned',
+  'shipped',
+  'received',
+  'installed',
+  'online',
+  'calibrated',
+  'faulty',
+  'lost',
+] as const;
+
+/** Migration 0007. One device in the registry (E4); SN and MAC unique among active rows (R6). Archive, never delete. */
+export const device = pgTable('device', {
+  id: uuid('id').primaryKey(),
+  clientId: uuid('client_id').notNull(),
+  siteId: uuid('site_id').notNull(),
+  sn: text('sn').notNull(),
+  mac: text('mac'),
+  model: text('model').notNull(),
+  firmware: text('firmware'),
+  switchName: text('switch_name'),
+  switchPort: text('switch_port'),
+  ip: inet('ip'),
+  status: text('status', { enum: DEVICE_STATUSES }).notNull().default('planned'),
+  replacedById: uuid('replaced_by_id'),
+  visibility: text('visibility', { enum: ['internal', 'client'] })
+    .notNull()
+    .default('internal'),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   archivedAt: timestamp('archived_at', { withTimezone: true }),
 });
