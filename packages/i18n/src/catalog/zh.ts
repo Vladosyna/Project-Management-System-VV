@@ -86,5 +86,13 @@ export const zh = {
   'page.notYet': '该页面将随对应的功能模块上线，详见路线图。',
   'page.empty': '暂无内容。',
 
+  'portfolio.title': '项目组合',
+  'portfolio.failed': '无法加载项目组合，请重试。',
+  'portfolio.empty': '暂无客户。',
+  'portfolio.sites': '{count} 个站点',
+  'portfolio.col.projectId': '项目编号',
+  'portfolio.col.site': '站点',
+  'portfolio.col.city': '城市',
+  'portfolio.col.standard': '标准',
   // gen:screen-titles — `pnpm gen:screen` adds screen titles above this line.
 } as const satisfies Catalog;

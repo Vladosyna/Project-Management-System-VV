@@ -34,3 +34,33 @@ export async function acceptInvitation(input: {
   });
   return res.ok;
 }
+
+export interface ClientSummary {
+  readonly id: string;
+  readonly shortCode: string;
+  readonly name: string;
+}
+
+export interface SiteSummary {
+  readonly id: string;
+  readonly clientId: string;
+  readonly projectId: string;
+  readonly name: string;
+  readonly cityName: string;
+  readonly standard: 'L' | 'S';
+}
+
+async function getJson<T>(path: string): Promise<T> {
+  const res = await fetch(path, { credentials: 'same-origin' });
+  if (!res.ok) throw new Error(`GET ${path} → ${String(res.status)}`);
+  return (await res.json()) as T;
+}
+
+/** Clients and their sites, as far as the signed-in user may see them. */
+export async function loadPortfolio(): Promise<{ clients: ClientSummary[]; sites: SiteSummary[] }> {
+  const [clients, sites] = await Promise.all([
+    getJson<ClientSummary[]>('/api/clients'),
+    getJson<SiteSummary[]>('/api/sites'),
+  ]);
+  return { clients, sites };
+}

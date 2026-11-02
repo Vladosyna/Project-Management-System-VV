@@ -224,6 +224,9 @@ importers:
       '@ocs/core':
         specifier: workspace:*
         version: link:../../packages/core
+      '@ocs/seed':
+        specifier: workspace:*
+        version: link:../seed
       '@ocs/testing':
         specifier: workspace:*
         version: link:../../packages/testing
