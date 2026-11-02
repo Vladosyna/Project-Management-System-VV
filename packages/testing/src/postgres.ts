@@ -30,6 +30,13 @@ export interface TestDatabase {
   drop(): Promise<void>;
 }
 
+const connectionsTo = async (c: pg.Client, database: string): Promise<number> =>
+  (
+    await c.query<{ n: number }>('SELECT count(*)::int AS n FROM pg_stat_activity WHERE datname = $1', [
+      database,
+    ])
+  ).rows[0]?.n ?? 0;
+
 /** Creates an empty database on the server; `drop()` removes it. */
 export async function createTestDatabase(serverUrl: string): Promise<TestDatabase> {
   const name = `ocs_test_${randomUUID().replaceAll('-', '')}`;
@@ -49,6 +56,12 @@ export async function createTestDatabase(serverUrl: string): Promise<TestDatabas
       const c = new pg.Client({ connectionString: serverUrl });
       await c.connect();
       try {
+        // pg-pool's end() resolves before its connections have closed. Dropping WITH (FORCE) at that moment
+        // kills a backend mid-goodbye, and its FATAL 57P01 reaches the closed pool as an uncaught error.
+        // So wait (up to 1 s) for the database's own connections to go; FORCE only clears what is left.
+        for (let i = 0; i < 50 && (await connectionsTo(c, name)) > 0; i++) {
+          await new Promise((resolve) => setTimeout(resolve, 20));
+        }
         await c.query(`DROP DATABASE IF EXISTS ${name} WITH (FORCE)`);
       } finally {
         await c.end();
