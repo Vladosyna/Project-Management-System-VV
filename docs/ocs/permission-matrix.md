@@ -29,4 +29,5 @@ External roles (`client`, `partner`) are switched off in the checker until the V
 | `work.comment.add` | Comment on a project, @mentioning staff (E5 AC2) | ✓ | ✓ | ✓ | ✓ | ✓ |  | ✓ |  |  |  |  |
 | `work.comment.toAction` | Turn a comment into an action with an owner and a due date (E5 AC2) | ✓ | ✓ |  |  |  |  |  |  |  |  |  |
 | `work.feed.list` | See a project's feed: actions, comments and visits with their sources (E5 AC4) | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |  |  |  |
+| `work.staff.list` | See active staff to @mention or assign (E5 AC2) | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |  |  |  |
 | `work.visit.record` | Record a site visit and its action items the same day (SOP-DEL-03 §5.1) | ✓ | ✓ |  | ✓ |  |  |  |  |  |  |  |
