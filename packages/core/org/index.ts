@@ -6,3 +6,4 @@ export { clientList } from './queries/client-list.ts';
 export { createSite } from './commands/create-site.ts';
 export { siteList } from './queries/site-list.ts';
 export { changeStandard } from './commands/change-standard.ts';
+export { createProgramme } from './commands/create-programme.ts';
