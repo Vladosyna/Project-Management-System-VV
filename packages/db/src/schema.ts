@@ -107,6 +107,8 @@ export const site = pgTable('site', {
   name: text('name').notNull(),
   standard: text('standard', { enum: ['L', 'S'] }).notNull(),
   programmeId: uuid('programme_id'),
+  salesOwnerId: uuid('sales_owner_id'),
+  pmId: uuid('pm_id'),
   visibility: text('visibility', { enum: ['internal', 'client'] })
     .notNull()
     .default('internal'),
@@ -258,13 +260,14 @@ export const conditionalStart = pgTable('conditional_start', {
   archivedAt: timestamp('archived_at', { withTimezone: true }),
 });
 
-/** Migration 0010. Client data: RLS in the migration; archive, never delete. */
+/** Migration 0010. Restricted Internal Notes (group F): Sales owner, PM, director, sponsor only (D-28). */
 export const restrictedNote = pgTable('restricted_note', {
   id: uuid('id').primaryKey(),
   clientId: uuid('client_id').notNull(),
-  visibility: text('visibility', { enum: ['internal', 'client'] })
-    .notNull()
-    .default('internal'),
+  siteId: uuid('site_id').notNull(),
+  itemCode: text('item_code'),
+  body: text('body').notNull(),
+  authorId: uuid('author_id').notNull(),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   archivedAt: timestamp('archived_at', { withTimezone: true }),
 });
