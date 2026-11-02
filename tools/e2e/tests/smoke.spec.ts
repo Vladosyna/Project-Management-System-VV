@@ -134,11 +134,14 @@ test('a PM comments on a Site with a mention; an admin may not (E5 AC2)', async 
   const { link } = (await res.json()) as { link: string };
   const pm = await (await browser.newContext()).newPage();
   await pm.goto(link);
+  await expect(pm.getByLabel('Your name')).toBeVisible();
   await pm.getByLabel('Your name').fill('Person 02');
   await pm.getByLabel('Password').fill(PASSWORD);
   await pm.getByRole('button', { name: 'Create account' }).click();
+  await expect(pm.getByRole('heading', { name: 'Set up two-factor authentication' })).toBeVisible();
   await pm.getByLabel('Password').fill(PASSWORD);
   await pm.getByRole('button', { name: 'Continue' }).click();
+  await expect(pm.getByRole('img', { name: 'QR code for the authenticator app' })).toBeVisible();
   const secret = (await pm.getByTestId('totp-secret').textContent()) ?? '';
   const pmTotp = new TOTP({ secret: Secret.fromBase32(secret.trim()) });
   await pm.getByLabel('Code from your authenticator app').fill(pmTotp.generate());
