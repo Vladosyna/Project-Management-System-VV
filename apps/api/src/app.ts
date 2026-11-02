@@ -3,7 +3,7 @@ import { Hono } from 'hono';
 import type { Actor } from '@ocs/contracts';
 import { inviteUser, me } from '@ocs/core/identity';
 import { clientList, siteList } from '@ocs/core/org';
-import { openActions, projectFeed } from '@ocs/core/work';
+import { addComment, openActions, projectFeed, staffList } from '@ocs/core/work';
 import type { Runtime } from '@ocs/core/runtime';
 import { errorResponse } from './errors.ts';
 
@@ -72,6 +72,14 @@ export function createApp(rt: Runtime): Hono {
         ...(before ? { before } : {}),
       }),
     );
+  });
+
+  // E5 AC2: comment on a project, @mentioning active staff (the list comes from /staff).
+  api.get('/staff', async (c) => c.json(await rt.kernel.read(staffList, c.get('actor'), {})));
+  api.post('/sites/:siteId/comments', async (c) => {
+    const body = await c.req.json<Record<string, unknown>>();
+    const input = { ...body, siteId: c.req.param('siteId') };
+    return c.json(await rt.kernel.execute(addComment, c.get('actor'), input, 'web'), 201);
   });
 
   app.route('/api', api);

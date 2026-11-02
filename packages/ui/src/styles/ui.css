@@ -378,3 +378,22 @@ a:hover {
   color: var(--ocs-ink-muted);
   font-size: 12px;
 }
+
+/* Multi-line text and checkbox groups in forms */
+.ocs-field__input--multiline {
+  min-height: 80px;
+  padding: 8px 12px;
+  resize: vertical;
+}
+.ocs-checkboxes {
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+.ocs-checkboxes__option {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 16px;
+  min-height: 32px;
+  font-size: 14px;
+}

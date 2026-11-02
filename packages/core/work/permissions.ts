@@ -31,5 +31,9 @@ export const workPermissions = {
     description: "See a project's feed: actions, comments and visits with their sources (E5 AC4)",
     roles: ['director', 'pm', 'sales', 'rnd', 'finance', 'management', 'sponsor', 'admin'],
   }),
+  staffList: permission('work.staff.list', {
+    description: 'See active staff to @mention or assign (E5 AC2)',
+    roles: ['director', 'pm', 'sales', 'rnd', 'finance', 'management', 'sponsor', 'admin'],
+  }),
   // gen:permissions — `pnpm gen:command` and `pnpm gen:query` add entries above this line.
 };

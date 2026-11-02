@@ -124,3 +124,12 @@ export async function projectFeedRows(tx: Tx, siteId: string, before: Date, limi
     .limit(limit);
   return { actions, comments, visits };
 }
+
+/** Active staff accounts by name — who may be @mentioned or own an action (E5 AC2). */
+export async function listActiveStaff(tx: Tx): Promise<{ id: string; name: string }[]> {
+  return tx
+    .select({ id: authUser.id, name: authUser.name })
+    .from(authUser)
+    .where(and(eq(authUser.kind, 'staff'), isNull(authUser.archivedAt)))
+    .orderBy(asc(authUser.name));
+}
