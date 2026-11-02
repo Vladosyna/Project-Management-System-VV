@@ -7,6 +7,10 @@ export const workPermissions = {
     description: 'Create an action with one owner and a due date (SOP-DEL-03)',
     roles: ['director', 'pm', 'sales', 'rnd', 'sponsor'],
   }),
+  completeAction: permission('work.action.complete', {
+    description: 'Mark an action done (its owner, or a director or PM)',
+    roles: ['director', 'pm', 'sales', 'rnd', 'sponsor'],
+  }),
   openActions: permission('work.action.list', {
     description: 'See open actions by project or owner',
     roles: ['director', 'pm', 'sales', 'rnd', 'finance', 'management', 'sponsor', 'admin'],
