@@ -20,4 +20,4 @@ export { conditionalStart, intakeCondition, intakeDecision } from './schema.ts';
 export { restrictedNote } from './schema.ts';
 export { action } from './schema.ts';
 export { comment } from './schema.ts';
-export { visit } from './schema.ts';
+export { VISIT_TYPES, visit } from './schema.ts';
