@@ -114,5 +114,6 @@ export const zh = {
   'source.visit': '现场拜访',
   'source.alert': '预警',
   'source.comment': '评论',
+  'sites.title': '站点',
   // gen:screen-titles — `pnpm gen:screen` adds screen titles above this line.
 } as const satisfies Catalog;

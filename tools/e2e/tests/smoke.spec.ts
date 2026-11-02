@@ -110,6 +110,7 @@ test('Actions shows open actions in columns with owner, date and source (E5)', a
 const SCREENS: { path: string; heading: string }[] = [
   { path: '/portfolio', heading: 'Portfolio' },
   { path: '/actions', heading: 'Every open action, with an owner and a date' },
+  { path: '/sites', heading: 'Sites' },
   // gen:screens
 ];
 

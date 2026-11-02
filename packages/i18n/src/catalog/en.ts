@@ -113,5 +113,6 @@ export const en = {
   'source.visit': 'Site visit',
   'source.alert': 'Alert',
   'source.comment': 'Comment',
+  'sites.title': 'Sites',
   // gen:screen-titles — `pnpm gen:screen` adds screen titles above this line.
 } as const;

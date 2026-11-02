@@ -17,6 +17,7 @@ import { LoginPage } from './pages/login.tsx';
 import { SetupMfaPage } from './pages/setup-mfa.tsx';
 import { PortfolioPage } from './pages/portfolio.tsx';
 import { ActionsPage } from './pages/actions.tsx';
+import { SitesPage } from './pages/sites.tsx';
 // gen:screen-imports
 
 /** Navigation as in the Main mockup. Screens other than Home arrive with their epics. */
@@ -39,6 +40,7 @@ const NAV: readonly Omit<NavItem, 'active'>[] = [
 const SCREENS: Record<string, RouteComponent> = {
   '/portfolio': PortfolioPage,
   '/actions': ActionsPage,
+  '/sites': SitesPage,
   // gen:screens
 };
 
