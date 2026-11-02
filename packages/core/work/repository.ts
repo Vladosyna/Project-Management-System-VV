@@ -1,5 +1,19 @@
 // work repository — the only place in this module that touches tables.
-import { action, and, asc, authUser, comment, eq, inArray, isNull, site, visit, type Tx } from '@ocs/db';
+import {
+  action,
+  and,
+  asc,
+  authUser,
+  comment,
+  desc,
+  eq,
+  inArray,
+  isNull,
+  site,
+  sql,
+  visit,
+  type Tx,
+} from '@ocs/db';
 
 export type ActionRow = typeof action.$inferSelect;
 export type CommentRow = typeof comment.$inferSelect;
@@ -84,4 +98,27 @@ export async function insertVisit(tx: Tx, row: typeof visit.$inferInsert): Promi
 
 export async function insertActions(tx: Tx, rows: (typeof action.$inferInsert)[]): Promise<void> {
   if (rows.length > 0) await tx.insert(action).values(rows);
+}
+
+/** The newest `limit` of each kind on a project, before `before` (paging) — merged by the feed query. */
+export async function projectFeedRows(tx: Tx, siteId: string, before: Date, limit: number) {
+  const actions = await tx
+    .select()
+    .from(action)
+    .where(and(eq(action.siteId, siteId), isNull(action.archivedAt), sql`${action.createdAt} < ${before}`))
+    .orderBy(desc(action.createdAt))
+    .limit(limit);
+  const comments = await tx
+    .select()
+    .from(comment)
+    .where(and(eq(comment.siteId, siteId), isNull(comment.archivedAt), sql`${comment.createdAt} < ${before}`))
+    .orderBy(desc(comment.createdAt))
+    .limit(limit);
+  const visits = await tx
+    .select()
+    .from(visit)
+    .where(and(eq(visit.siteId, siteId), isNull(visit.archivedAt), sql`${visit.recordedAt} < ${before}`))
+    .orderBy(desc(visit.recordedAt))
+    .limit(limit);
+  return { actions, comments, visits };
 }

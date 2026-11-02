@@ -14,9 +14,9 @@ export interface WorkWorld {
   close(): Promise<void>;
 }
 
-export async function openWorkWorld(): Promise<WorkWorld> {
+export async function openWorkWorld(options: { clock?: () => Date } = {}): Promise<WorkWorld> {
   const testDb = await createTestDatabase(inject('postgresUrl'));
-  const t = await openTestKernel(testDb.url);
+  const t = await openTestKernel(testDb.url, options);
   const setup = aStaffActor({ roles: ['director'] });
   t.grant(setup, createClient.permission, createSite.permission);
   const owner = await t.kernel.execute(
