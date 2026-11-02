@@ -29,6 +29,7 @@ Rules: a decision here is not re-opened without Vlad's explicit OK. New decision
 | D-23 | 30 Oct 2026 | Answers Q1: the PMs who write code are **Xavier, Vlad and Leon**, hours as available (no fixed weekly allocation). They work on `feat/` and `fix/` branches after Phase 0; protected zones stay `arch/`. | Vlad |
 | D-24 | 30 Oct 2026 | Answers Q2: **Vlad is the architect-reviewer** (CODEOWNERS for protected zones), replacing the interim role of D-22. PRs by Xavier or Leon need Vlad's approval. GitHub does not let an author approve their own PR, so Vlad's own `arch/` PRs (including those Claude opens from his account) merge once the required checks are green, with Claude's review in the PR as the second pair of eyes. | Vlad |
 | D-25 | 2 Nov 2026 | **A site's standard can change both ways (S → L and L → S)** at staff's discretion. This overrides the SOP-DEL-02 §2.1 sentence "There is no downgrade from L to S"; Vlad updates the official SOP-DEL-02 (v1.5), the repository copy carries a note until then. The Project ID never changes with the standard (D-18). Until the DingTalk Drive integration (V1.1) the PM moves the folders and files by hand when the standard changes. | Vlad |
+| D-26 | 2 Nov 2026 | **ADR-002 accepted** (`docs/ocs/adr/ADR-002-identity.md`): invitation-only accounts, mandatory TOTP, roles granted by an audited command with the resume path when the grant fails, credentials walled off in schema `auth`, 12-hour sessions. Its known gaps (TOTP replay, in-memory rate limit) stay open for the security review before any external user (03 §7). | Vlad |
 
 ## Proposed at kickoff (ADR-001) — accepted 29 Oct 2026 as D-21 (P-10 deferred)
 
@@ -50,7 +51,7 @@ Rules: a decision here is not re-opened without Vlad's explicit OK. New decision
 | # | Question | Owner |
 |---|---|---|
 | Q3 | Is Leon the product owner, with allocated time? | Vlad |
-| Q4 | Hosting provider and region; AI provider with EU endpoint; budget | Hai Tao |
+| Q4 | Hosting provider and region; AI provider with EU endpoint; budget. Leaning (2 Nov, not decided): Aliyun Frankfurt (EU, D-16). | Hai Tao |
 | Q5 | DingTalk internal app approval and permissions (work notices, bot, cards, Drive read, OA events) | Hai Tao / DingTalk admin |
 | Q6 | Case mailbox in Aliyun mail; IMAP or open API access; plus-addressing supported? | IT |
 | Q7 | Device-platform OpenAPI key: online status, binding, firmware version | Platform team |

@@ -1,6 +1,6 @@
 # ADR-002 — Identity: accounts, MFA, sessions
 
-- Status: Proposed (F0.8b) — for the architect role to accept with the PR
+- Status: Accepted 2 Nov 2026 (D-26)
 - Date: 30 Oct 2026
 - Builds on: ADR-001 P-06 (better-auth), D-10 (OCS-native accounts, no client SSO)
 
