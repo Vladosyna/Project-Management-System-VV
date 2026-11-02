@@ -271,3 +271,28 @@ export const restrictedNote = pgTable('restricted_note', {
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   archivedAt: timestamp('archived_at', { withTimezone: true }),
 });
+
+/** Migration 0011. An action with an owner and a due date (E5 AC1, SOP-DEL-03). Archive, never delete. */
+export const action = pgTable('action', {
+  id: uuid('id').primaryKey(),
+  clientId: uuid('client_id').notNull(),
+  siteId: uuid('site_id'),
+  title: text('title').notNull(),
+  ownerId: uuid('owner_id'),
+  ownerName: text('owner_name'),
+  due: date('due', { mode: 'string' }).notNull(),
+  status: text('status', { enum: ['open', 'in_progress', 'done', 'cancelled'] })
+    .notNull()
+    .default('open'),
+  doneAt: timestamp('done_at', { withTimezone: true }),
+  sourceKind: text('source_kind', {
+    enum: ['manual', 'mail', 'dingtalk', 'meeting', 'visit', 'alert', 'comment'],
+  }).notNull(),
+  sourceRef: text('source_ref'),
+  visibility: text('visibility', { enum: ['internal', 'client'] })
+    .notNull()
+    .default('internal'),
+  createdBy: uuid('created_by').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  archivedAt: timestamp('archived_at', { withTimezone: true }),
+});

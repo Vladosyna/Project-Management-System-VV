@@ -48,7 +48,8 @@ Moved to Sprint 2 if time runs out: AC5 disputes (2-working-day timer), AC6 Inta
 
 | Slice | What | AC | Clause |
 |---|---|---|---|
-| E5.1 | `work` module (Claude, `arch/`); action with owner, due, status, source, linked object | AC1 | — |
+| E5.1a | Claude, `arch/`: `work` module; **action** table + RLS (client sees own rows marked for clients): title, exactly one owner (user or named outside person), due, status, source (manual / mail / DingTalk / meeting / visit / alert / comment), linked project; done needs a date | AC1 | SOP-DEL-03 "every action gets an owner and a date" |
+| E5.1b | Commands `work.action.create`, `work.action.complete` and the open-actions query | AC1 | — |
 | E5.2 | Comment with @mention; "turn into action" | AC2 | — |
 | E5.3 | Visit record: 5 visit types, coverage X of Y, agreed vs discussed, attendees VV / client / third party, minutes link | AC3 | SOP-DEL-03 §2, §5 |
 | E5.4 | Feed per project/site with the source on every item | AC4 | — |
