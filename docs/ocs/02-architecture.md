@@ -70,7 +70,7 @@ command(actor, input)
 
 - Every business row carries `client_id` (nullable only for internal-only records) and `visibility` (`internal` | `client`) where relevant.
 - PostgreSQL **row-level security** on all business tables. The API sets `app.actor_id`, `app.actor_kind` (`staff` | `client` | `partner` | `system`) and `app.client_ids` per transaction.
-  - staff: all rows except restricted notes unless permission `notes.restricted.read`.
+  - staff: all rows except restricted notes, which only the project's Sales owner and PM, the director and the sponsor read (D-28).
   - client: rows with `client_id = ANY(app.client_ids)` AND `visibility = 'client'`.
   - partner: only rows linked to their assigned jobs/sites.
 - Partner identity is stored once; client-facing projections always use the label (Partner A/B/C). A test asserts no client-facing query returns a partner's real name.
