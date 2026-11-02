@@ -111,3 +111,14 @@ export const programme = pgTable('programme', {
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   archivedAt: timestamp('archived_at', { withTimezone: true }),
 });
+
+/** Migration 0006. Client data: RLS in the migration; archive, never delete. */
+export const partner = pgTable('partner', {
+  id: uuid('id').primaryKey(),
+  clientId: uuid('client_id').notNull(),
+  visibility: text('visibility', { enum: ['internal', 'client'] })
+    .notNull()
+    .default('internal'),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  archivedAt: timestamp('archived_at', { withTimezone: true }),
+});
