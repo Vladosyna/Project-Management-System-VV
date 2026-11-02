@@ -15,3 +15,4 @@ export { site } from './schema.ts';
 export { programme } from './schema.ts';
 export { partner, partnerAssignment } from './schema.ts';
 export { DEVICE_STATUSES, device } from './schema.ts';
+export { handoverCard } from './schema.ts';

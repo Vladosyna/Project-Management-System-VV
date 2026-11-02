@@ -4,3 +4,4 @@ import '../calendar/index.ts';
 import '../identity/index.ts';
 import '../org/index.ts';
 import '../devices/index.ts';
+import '../intake/index.ts';
