@@ -1,5 +1,17 @@
 // org repository — the only place in this module that touches tables.
-import { and, asc, client, eq, isNull, programme, site, sql, type Tx } from '@ocs/db';
+import {
+  and,
+  asc,
+  client,
+  eq,
+  isNull,
+  partner,
+  partnerAssignment,
+  programme,
+  site,
+  sql,
+  type Tx,
+} from '@ocs/db';
 
 export type ClientRow = typeof client.$inferSelect;
 export type SiteRow = typeof site.$inferSelect;
@@ -88,4 +100,57 @@ export async function findActiveProgrammeOf(tx: Tx, clientId: string, id: string
 
 export async function insertProgramme(tx: Tx, row: typeof programme.$inferInsert): Promise<void> {
   await tx.insert(programme).values(row);
+}
+
+export async function insertPartner(tx: Tx, row: typeof partner.$inferInsert): Promise<void> {
+  await tx.insert(partner).values(row);
+}
+
+export async function findActivePartner(tx: Tx, id: string) {
+  return (
+    await tx
+      .select({ id: partner.id })
+      .from(partner)
+      .where(and(eq(partner.id, id), isNull(partner.archivedAt)))
+  )[0];
+}
+
+/** Every assignment of the client, archived ones included (letters are never reused). */
+export async function clientAssignments(tx: Tx, clientId: string) {
+  return tx
+    .select({ partnerId: partnerAssignment.partnerId, letter: partnerAssignment.letter })
+    .from(partnerAssignment)
+    .where(eq(partnerAssignment.clientId, clientId));
+}
+
+export async function insertAssignment(tx: Tx, row: typeof partnerAssignment.$inferInsert): Promise<void> {
+  await tx.insert(partnerAssignment).values(row);
+}
+
+/** Client-facing: letters only. Deliberately never joins `partner`, so no real name can come back. */
+export async function activeLetters(tx: Tx, clientId: string) {
+  return tx
+    .select({ letter: partnerAssignment.letter })
+    .from(partnerAssignment)
+    .where(and(eq(partnerAssignment.clientId, clientId), isNull(partnerAssignment.archivedAt)))
+    .orderBy(asc(partnerAssignment.letter));
+}
+
+/** Staff-only: partners with real names and their active client letters. */
+export async function partnersWithLetters(tx: Tx) {
+  return tx
+    .select({
+      id: partner.id,
+      realName: partner.realName,
+      countryCode: partner.countryCode,
+      clientId: partnerAssignment.clientId,
+      letter: partnerAssignment.letter,
+    })
+    .from(partner)
+    .leftJoin(
+      partnerAssignment,
+      and(eq(partnerAssignment.partnerId, partner.id), isNull(partnerAssignment.archivedAt)),
+    )
+    .where(isNull(partner.archivedAt))
+    .orderBy(asc(partner.realName), asc(partnerAssignment.letter));
 }

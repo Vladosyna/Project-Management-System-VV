@@ -7,3 +7,7 @@ export { createSite } from './commands/create-site.ts';
 export { siteList } from './queries/site-list.ts';
 export { changeStandard } from './commands/change-standard.ts';
 export { createProgramme } from './commands/create-programme.ts';
+export { createPartner } from './commands/create-partner.ts';
+export { assignPartner } from './commands/assign-partner.ts';
+export { partnerLabels } from './queries/partner-labels.ts';
+export { partnerList } from './queries/partner-list.ts';
