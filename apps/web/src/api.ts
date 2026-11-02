@@ -127,3 +127,22 @@ export async function addComment(
   if (!res.ok) throw new Error(`POST comment → ${String(res.status)}`);
   return 'ok';
 }
+
+export type ActionOwner = { readonly userId: string } | { readonly name: string };
+
+/** Turns a comment into an action. 'forbidden' when the user's role may not. */
+export async function commentToAction(
+  commentId: string,
+  owner: ActionOwner,
+  due: string,
+): Promise<'ok' | 'forbidden'> {
+  const res = await fetch(`/api/comments/${encodeURIComponent(commentId)}/action`, {
+    method: 'POST',
+    credentials: 'same-origin',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ owner, due }),
+  });
+  if (res.status === 403) return 'forbidden';
+  if (!res.ok) throw new Error(`POST action → ${String(res.status)}`);
+  return 'ok';
+}

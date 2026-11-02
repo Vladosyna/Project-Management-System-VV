@@ -118,7 +118,10 @@ test('a Site page shows its timeline with the source on every item (E5 AC4)', as
   await page.screenshot({ path: 'test-results/site-en.png', fullPage: true });
 });
 
-test('a PM comments on a Site with a mention; an admin may not (E5 AC2)', async ({ page, browser }) => {
+test('a PM comments on a Site with a mention and turns it into an action; an admin may not (E5 AC2)', async ({
+  page,
+  browser,
+}) => {
   await signInWithPassword(page);
   await page.getByRole('link', { name: 'Sites' }).click();
   await page.getByRole('link', { name: 'CLIENTA-ES-MAD-002' }).click();
@@ -158,6 +161,21 @@ test('a PM comments on a Site with a mention; an admin may not (E5 AC2)', async 
   await expect(item.getByText('Source: Entered by hand')).toBeVisible();
   await expect(pm.getByLabel('Comment', { exact: true })).toHaveValue('');
   await pm.screenshot({ path: 'test-results/site-comment-en.png', fullPage: true });
+
+  // "Make it an action": owner and due date; the action shows on the timeline and on Actions.
+  await item.getByRole('button', { name: 'Make it an action' }).click();
+  await item.getByLabel('Owner').selectOption({ label: 'Person 02' });
+  await item.getByLabel('Due date').fill('2099-11-20');
+  await item.getByRole('button', { name: 'Create action' }).click();
+  const action = pm
+    .getByRole('listitem')
+    .filter({ hasText: 'Action' })
+    .filter({ hasText: 'Ceiling height checked — 4.2 m' });
+  await expect(action.getByText('Source: Comment')).toBeVisible();
+  await pm.getByRole('link', { name: 'Actions & alerts' }).click();
+  await pm.getByRole('button', { name: 'Mine' }).click();
+  await expect(pm.getByText('Ceiling height checked — 4.2 m')).toBeVisible();
+  await expect(pm.getByText('Person 02 · due 2099-11-20')).toBeVisible();
 });
 
 /** Screens built with `pnpm gen:screen` — each must open for a signed-in user and show its title. */

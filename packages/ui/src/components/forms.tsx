@@ -1,5 +1,11 @@
 // Sign-in style screens: a centred card with the blue wordmark, labelled fields and announced messages.
-import type { InputHTMLAttributes, ReactNode, SyntheticEvent, TextareaHTMLAttributes } from 'react';
+import type {
+  InputHTMLAttributes,
+  ReactNode,
+  SelectHTMLAttributes,
+  SyntheticEvent,
+  TextareaHTMLAttributes,
+} from 'react';
 import logoBlue from '../assets/vionvision-logo-blue.svg';
 import { useI18n } from '../i18n-context.tsx';
 
@@ -65,6 +71,30 @@ export function TextArea(props: TextareaHTMLAttributes<HTMLTextAreaElement> & { 
         {label}
       </label>
       <textarea {...area} id={id} className="ocs-field__input ocs-field__input--multiline" />
+    </div>
+  );
+}
+
+export function SelectField(
+  props: SelectHTMLAttributes<HTMLSelectElement> & {
+    id: string;
+    label: string;
+    options: readonly { value: string; label: string }[];
+  },
+) {
+  const { label, id, options, ...select } = props;
+  return (
+    <div className="ocs-field">
+      <label className="ocs-field__label" htmlFor={id}>
+        {label}
+      </label>
+      <select {...select} id={id} className="ocs-field__input">
+        {options.map((o) => (
+          <option key={o.value} value={o.value}>
+            {o.label}
+          </option>
+        ))}
+      </select>
     </div>
   );
 }

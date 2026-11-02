@@ -3,7 +3,7 @@ import { Hono } from 'hono';
 import type { Actor } from '@ocs/contracts';
 import { inviteUser, me } from '@ocs/core/identity';
 import { clientList, siteList } from '@ocs/core/org';
-import { addComment, openActions, projectFeed, staffList } from '@ocs/core/work';
+import { addComment, commentToAction, openActions, projectFeed, staffList } from '@ocs/core/work';
 import type { Runtime } from '@ocs/core/runtime';
 import { errorResponse } from './errors.ts';
 
@@ -80,6 +80,13 @@ export function createApp(rt: Runtime): Hono {
     const body = await c.req.json<Record<string, unknown>>();
     const input = { ...body, siteId: c.req.param('siteId') };
     return c.json(await rt.kernel.execute(addComment, c.get('actor'), input, 'web'), 201);
+  });
+
+  // E5 AC2 "turn into action": an action with an owner and a due date, linked to the comment.
+  api.post('/comments/:commentId/action', async (c) => {
+    const body = await c.req.json<Record<string, unknown>>();
+    const input = { ...body, commentId: c.req.param('commentId') };
+    return c.json(await rt.kernel.execute(commentToAction, c.get('actor'), input, 'web'), 201);
   });
 
   app.route('/api', api);
