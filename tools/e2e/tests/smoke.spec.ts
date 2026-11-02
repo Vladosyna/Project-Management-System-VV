@@ -91,9 +91,25 @@ test('Portfolio shows the seeded clients and their Project IDs (F0.11, E1)', asy
   await page.screenshot({ path: 'test-results/portfolio-en.png', fullPage: true });
 });
 
+test('Actions shows open actions in columns with owner, date and source (E5)', async ({ page }) => {
+  await signInWithPassword(page);
+  await page.getByRole('link', { name: 'Actions & alerts' }).click();
+  for (const column of [/^Open · 2$/, /^In progress · 0$/, /^Waiting on someone · 1$/]) {
+    await expect(page.getByRole('heading', { level: 2, name: column })).toBeVisible();
+  }
+  await expect(page.getByText('Provide the floor plan')).toBeVisible();
+  await expect(page.getByText('Source: Mail · Message 0001')).toBeVisible();
+  await expect(page.getByText('Overdue')).toBeVisible();
+  await page.screenshot({ path: 'test-results/actions-en.png', fullPage: true });
+  // The signed-in admin owns none of the seeded actions.
+  await page.getByRole('button', { name: 'Mine' }).click();
+  await expect(page.getByRole('heading', { level: 2, name: /^Open · 0$/ })).toBeVisible();
+});
+
 /** Screens built with `pnpm gen:screen` — each must open for a signed-in user and show its title. */
 const SCREENS: { path: string; heading: string }[] = [
   { path: '/portfolio', heading: 'Portfolio' },
+  { path: '/actions', heading: 'Every open action, with an owner and a date' },
   // gen:screens
 ];
 

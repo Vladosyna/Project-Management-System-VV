@@ -3,6 +3,7 @@ import { Hono } from 'hono';
 import type { Actor } from '@ocs/contracts';
 import { inviteUser, me } from '@ocs/core/identity';
 import { clientList, siteList } from '@ocs/core/org';
+import { openActions } from '@ocs/core/work';
 import type { Runtime } from '@ocs/core/runtime';
 import { errorResponse } from './errors.ts';
 
@@ -53,6 +54,13 @@ export function createApp(rt: Runtime): Hono {
   api.get('/sites', async (c) => {
     const clientId = c.req.query('clientId');
     return c.json(await rt.kernel.read(siteList, c.get('actor'), clientId ? { clientId } : {}));
+  });
+
+  // E5: open actions, all or the actor's own (?mine=true), optionally of one project (?siteId=).
+  api.get('/actions', async (c) => {
+    const siteId = c.req.query('siteId');
+    const mine = c.req.query('mine') === 'true';
+    return c.json(await rt.kernel.read(openActions, c.get('actor'), { ...(siteId ? { siteId } : {}), mine }));
   });
 
   app.route('/api', api);

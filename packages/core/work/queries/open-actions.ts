@@ -7,8 +7,10 @@ import { listOpenActions } from '../repository.ts';
 export interface OpenAction {
   readonly id: string;
   readonly siteId: string | null;
+  readonly projectId: string | null;
   readonly title: string;
-  readonly owner: { readonly userId: string } | { readonly name: string };
+  /** An OCS user (with the name the actor may see) or a person outside OCS by name. */
+  readonly owner: { readonly userId: string; readonly name: string | null } | { readonly name: string };
   readonly due: string;
   readonly overdue: boolean;
   readonly status: 'open' | 'in_progress';
@@ -29,11 +31,12 @@ export const openActions = defineQuery({
       siteId: i.siteId,
       ownerId: i.mine ? ctx.actor.id : i.ownerId,
     });
-    return rows.map((r) => ({
+    return rows.map(({ action: r, projectId, ownerUserName }) => ({
       id: r.id,
       siteId: r.siteId,
+      projectId,
       title: r.title,
-      owner: r.ownerId ? { userId: r.ownerId } : { name: r.ownerName ?? '' },
+      owner: r.ownerId ? { userId: r.ownerId, name: ownerUserName } : { name: r.ownerName ?? '' },
       due: r.due,
       overdue: r.due < today,
       status: r.status as 'open' | 'in_progress',

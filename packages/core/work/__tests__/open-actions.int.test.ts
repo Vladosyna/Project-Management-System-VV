@@ -48,6 +48,7 @@ describe('work.action.list', () => {
       ['Later', false],
     ]);
     expect(list[0]?.owner).toEqual({ name: 'Person A (client IT)' });
+    expect(list[0]?.projectId).toBe('CLIENTA-ES-MAD-001');
   });
 
   it('"mine" lists only the actor\'s own actions', async () => {

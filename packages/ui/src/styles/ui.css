@@ -351,3 +351,30 @@ a:hover {
   background: var(--ocs-surface-alt);
   padding: 8px;
 }
+
+/* Board: columns of small cards (Actions mockup) */
+.ocs-board {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+  align-items: start;
+}
+.ocs-board__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.ocs-board__card {
+  border: 1px solid var(--ocs-rule);
+  border-radius: var(--ocs-radius-sm);
+  padding: 10px 12px;
+  margin-top: 8px;
+}
+.ocs-board__title {
+  font-weight: 600;
+  margin: 4px 0;
+}
+.ocs-board__meta {
+  color: var(--ocs-ink-muted);
+  font-size: 12px;
+}
