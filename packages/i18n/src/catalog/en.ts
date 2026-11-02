@@ -92,5 +92,6 @@ export const en = {
   'portfolio.col.site': 'Site',
   'portfolio.col.city': 'City',
   'portfolio.col.standard': 'Standard',
+  'actions.title': 'Actions',
   // gen:screen-titles — `pnpm gen:screen` adds screen titles above this line.
 } as const;

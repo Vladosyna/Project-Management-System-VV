@@ -94,5 +94,6 @@ export const zh = {
   'portfolio.col.site': '站点',
   'portfolio.col.city': '城市',
   'portfolio.col.standard': '标准',
+  'actions.title': '行动项',
   // gen:screen-titles — `pnpm gen:screen` adds screen titles above this line.
 } as const satisfies Catalog;
