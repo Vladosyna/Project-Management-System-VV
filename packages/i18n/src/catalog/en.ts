@@ -113,5 +113,18 @@ export const en = {
   'source.visit': 'Site visit',
   'source.alert': 'Alert',
   'source.comment': 'Comment',
+  'sites.title': 'Sites',
+  'sites.failed': 'The sites could not be loaded. Try again.',
+  'sites.col.client': 'Client',
+  'site.failed': 'The site could not be loaded. Try again.',
+  'site.missing': 'This site does not exist or you may not see it.',
+  'site.standard': 'Standard {standard}',
+  'site.devices': 'Devices & network',
+  'site.devicesSoon': 'Devices and network arrive with the devices registry (E4).',
+  'site.timeline': 'Timeline & comments',
+  'site.timelineEmpty': 'Nothing recorded on this site yet.',
+  'site.kind.action': 'Action',
+  'site.kind.comment': 'Comment',
+  'site.kind.visit': 'Site visit',
   // gen:screen-titles — `pnpm gen:screen` adds screen titles above this line.
 } as const;

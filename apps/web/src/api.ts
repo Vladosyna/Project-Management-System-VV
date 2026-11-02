@@ -80,3 +80,24 @@ export interface OpenAction {
 export async function loadActions(mine: boolean): Promise<OpenAction[]> {
   return getJson<OpenAction[]>(`/api/actions${mine ? '?mine=true' : ''}`);
 }
+
+export interface FeedItem {
+  readonly kind: 'action' | 'comment' | 'visit';
+  readonly id: string;
+  readonly at: string;
+  readonly text: string;
+  readonly source: { readonly kind: string; readonly ref: string | null };
+  readonly detail: Readonly<Record<string, string | number | boolean | null>>;
+}
+
+/** One project: its row, its client and its feed (newest first). */
+export async function loadSite(
+  siteId: string,
+): Promise<{ site: SiteSummary; client: ClientSummary | undefined; feed: FeedItem[] } | undefined> {
+  const [{ clients, sites }, feed] = await Promise.all([
+    loadPortfolio(),
+    getJson<FeedItem[]>(`/api/sites/${encodeURIComponent(siteId)}/feed`),
+  ]);
+  const site = sites.find((s) => s.id === siteId);
+  return site ? { site, client: clients.find((c) => c.id === site.clientId), feed } : undefined;
+}

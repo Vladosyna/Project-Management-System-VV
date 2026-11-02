@@ -106,10 +106,23 @@ test('Actions shows open actions in columns with owner, date and source (E5)', a
   await expect(page.getByRole('heading', { level: 2, name: /^Open · 0$/ })).toBeVisible();
 });
 
+test('a Site page shows its timeline with the source on every item (E5 AC4)', async ({ page }) => {
+  await signInWithPassword(page);
+  await page.getByRole('link', { name: 'Sites' }).click();
+  await page.getByRole('link', { name: 'CLIENTA-ES-MAD-001' }).click();
+  await expect(page.getByRole('heading', { level: 2, name: 'Timeline & comments' })).toBeVisible();
+  await expect(page.getByText('Provide the floor plan')).toBeVisible();
+  await expect(page.getByText('Source: Mail · Message 0001')).toBeVisible();
+  await expect(page.getByText('Source: Site visit')).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Sites' })).toHaveAttribute('aria-current', 'page');
+  await page.screenshot({ path: 'test-results/site-en.png', fullPage: true });
+});
+
 /** Screens built with `pnpm gen:screen` — each must open for a signed-in user and show its title. */
 const SCREENS: { path: string; heading: string }[] = [
   { path: '/portfolio', heading: 'Portfolio' },
   { path: '/actions', heading: 'Every open action, with an owner and a date' },
+  { path: '/sites', heading: 'Sites' },
   // gen:screens
 ];
 

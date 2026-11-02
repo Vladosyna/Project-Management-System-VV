@@ -114,5 +114,18 @@ export const zh = {
   'source.visit': '现场拜访',
   'source.alert': '预警',
   'source.comment': '评论',
+  'sites.title': '站点',
+  'sites.failed': '无法加载站点，请重试。',
+  'sites.col.client': '客户',
+  'site.failed': '无法加载该站点，请重试。',
+  'site.missing': '该站点不存在或您无权查看。',
+  'site.standard': '标准 {standard}',
+  'site.devices': '设备与网络',
+  'site.devicesSoon': '设备与网络将随设备登记（E4）上线。',
+  'site.timeline': '时间线与评论',
+  'site.timelineEmpty': '该站点暂无记录。',
+  'site.kind.action': '行动项',
+  'site.kind.comment': '评论',
+  'site.kind.visit': '现场拜访',
   // gen:screen-titles — `pnpm gen:screen` adds screen titles above this line.
 } as const satisfies Catalog;

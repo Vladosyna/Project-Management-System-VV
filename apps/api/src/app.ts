@@ -3,7 +3,7 @@ import { Hono } from 'hono';
 import type { Actor } from '@ocs/contracts';
 import { inviteUser, me } from '@ocs/core/identity';
 import { clientList, siteList } from '@ocs/core/org';
-import { openActions } from '@ocs/core/work';
+import { openActions, projectFeed } from '@ocs/core/work';
 import type { Runtime } from '@ocs/core/runtime';
 import { errorResponse } from './errors.ts';
 
@@ -61,6 +61,17 @@ export function createApp(rt: Runtime): Hono {
     const siteId = c.req.query('siteId');
     const mine = c.req.query('mine') === 'true';
     return c.json(await rt.kernel.read(openActions, c.get('actor'), { ...(siteId ? { siteId } : {}), mine }));
+  });
+
+  // E5 AC4: a project's feed — actions, comments, visit records with their sources (?before= to page).
+  api.get('/sites/:siteId/feed', async (c) => {
+    const before = c.req.query('before');
+    return c.json(
+      await rt.kernel.read(projectFeed, c.get('actor'), {
+        siteId: c.req.param('siteId'),
+        ...(before ? { before } : {}),
+      }),
+    );
   });
 
   app.route('/api', api);
