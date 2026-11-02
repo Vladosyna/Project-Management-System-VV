@@ -1,7 +1,8 @@
 // work repository — the only place in this module that touches tables.
-import { action, and, asc, eq, inArray, isNull, site, type Tx } from '@ocs/db';
+import { action, and, asc, authUser, comment, eq, inArray, isNull, site, type Tx } from '@ocs/db';
 
 export type ActionRow = typeof action.$inferSelect;
+export type CommentRow = typeof comment.$inferSelect;
 
 /** The project an action links to: active, visible to the actor (RLS). Read only — sites belong to org. */
 export async function findActiveSite(
@@ -52,4 +53,27 @@ export async function listOpenActions(
       ),
     )
     .orderBy(asc(action.due), asc(action.createdAt));
+}
+
+/** Which of these users are active staff — the only people a mention may notify (E5 AC2). */
+export async function activeStaffAmong(tx: Tx, ids: readonly string[]): Promise<Set<string>> {
+  if (ids.length === 0) return new Set();
+  const rows = await tx
+    .select({ id: authUser.id })
+    .from(authUser)
+    .where(and(inArray(authUser.id, [...ids]), eq(authUser.kind, 'staff'), isNull(authUser.archivedAt)));
+  return new Set(rows.map((r) => r.id));
+}
+
+export async function insertComment(tx: Tx, row: typeof comment.$inferInsert): Promise<void> {
+  await tx.insert(comment).values(row);
+}
+
+export async function findActiveComment(tx: Tx, id: string): Promise<CommentRow | undefined> {
+  return (
+    await tx
+      .select()
+      .from(comment)
+      .where(and(eq(comment.id, id), isNull(comment.archivedAt)))
+  )[0];
 }
