@@ -15,5 +15,13 @@ export const workPermissions = {
     description: 'See open actions by project or owner',
     roles: ['director', 'pm', 'sales', 'rnd', 'finance', 'management', 'sponsor', 'admin'],
   }),
+  addComment: permission('work.comment.add', {
+    description: 'Comment on a project, @mentioning staff (E5 AC2)',
+    roles: ['director', 'pm', 'sales', 'rnd', 'sponsor', 'finance'],
+  }),
+  commentToAction: permission('work.comment.toAction', {
+    description: 'Turn a comment into an action with an owner and a due date (E5 AC2)',
+    roles: ['director', 'pm'],
+  }),
   // gen:permissions — `pnpm gen:command` and `pnpm gen:query` add entries above this line.
 };

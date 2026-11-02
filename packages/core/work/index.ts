@@ -4,3 +4,5 @@ export { workPermissions } from './permissions.ts';
 export { createAction } from './commands/create-action.ts';
 export { completeAction } from './commands/complete-action.ts';
 export { openActions } from './queries/open-actions.ts';
+export { addComment } from './commands/add-comment.ts';
+export { commentToAction } from './commands/comment-to-action.ts';
