@@ -23,5 +23,9 @@ export const orgPermissions = {
     description: "Change a site's standard L ↔ S (D-25)",
     roles: ['director', 'admin', 'pm'],
   }),
+  createProgramme: permission('org.programme.create', {
+    description: 'Create a programme under a client (optional level, SOP-DEL-02 §3)',
+    roles: ['director', 'admin'],
+  }),
   // gen:permissions — `pnpm gen:command` and `pnpm gen:query` add entries above this line.
 };

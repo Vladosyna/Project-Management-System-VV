@@ -12,3 +12,4 @@ export type { ActorKind } from './schema.ts';
 export { and, asc, desc, eq, inArray, isNull, isNotNull, or, sql } from 'drizzle-orm';
 export { client } from './schema.ts';
 export { site } from './schema.ts';
+export { programme } from './schema.ts';
