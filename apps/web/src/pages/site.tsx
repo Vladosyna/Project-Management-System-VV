@@ -22,6 +22,7 @@ import {
   type SiteSummary,
   type StaffMember,
 } from '../api.ts';
+import { CommentToAction } from './comment-to-action.tsx';
 
 type State =
   | { kind: 'loading' }
@@ -136,6 +137,9 @@ export function SitePage(props: { siteId: string }) {
                     ref: item.source.ref ? ` · ${item.source.ref}` : '',
                   })}
                 </div>
+                {item.kind === 'comment' ? (
+                  <CommentToAction commentId={item.id} staff={staff} onDone={reload} />
+                ) : null}
               </li>
             ))}
           </ul>
