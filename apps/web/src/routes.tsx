@@ -15,6 +15,7 @@ import { AcceptInvitationPage } from './pages/accept-invitation.tsx';
 import { HomePage, NotYetPage } from './pages/home.tsx';
 import { LoginPage } from './pages/login.tsx';
 import { SetupMfaPage } from './pages/setup-mfa.tsx';
+import { PortfolioPage } from './pages/portfolio.tsx';
 // gen:screen-imports
 
 /** Navigation as in the Main mockup. Screens other than Home arrive with their epics. */
@@ -35,6 +36,7 @@ const NAV: readonly Omit<NavItem, 'active'>[] = [
 
 /** Screens built so far, by path (`pnpm gen:screen` adds entries). Other NAV entries show NotYetPage. */
 const SCREENS: Record<string, RouteComponent> = {
+  '/portfolio': PortfolioPage,
   // gen:screens
 };
 

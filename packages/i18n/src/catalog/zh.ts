@@ -86,5 +86,6 @@ export const zh = {
   'page.notYet': '该页面将随对应的功能模块上线，详见路线图。',
   'page.empty': '暂无内容。',
 
+  'portfolio.title': '项目组合',
   // gen:screen-titles — `pnpm gen:screen` adds screen titles above this line.
 } as const satisfies Catalog;

@@ -84,5 +84,6 @@ export const en = {
   'page.notYet': 'This screen arrives with its epic — see the roadmap.',
   'page.empty': 'Nothing here yet.',
 
+  'portfolio.title': 'Portfolio',
   // gen:screen-titles — `pnpm gen:screen` adds screen titles above this line.
 } as const;

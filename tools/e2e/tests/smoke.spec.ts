@@ -82,6 +82,7 @@ test('a passkey can be added and then used to sign in', async ({ page }) => {
 
 /** Screens built with `pnpm gen:screen` — each must open for a signed-in user and show its title. */
 const SCREENS: { path: string; heading: string }[] = [
+  { path: '/portfolio', heading: 'Portfolio' },
   // gen:screens
 ];
 
