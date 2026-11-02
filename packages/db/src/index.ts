@@ -13,3 +13,4 @@ export { and, asc, desc, eq, inArray, isNull, isNotNull, or, sql } from 'drizzle
 export { client } from './schema.ts';
 export { site } from './schema.ts';
 export { programme } from './schema.ts';
+export { partner, partnerAssignment } from './schema.ts';

@@ -111,3 +111,22 @@ export const programme = pgTable('programme', {
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   archivedAt: timestamp('archived_at', { withTimezone: true }),
 });
+
+/** Migration 0006. Real partner names — staff only (CLAUDE.md §3 rule 5). Archive, never delete. */
+export const partner = pgTable('partner', {
+  id: uuid('id').primaryKey(),
+  realName: text('real_name').notNull(),
+  countryCode: text('country_code').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  archivedAt: timestamp('archived_at', { withTimezone: true }),
+});
+
+/** Migration 0006. A partner working for a client; the client sees only `Partner <letter>`. */
+export const partnerAssignment = pgTable('partner_assignment', {
+  id: uuid('id').primaryKey(),
+  clientId: uuid('client_id').notNull(),
+  partnerId: uuid('partner_id').notNull(),
+  letter: text('letter').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  archivedAt: timestamp('archived_at', { withTimezone: true }),
+});
