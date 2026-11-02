@@ -1,6 +1,17 @@
 // Drizzle table definitions. Source of truth for the database is migrations/*.sql;
 // schema-drift.int.test.ts fails when these definitions and the migrated database disagree.
-import { boolean, inet, integer, jsonb, pgSchema, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
+import {
+  boolean,
+  date,
+  inet,
+  integer,
+  jsonb,
+  pgSchema,
+  pgTable,
+  text,
+  timestamp,
+  uuid,
+} from 'drizzle-orm/pg-core';
 
 export const actorKinds = ['staff', 'client', 'partner', 'system'] as const;
 export type ActorKind = (typeof actorKinds)[number];
@@ -202,13 +213,47 @@ export const handoverItem = pgTable('handover_item', {
   archivedAt: timestamp('archived_at', { withTimezone: true }),
 });
 
-/** Migration 0009. Client data: RLS in the migration; archive, never delete. */
+/** Migration 0009. Delivery's decision on one Handover Card version (SOP-DEL-01 §8). Internal only. */
 export const intakeDecision = pgTable('intake_decision', {
   id: uuid('id').primaryKey(),
   clientId: uuid('client_id').notNull(),
-  visibility: text('visibility', { enum: ['internal', 'client'] })
+  cardId: uuid('card_id').notNull().unique(),
+  decision: text('decision', { enum: ['accepted', 'accepted_with_conditions', 'returned'] }).notNull(),
+  folderStandard: text('folder_standard', { enum: ['L', 'S', 'mixed'] }).notNull(),
+  reasons: text('reasons'),
+  assignedPmId: uuid('assigned_pm_id'),
+  handoverMeeting: date('handover_meeting', { mode: 'string' }),
+  transferDate: date('transfer_date', { mode: 'string' }),
+  decidedBy: uuid('decided_by').notNull(),
+  decidedAt: timestamp('decided_at', { withTimezone: true }).notNull().defaultNow(),
+  archivedAt: timestamp('archived_at', { withTimezone: true }),
+});
+
+/** Migration 0009. A non-blocking item missing at acceptance, with its deadline (SOP-DEL-01 §8). */
+export const intakeCondition = pgTable('intake_condition', {
+  id: uuid('id').primaryKey(),
+  clientId: uuid('client_id').notNull(),
+  decisionId: uuid('decision_id').notNull(),
+  itemCode: text('item_code').notNull(),
+  text: text('text').notNull(),
+  deadline: date('deadline', { mode: 'string' }).notNull(),
+  status: text('status', { enum: ['open', 'met', 'expired'] })
     .notNull()
-    .default('internal'),
+    .default('open'),
+  metAt: timestamp('met_at', { withTimezone: true }),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  archivedAt: timestamp('archived_at', { withTimezone: true }),
+});
+
+/** Migration 0009. Delivery starts before acceptance, authorised in writing (SOP-DEL-01 §9). */
+export const conditionalStart = pgTable('conditional_start', {
+  id: uuid('id').primaryKey(),
+  clientId: uuid('client_id').notNull(),
+  cardId: uuid('card_id').notNull(),
+  authorisedBy: uuid('authorised_by').notNull(),
+  missingItems: text('missing_items').array().notNull(),
+  deadline: date('deadline', { mode: 'string' }).notNull(),
+  writtenRef: text('written_ref').notNull(),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   archivedAt: timestamp('archived_at', { withTimezone: true }),
 });
