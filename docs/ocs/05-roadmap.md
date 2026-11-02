@@ -24,7 +24,7 @@ Dates from D-17. Each epic lists acceptance criteria (AC). An epic is done when 
 ### E1 Org and projects (SOP-DEL-02)
 - AC1 Client → (programme) → country → (city, L only) → project/site hierarchy, matching SOP-DEL-02 §3.
 - AC2 Project ID `CLIENT-CC-CITY-NNN` generated, unique, immutable; running number per client+city.
-- AC3 Standard L/S stored per site; S→L upgrade keeps ID and documents; no L→S downgrade.
+- AC3 Standard L/S stored per site; staff change it both ways (S→L, L→S, D-25), Project ID and documents kept.
 - AC4 Partners stored with real name (staff only) and label Partner A/B/C (client-facing).
 
 ### E2 Intake (SOP-DEL-01 + Annex B)
