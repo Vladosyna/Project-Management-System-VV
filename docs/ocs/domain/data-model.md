@@ -28,7 +28,7 @@ Conventions: UUID v7 `id`; `created_at/by`, `updated_at/by`; `archived_at` (no d
 - **DeviceSourceRecord**: device ref (sn/mac), source (packing_list | as_built | platform | aiot | import), payload, seen_at — for reconciliation.
 
 ## Work
-- **Action**: title, owner_id, due, status, source_kind, source_ref, linked object (polymorphic: project/site/case/visit), visibility.
+- **Action**: title, owner (owner_id of an OCS user, or owner_name of a person outside OCS — exactly one), due, status (open | in_progress | done | cancelled), source_kind, source_ref, linked object (one typed FK per kind: site now, case and visit with their tables), visibility.
 - **Comment / Update**: object ref, body, mentions, source_kind, visibility.
 - **Visit** (SOP-DEL-03): site_id, type, date, attendees [{name, side}], coverage_done, coverage_total, summary, decided[], discussed[], minutes_ref.
 
