@@ -20,7 +20,8 @@ Assumption to confirm at sign-off: country and city are codes on the site row (n
 
 | Slice | What | AC | Clause / rule |
 |---|---|---|---|
-| E4.1 | `gen:module devices` (Claude, `arch/`: module + table with RLS through the site's client); `devices.device.register` with SN, MAC, model, firmware, site, switch/port/IP, status | AC1 | data-model.md *Device* |
+| E4.1a | Claude, `arch/`: `devices` module; **device** table + RLS (client sees only its own rows marked for clients; partners nothing); device's client = its site's client (composite FK); R6 backstop: unique SN (any case) and MAC among active rows | AC1 | data-model.md *Device*; R6 |
+| E4.1b | Xavier, `feat/`: `devices.device.register` with SN, MAC (normalised to `AA:BB:CC:DD:EE:FF`), model, firmware, site, switch/port/IP, status | AC1 | data-model.md *Device* |
 | E4.2 | Duplicate SN or MAC among active devices blocks at save | AC1 | R6 (`gen:rule devices duplicate-sn-mac`) |
 | E4.3 | Device list per site (screen from mockup *Site*), EN + 中文 | AC1 | — |
 | E4.4 | Excel/CSV import with dry-run diff; re-running the same file changes nothing | AC2 | — |
