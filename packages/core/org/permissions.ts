@@ -19,5 +19,9 @@ export const orgPermissions = {
     description: 'See projects/sites',
     roles: ['director', 'pm', 'sales', 'rnd', 'finance', 'management', 'sponsor', 'admin'],
   }),
+  changeStandard: permission('org.site.changeStandard', {
+    description: "Change a site's standard L ↔ S (D-25)",
+    roles: ['director', 'admin', 'pm'],
+  }),
   // gen:permissions — `pnpm gen:command` and `pnpm gen:query` add entries above this line.
 };
