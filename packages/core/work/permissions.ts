@@ -23,5 +23,9 @@ export const workPermissions = {
     description: 'Turn a comment into an action with an owner and a due date (E5 AC2)',
     roles: ['director', 'pm'],
   }),
+  recordVisit: permission('work.visit.record', {
+    description: 'Record a site visit and its action items the same day (SOP-DEL-03 §5.1)',
+    roles: ['director', 'pm', 'rnd'],
+  }),
   // gen:permissions — `pnpm gen:command` and `pnpm gen:query` add entries above this line.
 };
