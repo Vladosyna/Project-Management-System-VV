@@ -2,4 +2,5 @@
 DROP TABLE restricted_note;
 DROP FUNCTION app.may_read_restricted(uuid);
 ALTER TABLE site DROP COLUMN pm_id, DROP COLUMN sales_owner_id;
+DROP FUNCTION app.via();
 DROP FUNCTION app.actor_roles();
