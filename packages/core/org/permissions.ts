@@ -27,5 +27,21 @@ export const orgPermissions = {
     description: 'Create a programme under a client (optional level, SOP-DEL-02 §3)',
     roles: ['director', 'admin'],
   }),
+  createPartner: permission('org.partner.create', {
+    description: 'Register a partner company (real name, staff only)',
+    roles: ['director', 'admin'],
+  }),
+  assignPartner: permission('org.partner.assign', {
+    description: 'Assign a partner to a client under the next Partner letter',
+    roles: ['director', 'admin', 'pm'],
+  }),
+  partnerLabels: permission('org.partner.labels', {
+    description: "See a client's partners as Partner A/B/C (no real names)",
+    roles: ['director', 'pm', 'sales', 'rnd', 'finance', 'management', 'sponsor', 'admin', 'client'],
+  }),
+  partnerList: permission('org.partner.list', {
+    description: 'See partners with real names and their client letters (staff)',
+    roles: ['director', 'admin', 'pm'],
+  }),
   // gen:permissions — `pnpm gen:command` and `pnpm gen:query` add entries above this line.
 };
