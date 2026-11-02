@@ -35,6 +35,7 @@ Assumption to confirm at sign-off: country and city are codes on the site row (n
 | E2.1b | Claude, `arch/`: Handover Card sections 1–11 of Annex B as zod schema in `@ocs/contracts` | AC1 | Annex B |
 | E2.1c | Leon, `feat/`: §6 checklist as cited config (item × Full/Light → Yes / If appl. / Changes / —); package Full vs Light from project type (`gen:rule intake package-tier`) | AC1 | SOP-DEL-01 §3, §6 |
 | E2.2 | N/A needs a reason; blanks are not accepted | AC1 | SOP-DEL-01 §6, §11 |
+| E2.3a | Claude, `arch/`: **intake_decision** (one per card version; Returned needs the gaps, no PM), **intake_condition** (item, text, deadline, open/met/expired), **conditional_start** (missing items, deadline, written reference) + RLS internal only | AC2–AC4 | SOP-DEL-01 §8, §9 |
 | E2.3 | Intake review: Accepted / Accepted with conditions / Returned; blocking items A1, A4, A6, C2, D1, F1 can never be conditions | AC2 | SOP-DEL-01 §8 |
 | E2.4 | Conditions with deadlines ≤ 5 working days (CN/EU calendars already in core) | AC3 | SOP-DEL-01 §8 |
 | E2.5 | Conditional Start only with `intake.conditionalStart` (Hai Tao); missing items and deadline recorded | AC4 | SOP-DEL-01 §9 |
