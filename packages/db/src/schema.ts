@@ -163,3 +163,41 @@ export const device = pgTable('device', {
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   archivedAt: timestamp('archived_at', { withTimezone: true }),
 });
+
+/** Handover Card life cycle (SOP-DEL-01 §8); the CHECK in migration 0008 lists the same values. */
+export const HANDOVER_CARD_STATUSES = [
+  'draft',
+  'submitted',
+  'accepted',
+  'accepted_with_conditions',
+  'returned',
+] as const;
+
+/** Migration 0008. One version of a project's Handover Card (SOP-DEL-01 Annex B). Internal only. */
+export const handoverCard = pgTable('handover_card', {
+  id: uuid('id').primaryKey(),
+  clientId: uuid('client_id').notNull(),
+  siteId: uuid('site_id').notNull(),
+  version: integer('version').notNull(),
+  package: text('package', { enum: ['full', 'light'] }).notNull(),
+  status: text('status', { enum: HANDOVER_CARD_STATUSES }).notNull().default('draft'),
+  content: jsonb('content').notNull().default({}),
+  submittedAt: timestamp('submitted_at', { withTimezone: true }),
+  submittedBy: uuid('submitted_by'),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  archivedAt: timestamp('archived_at', { withTimezone: true }),
+});
+
+/** Migration 0008. One SOP-DEL-01 §6 checklist item covered by a card: provided, or N/A with a reason. */
+export const handoverItem = pgTable('handover_item', {
+  id: uuid('id').primaryKey(),
+  clientId: uuid('client_id').notNull(),
+  cardId: uuid('card_id').notNull(),
+  code: text('code').notNull(),
+  status: text('status', { enum: ['provided', 'na'] }).notNull(),
+  value: text('value'),
+  fileRef: text('file_ref'),
+  naReason: text('na_reason'),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  archivedAt: timestamp('archived_at', { withTimezone: true }),
+});
