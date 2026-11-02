@@ -1,4 +1,4 @@
-// Starts PostgreSQL, migrates, invites the first admin, then the API and the web app on fixed ports.
+// Starts PostgreSQL, migrates, invites the first admin, loads the seed, then the API and the web app.
 // The invitation token reaches the tests through process.env (workers inherit it).
 import { spawn, type ChildProcess } from 'node:child_process';
 import { randomBytes } from 'node:crypto';
@@ -7,6 +7,7 @@ import { fileURLToPath } from 'node:url';
 import { bootstrapAdmin } from '@ocs/core/identity';
 import { systemActor } from '@ocs/core/kernel';
 import { createRuntime, migrateDatabase } from '@ocs/core/runtime';
+import { loadSeed } from '@ocs/seed';
 import { createTestDatabase, startPostgresServer } from '@ocs/testing';
 import { API_PORT, WEB_PORT } from './playwright.config.ts';
 
@@ -62,6 +63,7 @@ export default async function globalSetup(): Promise<() => Promise<void>> {
     { email: ADMIN_EMAIL },
     'system',
   );
+  await loadSeed(runtime.kernel); // the anonymised seed world (F0.11: e2e sees the seed)
   await runtime.close();
   process.env.OCS_E2E_INVITE_TOKEN = invite.token;
   process.env.OCS_E2E_ADMIN_EMAIL = ADMIN_EMAIL;

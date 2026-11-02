@@ -80,6 +80,17 @@ test('a passkey can be added and then used to sign in', async ({ page }) => {
   await expectShell(page);
 });
 
+test('Portfolio shows the seeded clients and their Project IDs (F0.11, E1)', async ({ page }) => {
+  await signInWithPassword(page);
+  await page.getByRole('link', { name: 'Portfolio' }).click();
+  for (const client of ['Client A', 'Client B', 'Client C']) {
+    await expect(page.getByRole('heading', { level: 2, name: new RegExp(client) })).toBeVisible();
+  }
+  await expect(page.getByRole('cell', { name: 'CLIENTA-ES-MAD-001' })).toBeVisible();
+  await expect(page.getByRole('cell', { name: 'CLIENTC-PT-LIS-003' })).toBeVisible();
+  await page.screenshot({ path: 'test-results/portfolio-en.png', fullPage: true });
+});
+
 /** Screens built with `pnpm gen:screen` — each must open for a signed-in user and show its title. */
 const SCREENS: { path: string; heading: string }[] = [
   { path: '/portfolio', heading: 'Portfolio' },

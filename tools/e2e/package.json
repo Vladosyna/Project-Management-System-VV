@@ -10,6 +10,7 @@
   "devDependencies": {
     "@ocs/contracts": "workspace:*",
     "@ocs/core": "workspace:*",
+    "@ocs/seed": "workspace:*",
     "@ocs/testing": "workspace:*",
     "@playwright/test": "1.63.0",
     "otpauth": "9.5.2"

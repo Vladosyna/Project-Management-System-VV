@@ -2,6 +2,7 @@
 import { Hono } from 'hono';
 import type { Actor } from '@ocs/contracts';
 import { inviteUser, me } from '@ocs/core/identity';
+import { clientList, siteList } from '@ocs/core/org';
 import type { Runtime } from '@ocs/core/runtime';
 import { errorResponse } from './errors.ts';
 
@@ -45,6 +46,13 @@ export function createApp(rt: Runtime): Hono {
     // The token travels in the URL fragment, so it never reaches server or proxy logs.
     const link = `${rt.baseURL}/accept-invitation#${result.token}`;
     return c.json({ invitationId: result.invitationId, expiresAt: result.expiresAt, link }, 201);
+  });
+
+  // E1: what the actor may see of clients and sites (RLS limits the rows).
+  api.get('/clients', async (c) => c.json(await rt.kernel.read(clientList, c.get('actor'), {})));
+  api.get('/sites', async (c) => {
+    const clientId = c.req.query('clientId');
+    return c.json(await rt.kernel.read(siteList, c.get('actor'), clientId ? { clientId } : {}));
   });
 
   app.route('/api', api);

@@ -85,5 +85,12 @@ export const en = {
   'page.empty': 'Nothing here yet.',
 
   'portfolio.title': 'Portfolio',
+  'portfolio.failed': 'The portfolio could not be loaded. Try again.',
+  'portfolio.empty': 'No clients yet.',
+  'portfolio.sites': '{count} sites',
+  'portfolio.col.projectId': 'Project ID',
+  'portfolio.col.site': 'Site',
+  'portfolio.col.city': 'City',
+  'portfolio.col.standard': 'Standard',
   // gen:screen-titles — `pnpm gen:screen` adds screen titles above this line.
 } as const;

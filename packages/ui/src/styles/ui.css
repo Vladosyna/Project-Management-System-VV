@@ -213,6 +213,29 @@ a:hover {
   font-size: 17px;
 }
 
+/* Vertical rhythm between cards on a page */
+.ocs-stack > * + * {
+  margin-top: 16px;
+}
+
+/* Data tables: header row muted, rows separated by the rule colour */
+.ocs-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.ocs-table th,
+.ocs-table td {
+  text-align: left;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--ocs-rule);
+}
+.ocs-table th {
+  color: var(--ocs-ink-muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
 /* Status chips: semantic tones, always with a word (never colour alone) */
 .ocs-chip {
   display: inline-block;
