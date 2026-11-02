@@ -289,6 +289,7 @@ export const action = pgTable('action', {
     enum: ['manual', 'mail', 'dingtalk', 'meeting', 'visit', 'alert', 'comment'],
   }).notNull(),
   sourceRef: text('source_ref'),
+  commentId: uuid('comment_id'),
   visibility: text('visibility', { enum: ['internal', 'client'] })
     .notNull()
     .default('internal'),
@@ -297,10 +298,18 @@ export const action = pgTable('action', {
   archivedAt: timestamp('archived_at', { withTimezone: true }),
 });
 
-/** Migration 0012. Client data: RLS in the migration; archive, never delete. */
+/** Migration 0012. A comment or update on a project with @mentions (E5 AC2). Archive, never delete. */
 export const comment = pgTable('comment', {
   id: uuid('id').primaryKey(),
   clientId: uuid('client_id').notNull(),
+  siteId: uuid('site_id'),
+  body: text('body').notNull(),
+  mentions: uuid('mentions').array().notNull().default([]),
+  authorId: uuid('author_id').notNull(),
+  sourceKind: text('source_kind', { enum: ['manual', 'mail', 'dingtalk', 'meeting', 'visit', 'alert'] })
+    .notNull()
+    .default('manual'),
+  sourceRef: text('source_ref'),
   visibility: text('visibility', { enum: ['internal', 'client'] })
     .notNull()
     .default('internal'),
