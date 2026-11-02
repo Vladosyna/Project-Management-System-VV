@@ -257,3 +257,14 @@ export const conditionalStart = pgTable('conditional_start', {
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   archivedAt: timestamp('archived_at', { withTimezone: true }),
 });
+
+/** Migration 0010. Client data: RLS in the migration; archive, never delete. */
+export const restrictedNote = pgTable('restricted_note', {
+  id: uuid('id').primaryKey(),
+  clientId: uuid('client_id').notNull(),
+  visibility: text('visibility', { enum: ['internal', 'client'] })
+    .notNull()
+    .default('internal'),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  archivedAt: timestamp('archived_at', { withTimezone: true }),
+});
