@@ -51,3 +51,18 @@ export async function listActiveSites(tx: Tx, clientId?: string): Promise<SiteRo
     .where(clientId ? and(active, eq(site.clientId, clientId)) : active)
     .orderBy(asc(site.projectId));
 }
+
+/** The active site, locked until the transaction ends. */
+export async function lockActiveSite(tx: Tx, id: string): Promise<SiteRow | undefined> {
+  return (
+    await tx
+      .select()
+      .from(site)
+      .where(and(eq(site.id, id), isNull(site.archivedAt)))
+      .for('update')
+  )[0];
+}
+
+export async function setSiteStandard(tx: Tx, id: string, standard: SiteRow['standard']): Promise<void> {
+  await tx.update(site).set({ standard }).where(eq(site.id, id));
+}

@@ -10,7 +10,7 @@ Order follows dependencies: E1 is the base every other epic links to (client, si
 |---|---|---|---|
 | E1.1 | `org` module; **client** table + RLS (a client user sees only its own client); `org.client.create` (short code ≤ 8 letters, unique), `org.client.list` | AC1 (top level) | SOP-DEL-02 §3 |
 | E1.2 | **site** (project/site) table + RLS; `org.site.create` generates the Project ID `CLIENT-CC-CITY-NNN` — running number per client + city, unique, immutable; country = ISO 3166 alpha-2, city = 3-letter code (IATA where one exists) | AC1, AC2 | SOP-DEL-02 §3, D-18 |
-| E1.3 | Standard L/S per site; `org.site.upgradeToL` keeps Project ID and documents; L → S refused | AC3 | SOP-DEL-02 §2.1 |
+| E1.3 | Standard L/S per site; `org.site.changeStandard` S ↔ L at staff's discretion, Project ID kept | AC3 | SOP-DEL-02 §2.1 as changed by D-25 |
 | E1.4 | Optional **programme** under a client; **partner** with real name (staff only) and per-client label Partner A/B/C; client projection never carries the real name (test) | AC1, AC4 | SOP-DEL-02 §3; CLAUDE.md §3 rule 5 |
 | E1.5 | `pnpm seed` loads the anonymised seed world through the org commands; Portfolio screen (mockup *Portfolio*); e2e signs in and sees Client A/B/C — closes the Phase 0 "e2e sees seed" item | AC1 + F0.11 | — |
 

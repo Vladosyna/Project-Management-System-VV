@@ -55,6 +55,8 @@ Every project folder has a predictable shape, so anyone can find any document in
 >
 > • **Upgrade S → L:** when a site turns out to need accompanying work, or grows, the PM creates the L folders and drops each file into the folder with the same number, names unchanged. There is no downgrade from L to S.
 >
+> *OCS note (not part of the approved text): changed by decision D-25 on 2 Nov 2026 — staff may change the standard both ways; the official SOP-DEL-02 v1.5 will carry the new wording.*
+>
 > • **Mixed clients:** one client can have L and S sites side by side. Client and Country levels are the same for both.
 
 **3. Hierarchy**

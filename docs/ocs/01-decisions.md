@@ -28,6 +28,7 @@ Rules: a decision here is not re-opened without Vlad's explicit OK. New decision
 | D-22 | 29 Oct 2026 | Branches: `main` starts at the bootstrap-pack commit and changes only through PRs; Phase 0 work on `arch/phase-0-skeleton`. Until Q2 is answered Vlad is the interim architect role in CODEOWNERS. | Vlad |
 | D-23 | 30 Oct 2026 | Answers Q1: the PMs who write code are **Xavier, Vlad and Leon**, hours as available (no fixed weekly allocation). They work on `feat/` and `fix/` branches after Phase 0; protected zones stay `arch/`. | Vlad |
 | D-24 | 30 Oct 2026 | Answers Q2: **Vlad is the architect-reviewer** (CODEOWNERS for protected zones), replacing the interim role of D-22. PRs by Xavier or Leon need Vlad's approval. GitHub does not let an author approve their own PR, so Vlad's own `arch/` PRs (including those Claude opens from his account) merge once the required checks are green, with Claude's review in the PR as the second pair of eyes. | Vlad |
+| D-25 | 2 Nov 2026 | **A site's standard can change both ways (S → L and L → S)** at staff's discretion. This overrides the SOP-DEL-02 §2.1 sentence "There is no downgrade from L to S"; Vlad updates the official SOP-DEL-02 (v1.5), the repository copy carries a note until then. The Project ID never changes with the standard (D-18). Until the DingTalk Drive integration (V1.1) the PM moves the folders and files by hand when the standard changes. | Vlad |
 
 ## Proposed at kickoff (ADR-001) — accepted 29 Oct 2026 as D-21 (P-10 deferred)
 
