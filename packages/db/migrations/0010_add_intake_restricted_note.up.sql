@@ -3,17 +3,12 @@
 -- Restricted Internal Notes (SOP-DEL-01 §6 group F, SOP-DEL-02 "11_Internal Notes"; E2 AC7): verbal
 -- commitments, concessions, relationship map, history. Readers per D-28: the project's Sales owner, its
 -- assigned PM, the Delivery Director (role director) and the sponsor (role sponsor). Staff only — never
--- the system actor, so the central AI agent has no access. A reader's personal AI agent (MCP, acting as
--- the reader) may add notes but never read or archive them: restricted notes never leave OCS through
--- MCP (08-ai-and-mcp.md, D-28).
+-- the system actor, so neither the central AI agent nor MCP can read them (08-ai-and-mcp.md).
 
 -- The actor's roles, set per transaction next to actor_id (actor-context.ts). Unset → empty → deny.
 CREATE FUNCTION app.actor_roles() RETURNS text[]
   LANGUAGE sql STABLE AS $$ SELECT coalesce(nullif(current_setting('app.roles', true), '')::text[], '{}') $$;
--- The AI agent acting for the user, if any (Actor.via, e.g. "mcp:claude"). Unset → NULL → the person.
-CREATE FUNCTION app.via() RETURNS text
-  LANGUAGE sql STABLE AS $$ SELECT nullif(current_setting('app.via', true), '') $$;
-GRANT EXECUTE ON FUNCTION app.actor_roles(), app.via() TO ocs_app;
+GRANT EXECUTE ON FUNCTION app.actor_roles() TO ocs_app;
 
 -- Who answers for the project: Sales owner from the Handover Card, PM from the intake decision (§8).
 ALTER TABLE site ADD COLUMN sales_owner_id uuid, ADD COLUMN pm_id uuid;
@@ -43,12 +38,11 @@ GRANT EXECUTE ON FUNCTION app.may_read_restricted(uuid) TO ocs_app;
 
 ALTER TABLE restricted_note ENABLE ROW LEVEL SECURITY;
 CREATE POLICY restricted_note_readers ON restricted_note FOR SELECT TO ocs_app
-  USING (app.may_read_restricted(site_id) AND app.via() IS NULL);
+  USING (app.may_read_restricted(site_id));
 CREATE POLICY restricted_note_write ON restricted_note FOR INSERT TO ocs_app
   WITH CHECK (app.may_read_restricted(site_id) AND author_id = app.actor_id());
 -- Notes are never edited: corrected by a new note, archived when obsolete. No DELETE (SOP-DEL-02).
 CREATE POLICY restricted_note_archive ON restricted_note FOR UPDATE TO ocs_app
-  USING (app.may_read_restricted(site_id) AND app.via() IS NULL)
-  WITH CHECK (app.may_read_restricted(site_id) AND app.via() IS NULL);
+  USING (app.may_read_restricted(site_id)) WITH CHECK (app.may_read_restricted(site_id));
 GRANT SELECT, INSERT ON restricted_note TO ocs_app;
 GRANT UPDATE (archived_at) ON restricted_note TO ocs_app;

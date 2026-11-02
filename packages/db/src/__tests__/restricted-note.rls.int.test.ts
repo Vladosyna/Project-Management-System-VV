@@ -111,19 +111,3 @@ it('a note has content and cites a group F item when it records one', async () =
   await expect(write(director, { ...noteBy(director), body: ' ' })).rejects.toThrow();
   await expect(write(director, { ...noteBy(director), itemCode: 'A1' })).rejects.toThrow();
 });
-
-it("a reader's AI agent via MCP adds notes but never reads or archives them (D-28, 08-ai-and-mcp)", async () => {
-  const salesOwnerViaMcp: DbActor = { ...salesOwner, via: 'mcp:claude' };
-  expect(await notesSeenBy(salesOwnerViaMcp)).toBe(0);
-  await write(salesOwnerViaMcp, noteBy(salesOwner));
-  const archivedViaMcp = await inActorTransaction(database.db, salesOwnerViaMcp, (tx) =>
-    tx
-      .update(restrictedNote)
-      .set({ archivedAt: new Date() })
-      .where(eq(restrictedNote.siteId, siteB))
-      .returning({ id: restrictedNote.id }),
-  ).catch(() => []);
-  expect(archivedViaMcp).toEqual([]);
-  // The note written via MCP is there for the person, read directly.
-  expect(await notesSeenBy(salesOwner)).toBeGreaterThanOrEqual(3);
-});

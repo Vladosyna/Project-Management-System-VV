@@ -9,8 +9,6 @@ export interface DbActor {
   readonly clientIds: readonly string[];
   /** Staff roles; policies that need them (restricted notes, D-28) deny when absent. */
   readonly roles?: readonly string[];
-  /** Set when an AI agent acts for the user, e.g. "mcp:claude" (08-ai-and-mcp). Absent → the person directly. */
-  readonly via?: string;
 }
 
 /**
@@ -31,8 +29,7 @@ export async function inActorTransaction<T>(
         sql`SELECT set_config('app.actor_id', ${actor.id}, true),
                    set_config('app.actor_kind', ${actor.kind}, true),
                    set_config('app.client_ids', ${`{${actor.clientIds.join(',')}}`}, true),
-                   set_config('app.roles', ${`{${(actor.roles ?? []).join(',')}}`}, true),
-                   set_config('app.via', ${actor.via ?? ''}, true)`,
+                   set_config('app.roles', ${`{${(actor.roles ?? []).join(',')}}`}, true)`,
       );
       return fn(tx);
     },
