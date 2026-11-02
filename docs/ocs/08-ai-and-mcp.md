@@ -16,7 +16,7 @@ Start: everything except exact-match attach is a proposal. Promote a proposal ty
 
 ## Data handling
 - MCP returns data per role and strips personal data not needed for the task.
-- Restricted notes never leave OCS through MCP or the central agent.
+- Restricted notes (D-28): never available to the central agent. Through MCP only to their readers, since a personal agent has the user's rights (D-07); which model providers may receive them is part of the Q4 policy.
 - Policy needed (Q4): which model providers may be connected to projects with client data.
 - Idempotency: two agents proposing the same case from the same Message-ID produce one proposal.
 - Prompts, responses and tool calls of the central agent are logged (no secrets).

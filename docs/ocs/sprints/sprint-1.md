@@ -39,7 +39,8 @@ Assumption to confirm at sign-off: country and city are codes on the site row (n
 | E2.3 | Intake review: Accepted / Accepted with conditions / Returned; blocking items A1, A4, A6, C2, D1, F1 can never be conditions | AC2 | SOP-DEL-01 §8 |
 | E2.4 | Conditions with deadlines ≤ 5 working days (CN/EU calendars already in core) | AC3 | SOP-DEL-01 §8 |
 | E2.5 | Conditional Start only with `intake.conditionalStart` (Hai Tao); missing items and deadline recorded | AC4 | SOP-DEL-01 §9 |
-| E2.6 | Restricted items (group F) stored in restricted notes, separate RLS | AC7 | SOP-DEL-01 §6; SOP-DEL-02 restricted notes |
+| E2.6a | Claude, `arch/`: **restricted_note** + RLS per D-28; `site.sales_owner_id`, `site.pm_id`; actor roles in the DB context | AC7 | SOP-DEL-01 §6 group F; D-28 |
+| E2.6 | Leon: commands to add and archive restricted notes; the Sales owner set from the card, the PM from the intake decision | AC7 | SOP-DEL-01 §6; SOP-DEL-02 restricted notes |
 
 Moved to Sprint 2 if time runs out: AC5 disputes (2-working-day timer), AC6 Intake Register and monthly export.
 

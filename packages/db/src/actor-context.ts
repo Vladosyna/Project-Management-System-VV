@@ -7,6 +7,8 @@ export interface DbActor {
   readonly id: string;
   readonly kind: ActorKind;
   readonly clientIds: readonly string[];
+  /** Staff roles; policies that need them (restricted notes, D-28) deny when absent. */
+  readonly roles?: readonly string[];
 }
 
 /**
@@ -26,7 +28,8 @@ export async function inActorTransaction<T>(
       await tx.execute(
         sql`SELECT set_config('app.actor_id', ${actor.id}, true),
                    set_config('app.actor_kind', ${actor.kind}, true),
-                   set_config('app.client_ids', ${`{${actor.clientIds.join(',')}}`}, true)`,
+                   set_config('app.client_ids', ${`{${actor.clientIds.join(',')}}`}, true),
+                   set_config('app.roles', ${`{${(actor.roles ?? []).join(',')}}`}, true)`,
       );
       return fn(tx);
     },
