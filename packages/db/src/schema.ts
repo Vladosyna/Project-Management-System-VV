@@ -271,3 +271,14 @@ export const restrictedNote = pgTable('restricted_note', {
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   archivedAt: timestamp('archived_at', { withTimezone: true }),
 });
+
+/** Migration 0011. Client data: RLS in the migration; archive, never delete. */
+export const action = pgTable('action', {
+  id: uuid('id').primaryKey(),
+  clientId: uuid('client_id').notNull(),
+  visibility: text('visibility', { enum: ['internal', 'client'] })
+    .notNull()
+    .default('internal'),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  archivedAt: timestamp('archived_at', { withTimezone: true }),
+});
