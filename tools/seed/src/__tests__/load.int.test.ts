@@ -25,7 +25,7 @@ afterAll(async () => {
 });
 
 it('loads 3 clients and 12 sites with the Project IDs of the seed world, every write audited', async () => {
-  expect(await loadSeed(rt.kernel)).toEqual({ clients: 3, sites: 12, partners: 2 });
+  expect(await loadSeed(rt.kernel)).toEqual({ clients: 3, sites: 12, partners: 2, actions: 3 });
   const clients = await rt.kernel.read(clientList, SEED_ACTOR, {});
   expect(clients.map((c) => c.name)).toEqual(['Client A', 'Client B', 'Client C']);
   const sites = await rt.kernel.read(siteList, SEED_ACTOR, {});
@@ -35,7 +35,7 @@ it('loads 3 clients and 12 sites with the Project IDs of the seed world, every w
       .sort(),
   );
   expect(await countRows(testDb.url, 'audit_event WHERE actor_id = $1', [SEED_ACTOR.id])).toBe(
-    3 + 1 + 12 + 2 + 3,
+    3 + 1 + 12 + 2 + 3 + 3,
   );
 });
 

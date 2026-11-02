@@ -64,3 +64,19 @@ export async function loadPortfolio(): Promise<{ clients: ClientSummary[]; sites
   ]);
   return { clients, sites };
 }
+
+export interface OpenAction {
+  readonly id: string;
+  readonly projectId: string | null;
+  readonly title: string;
+  readonly owner: { readonly userId: string; readonly name: string | null } | { readonly name: string };
+  readonly due: string;
+  readonly overdue: boolean;
+  readonly status: 'open' | 'in_progress';
+  readonly source: { readonly kind: string; readonly ref: string | null };
+}
+
+/** Open actions the signed-in user may see; `mine` keeps only their own. */
+export async function loadActions(mine: boolean): Promise<OpenAction[]> {
+  return getJson<OpenAction[]>(`/api/actions${mine ? '?mine=true' : ''}`);
+}

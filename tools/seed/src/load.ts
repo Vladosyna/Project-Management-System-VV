@@ -1,6 +1,6 @@
 // Loads the anonymised seed world (packages/testing/seed, 04-testing §7) through the core commands, so seed
 // data passes the same permissions, rules, audit and RLS as real data (CLAUDE.md §3 rule 9). Each module
-// adds its part here when its commands exist; today: clients, programme, sites, partners (E1).
+// adds its part here when its commands exist; today: clients, programme, sites, partners (E1), actions (E5).
 import type { Actor } from '@ocs/contracts';
 import type { Kernel } from '@ocs/core/kernel';
 import {
@@ -11,6 +11,7 @@ import {
   createProgramme,
   createSite,
 } from '@ocs/core/org';
+import { createAction } from '@ocs/core/work';
 import { buildSeedWorld } from '@ocs/testing';
 
 /** The seed acts as a staff director with a fixed, recognisable id; its audit records show it. */
@@ -37,6 +38,7 @@ export interface SeedSummary {
   readonly clients: number;
   readonly sites: number;
   readonly partners: number;
+  readonly actions: number;
 }
 
 /** Loads the seed into an empty database; refuses when any client exists already. */
@@ -62,10 +64,11 @@ export async function loadSeed(kernel: Kernel, actor: Actor = SEED_ACTOR): Promi
     }
   }
 
+  const siteIds: string[] = [];
   for (const s of world.sites) {
     const clientId = clientIds.get(s.client) ?? '';
     const programmeId = programmeIds.get(s.client);
-    await kernel.execute(
+    const created = await kernel.execute(
       createSite,
       actor,
       {
@@ -79,6 +82,7 @@ export async function loadSeed(kernel: Kernel, actor: Actor = SEED_ACTOR): Promi
       },
       'system',
     );
+    siteIds.push(created.id);
   }
 
   // One anonymised installer per seed label. Letters are per client in order of assignment, so every
@@ -98,5 +102,38 @@ export async function loadSeed(kernel: Kernel, actor: Actor = SEED_ACTOR): Promi
     }
   }
 
-  return { clients: clientIds.size, sites: world.sites.length, partners: installers.length };
+  // A few open actions so the Actions screen has something to show: one on the seed actor, one waiting on
+  // a person outside OCS, one long overdue (E5).
+  const [first = '', second = ''] = siteIds;
+  const actions = [
+    {
+      siteId: first,
+      title: 'Send the fibre spec',
+      owner: { userId: actor.id },
+      due: '2099-11-06',
+      source: { kind: 'visit' },
+    },
+    {
+      siteId: first,
+      title: 'Provide the floor plan',
+      owner: { name: 'Person A (client IT)' },
+      due: '2099-11-09',
+      source: { kind: 'mail', ref: 'Message 0001' },
+    },
+    {
+      siteId: second,
+      title: 'Confirm the sensor count',
+      owner: { userId: actor.id },
+      due: '2000-01-10',
+      source: { kind: 'meeting' },
+    },
+  ];
+  for (const a of actions) await kernel.execute(createAction, actor, a, 'system');
+
+  return {
+    clients: clientIds.size,
+    sites: world.sites.length,
+    partners: installers.length,
+    actions: actions.length,
+  };
 }
