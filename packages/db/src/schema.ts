@@ -290,6 +290,7 @@ export const action = pgTable('action', {
   }).notNull(),
   sourceRef: text('source_ref'),
   commentId: uuid('comment_id'),
+  visitId: uuid('visit_id'),
   visibility: text('visibility', { enum: ['internal', 'client'] })
     .notNull()
     .default('internal'),
@@ -314,5 +315,41 @@ export const comment = pgTable('comment', {
     .notNull()
     .default('internal'),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  archivedAt: timestamp('archived_at', { withTimezone: true }),
+});
+
+/** Visit types of SOP-DEL-03 §2; the CHECK in migration 0013 lists the same values. */
+export const VISIT_TYPES = [
+  'site_survey',
+  'technical_inspection',
+  'installation',
+  'commissioning',
+  'maintenance',
+] as const;
+
+/** Migration 0013. Same-day internal record of a site visit (SOP-DEL-03 §5.1). Archive, never delete. */
+export const visit = pgTable('visit', {
+  id: uuid('id').primaryKey(),
+  clientId: uuid('client_id').notNull(),
+  siteId: uuid('site_id').notNull(),
+  type: text('type', { enum: VISIT_TYPES }).notNull(),
+  visitDate: date('visit_date', { mode: 'string' }).notNull(),
+  attendees: jsonb('attendees').$type<{ name: string; side: 'vv' | 'client' | 'third_party' }[]>().notNull(),
+  summary: text('summary').notNull(),
+  decided: jsonb('decided').$type<{ text: string; agreedWith: string }[]>().notNull().default([]),
+  discussed: jsonb('discussed').$type<string[]>().notNull().default([]),
+  keyPoints: text('key_points'),
+  coverageDone: integer('coverage_done').notNull(),
+  coverageTotal: integer('coverage_total').notNull(),
+  coverageGap: text('coverage_gap'),
+  followUp: text('follow_up'),
+  escalate: boolean('escalate').notNull().default(false),
+  minutesRef: text('minutes_ref'),
+  svrNo: integer('svr_no'),
+  visibility: text('visibility', { enum: ['internal', 'client'] })
+    .notNull()
+    .default('internal'),
+  recordedBy: uuid('recorded_by').notNull(),
+  recordedAt: timestamp('recorded_at', { withTimezone: true }).notNull().defaultNow(),
   archivedAt: timestamp('archived_at', { withTimezone: true }),
 });
