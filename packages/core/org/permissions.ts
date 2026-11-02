@@ -11,5 +11,13 @@ export const orgPermissions = {
     description: 'See the client list',
     roles: ['director', 'pm', 'sales', 'rnd', 'finance', 'management', 'sponsor', 'admin'],
   }),
+  createSite: permission('org.site.create', {
+    description: 'Create a project/site; generates its Project ID',
+    roles: ['director', 'admin'],
+  }),
+  siteList: permission('org.site.list', {
+    description: 'See projects/sites',
+    roles: ['director', 'pm', 'sales', 'rnd', 'finance', 'management', 'sponsor', 'admin'],
+  }),
   // gen:permissions — `pnpm gen:command` and `pnpm gen:query` add entries above this line.
 };
