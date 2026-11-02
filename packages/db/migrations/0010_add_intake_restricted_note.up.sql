@@ -3,7 +3,8 @@
 -- Restricted Internal Notes (SOP-DEL-01 §6 group F, SOP-DEL-02 "11_Internal Notes"; E2 AC7): verbal
 -- commitments, concessions, relationship map, history. Readers per D-28: the project's Sales owner, its
 -- assigned PM, the Delivery Director (role director) and the sponsor (role sponsor). Staff only — never
--- the system actor, so neither the central AI agent nor MCP can read them (08-ai-and-mcp.md).
+-- the system actor, so the central AI agent has no access. A reader's personal AI agent (MCP) acts as the
+-- reader with the reader's rights (D-07, D-28).
 
 -- The actor's roles, set per transaction next to actor_id (actor-context.ts). Unset → empty → deny.
 CREATE FUNCTION app.actor_roles() RETURNS text[]
