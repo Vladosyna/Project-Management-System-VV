@@ -1,0 +1,19 @@
+{
+  "name": "@ocs/seed",
+  "private": true,
+  "type": "module",
+  "description": "pnpm seed — loads the anonymised seed world through the core commands (dev and e2e only)",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run --project unit --passWithNoTests",
+    "test:integration": "vitest run --project integration"
+  },
+  "dependencies": {
+    "@ocs/contracts": "workspace:*",
+    "@ocs/core": "workspace:*",
+    "@ocs/testing": "workspace:*"
+  }
+}

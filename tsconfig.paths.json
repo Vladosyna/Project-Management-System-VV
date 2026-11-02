@@ -10,6 +10,7 @@
       "@ocs/worker": ["./apps/worker/src/index.ts"],
       "@ocs/mcp": ["./apps/mcp/src/index.ts"],
       "@ocs/generators": ["./tools/generators/src/index.ts"],
+      "@ocs/seed": ["./tools/seed/src/index.ts"],
       "@ocs/*": ["./packages/*/src/index.ts"]
     }
   },
