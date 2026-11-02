@@ -238,6 +238,18 @@ importers:
 
   tools/generators: {}
 
+  tools/seed:
+    dependencies:
+      '@ocs/contracts':
+        specifier: workspace:*
+        version: link:../../packages/contracts
+      '@ocs/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+      '@ocs/testing':
+        specifier: workspace:*
+        version: link:../../packages/testing
+
 packages:
 
   '@babel/helper-string-parser@7.29.7':

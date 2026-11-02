@@ -45,9 +45,10 @@ const DEPENDENCY_POLICIES = [
   { from: { element: { type: 'db' } }, allow: to(['db']) },
   { from: { element: { type: 'i18n' } }, allow: to(['i18n']) },
   { from: { element: { type: 'tool' } }, allow: to(['tool']) },
-  // Browser e2e drives the real stack: it may start the runtime and use test infrastructure.
+  // Browser e2e drives the real stack and the seed loads data through the core commands: both may start
+  // the runtime and use test infrastructure.
   {
-    from: { element: { type: 'tool', captured: { tool: 'e2e' } } },
+    from: { element: { type: 'tool', captured: { tool: '{e2e,seed}' } } },
     allow: to(['tool', 'core-module', 'core-kernel', 'contracts', 'testing']),
   },
 ];
