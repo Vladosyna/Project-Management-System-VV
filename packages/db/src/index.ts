@@ -16,3 +16,4 @@ export { programme } from './schema.ts';
 export { partner, partnerAssignment } from './schema.ts';
 export { DEVICE_STATUSES, device } from './schema.ts';
 export { HANDOVER_CARD_STATUSES, handoverCard, handoverItem } from './schema.ts';
+export { intakeDecision } from './schema.ts';
