@@ -21,3 +21,4 @@ export { restrictedNote } from './schema.ts';
 export { action } from './schema.ts';
 export { comment } from './schema.ts';
 export { VISIT_TYPES, visit } from './schema.ts';
+export { DEVICE_PLATFORM_STATUSES, deviceChannel, zone } from './schema.ts';
