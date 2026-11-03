@@ -20,8 +20,14 @@ Internal enterprise app (Q5). Permissions to request: work notifications, robot/
 - Official DingTalk MCP server (open-dingtalk/dingtalk-mcp) covers contacts, robot, todo, calendar, Teambition — not Drive; use OpenAPI for Drive.
 - Data direction: read from DingTalk into EU OCS is fine; do not auto-push client personal data into DingTalk (D-09).
 
-## Device platform (V-store / AIoT OpenAPI) — Jan read-only
-Online status, last seen, binding, firmware version per SN/MAC (Q7). Feeds DeviceSourceRecord; reconciliation report across packing list / as-built / platform / AIoT; R15 offline alert. No writes to the platform from OCS until the change calendar (V1.1) with client-notice gate exists.
+## Device platform (VION Footfall 2.0 OpenAPI v2) — read-only
+Adapter: `apps/worker/src/adapters/device-platform` (client, zod schemas, fake). EU endpoint `https://eu.vion-cloud.com/openapi`; one account per client (username, password, 24-byte appkey) from the secret store — never in the repo.
+- **Login** `POST /api/v2/user/login`: password AES-192-ECB/PKCS7 with the appkey, Base64 → `atoken`, sent as `Authorization`; on 401 log in once more.
+- **Hierarchy**: mall (`/base/plazaInfo`) → floors (`/base/floorInfo`) → stores/areas (`/base/areaInfo?plazaUnid=<mall>`) → gates (`/base/gateInfo?plazaUnid=`, `isMallGate`) → devices (`/base/device?plazaUnid=<mall or store>`). OCS mapping (Vlad, 3 Nov): **a project/site = a mall**; zones = its stores/areas and gates.
+- **Device**: `serialnum` (identity, D-29), `mac` (last seen, not unique), `status` 0 offline / 1 online / 3 disabled, `localIp`, `hardware` (model), `bindTime`, `modifyTime`, `channelList[]` → `site.gateUnid` (a device can watch several gates).
+- **No last-seen field**: OCS polls and records when it first saw a device offline; R15 (offline > 24 h) counts from there.
+- Live read-only smoke run (3 Nov, Vlad's authorisation, from the Claude sandbox — not the EU deployment; nothing stored): login and every response parsed against the schemas. Regular sync runs only from the EU deployment (Q4).
+No writes to the platform from OCS until the change calendar (V1.1) with client-notice gate exists.
 
 ## Kingdee ERP — V2 read-only
 Stock, shipments, invoices (Q8). Until then: manual references (PO number, invoice number) on sites.
