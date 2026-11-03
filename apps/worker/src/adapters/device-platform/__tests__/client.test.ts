@@ -1,6 +1,5 @@
 // Device platform client: login encryption, token reuse and re-login, retries, response shapes. A scripted
 // fetch stands in for the platform; no network.
-import { createDecipheriv } from 'node:crypto';
 import { describe, expect, it } from 'vitest';
 import { createDevicePlatform, PlatformError } from '../client.ts';
 import { encryptPassword } from '../crypto.ts';
@@ -37,11 +36,8 @@ const noSleep = () => Promise.resolve();
 
 describe('device platform client', () => {
   it('encrypts the password with AES-192-ECB/PKCS7 and Base64, as the login API expects', () => {
-    const cipher = encryptPassword('pass', APPKEY);
-    const decipher = createDecipheriv('aes-192-ecb', Buffer.from(APPKEY), null);
-    expect(Buffer.concat([decipher.update(Buffer.from(cipher, 'base64')), decipher.final()]).toString()).toBe(
-      'pass',
-    );
+    // Known vector, computed independently: printf pass | openssl enc -aes-192-ecb -K <hex of APPKEY> -base64
+    expect(encryptPassword('pass', APPKEY)).toBe('P41MdIkM4wkBQNGC1Z5Tdw==');
     expect(() => encryptPassword('pass', 'short')).toThrow(/24 bytes/);
   });
 
