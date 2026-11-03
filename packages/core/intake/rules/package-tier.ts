@@ -33,7 +33,7 @@ export function decidePackageTier(i: PackageTierInput): PackageTierDecision {
   // add_points
   if (!i.siteFolderAccepted) return full('the site has no accepted project folder yet');
   if (i.installsOrConfigures && !r.addPointsWithInstallationIsLight) {
-    return full('add-points with installation (stricter reading, open question)');
+    return full('add-points with installation (stricter reading of §3)');
   }
   return { tier: 'light', cite: r.cite, reason: 'add-points on a site whose folder is accepted' };
 }
