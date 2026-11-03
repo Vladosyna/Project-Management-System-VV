@@ -12,9 +12,9 @@ export const packageTierRule = {
   /** Light candidates; Light only when the conditions below hold, otherwise Full. */
   lightCandidates: ['add_points', 'supply_only'],
   /**
-   * Ambiguity, open question to Vlad: §3 names add-points as Light, but also says "any project with
-   * installation" is Full, and add-points are installed. Stricter reading by default (false → Full when
-   * VionVision installs or configures); true follows the add-points example literally.
+   * §3 names add-points as Light but also says "any project with installation" is Full, and add-points are
+   * installed. Settled by D-30 (Vlad, 3 Nov 2026): add-points on an accepted site are Light even with
+   * installation. false would apply the stricter reading (Full when VionVision installs or configures).
    */
-  addPointsWithInstallationIsLight: false as boolean,
+  addPointsWithInstallationIsLight: true as boolean,
 } as const;

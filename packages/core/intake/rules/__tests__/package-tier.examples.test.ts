@@ -35,8 +35,18 @@ const examples: { name: string; input: PackageTierInput; tier: 'full' | 'light' 
     tier: 'full',
   },
   {
-    name: 'add-points with installation — stricter reading',
+    name: 'add-points with installation on an accepted site (D-30)',
     input: { ...base, projectType: 'add_points', installsOrConfigures: true },
+    tier: 'light',
+  },
+  {
+    name: 'add-points with installation, folder not accepted',
+    input: { ...base, projectType: 'add_points', installsOrConfigures: true, siteFolderAccepted: false },
+    tier: 'full',
+  },
+  {
+    name: 'add-points with installation in a new city',
+    input: { ...base, projectType: 'add_points', installsOrConfigures: true, newClientOrPlace: true },
     tier: 'full',
   },
 ];
