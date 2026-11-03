@@ -10,7 +10,7 @@ Conventions: UUID v7 `id`; `created_at/by`, `updated_at/by`; `archived_at` (no d
 - **User**: kind (staff | client | partner | system), name, email, language, time zone, roles, client_ids (external).
 
 ## Projects and sites
-- **Project/Site** (one row per SOP-DEL-02 "project/site"): project_id (`CLIENT-CC-CITY-NNN`, unique, immutable), client_id, programme_id?, country, city, site name, standard (L|S), package (Full|Light), phase, pm_user_id, sales_owner_id, time_zone (IANA), dingtalk_folder ref, status, gate_template_id?.
+- **Project/Site** (one row per SOP-DEL-02 "project/site"): project_id (`CLIENT-CC-CITY-NNN`, unique, immutable), client_id, programme_id?, country, city, site name, standard (L|S), package (Full|Light), phase, pm_user_id, sales_owner_id, time_zone (IANA), dingtalk_folder ref, status, gate_template_id?, platform_ref? (the mall on the device platform, unique while active), device_alerts_enabled (offline alerts checkbox, off by default).
 - **SiteStep**: site_id, step (card_received | card_complete | readiness_confirmed | go_no_go | installed | accepted | custom gate key), date, actor, evidence_file_id, note.
 - **GateTemplate**: client/programme, gates [{key, name, order, conditions (rule config refs)}].
 
@@ -24,7 +24,9 @@ Conventions: UUID v7 `id`; `created_at/by`, `updated_at/by`; `archived_at` (no d
 - **RestrictedNote**: client/project scope, text, author — separate RLS (group F, `11_Internal Notes`).
 
 ## Devices
-- **Device** (identified by sn, D-29): sn, mac (last seen, not unique), model (G6, G6S, G6 WiFi, B1, CBox…), firmware, site_id, switch, port, ip, status (planned | shipped | received | installed | online | calibrated | faulty | lost), replaced_by_id.
+- **Device** (identified by sn, D-29): sn, mac (last seen, not unique), model (G6, G6S, G6 WiFi, B1, CBox…), firmware, site_id, switch, port, ip, status (planned | shipped | received | installed | online | calibrated | faulty | lost), replaced_by_id; from the device platform: platform_status (online | offline | disabled), offline_since (when OCS first saw it offline, set only while offline), synced_at.
+- **Zone**: site_id, kind (area = store or area | gate), platform_ref (areaUnid / gateUnid, unique per project while active), name, entrance (gate on the mall boundary), visibility.
+- **DeviceChannel**: device_id, channel_no, zone_id? (the gate the channel counts; null while unbound). Internal only; updated in place by the sync.
 - **DeviceSourceRecord**: device ref (sn/mac), source (packing_list | as_built | platform | aiot | import), payload, seen_at — for reconciliation.
 
 ## Work

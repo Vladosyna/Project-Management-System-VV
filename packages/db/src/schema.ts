@@ -8,6 +8,7 @@ import {
   jsonb,
   pgSchema,
   pgTable,
+  primaryKey,
   text,
   timestamp,
   uuid,
@@ -109,6 +110,10 @@ export const site = pgTable('site', {
   programmeId: uuid('programme_id'),
   salesOwnerId: uuid('sales_owner_id'),
   pmId: uuid('pm_id'),
+  /** Migration 0015: the mall on the device platform (plazaUnid). */
+  platformRef: text('platform_ref'),
+  /** Migration 0015: offline alerts on or off for this project (checkbox, off by default). */
+  deviceAlertsEnabled: boolean('device_alerts_enabled').notNull().default(false),
   visibility: text('visibility', { enum: ['internal', 'client'] })
     .notNull()
     .default('internal'),
@@ -157,6 +162,9 @@ export const DEVICE_STATUSES = [
 ] as const;
 
 /** Migration 0007. One device in the registry (E4); SN and MAC unique among active rows (R6). Archive, never delete. */
+/** Device platform status (07-integrations: 0 offline, 1 online, 3 disabled); migration 0015 CHECK. */
+export const DEVICE_PLATFORM_STATUSES = ['online', 'offline', 'disabled'] as const;
+
 export const device = pgTable('device', {
   id: uuid('id').primaryKey(),
   clientId: uuid('client_id').notNull(),
@@ -170,6 +178,11 @@ export const device = pgTable('device', {
   ip: inet('ip'),
   status: text('status', { enum: DEVICE_STATUSES }).notNull().default('planned'),
   replacedById: uuid('replaced_by_id'),
+  /** Migration 0015: what the device platform last said; separate from the delivery life cycle. */
+  platformStatus: text('platform_status', { enum: DEVICE_PLATFORM_STATUSES }),
+  /** Migration 0015: when OCS first saw it offline (set only while offline; R15 measures from it). */
+  offlineSince: timestamp('offline_since', { withTimezone: true }),
+  syncedAt: timestamp('synced_at', { withTimezone: true }),
   visibility: text('visibility', { enum: ['internal', 'client'] })
     .notNull()
     .default('internal'),
@@ -353,3 +366,32 @@ export const visit = pgTable('visit', {
   recordedAt: timestamp('recorded_at', { withTimezone: true }).notNull().defaultNow(),
   archivedAt: timestamp('archived_at', { withTimezone: true }),
 });
+
+/** Migration 0015. A mall's areas (stores) and gates, as on the device platform. Archive, never delete. */
+export const zone = pgTable('zone', {
+  id: uuid('id').primaryKey(),
+  clientId: uuid('client_id').notNull(),
+  siteId: uuid('site_id').notNull(),
+  kind: text('kind', { enum: ['area', 'gate'] }).notNull(),
+  platformRef: text('platform_ref').notNull(),
+  name: text('name').notNull(),
+  entrance: boolean('entrance').notNull().default(false),
+  visibility: text('visibility', { enum: ['internal', 'client'] })
+    .notNull()
+    .default('internal'),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  archivedAt: timestamp('archived_at', { withTimezone: true }),
+});
+
+/** Migration 0015. Which gate each channel of a device counts. Internal only; updated in place, never deleted. */
+export const deviceChannel = pgTable(
+  'device_channel',
+  {
+    deviceId: uuid('device_id').notNull(),
+    channelNo: integer('channel_no').notNull(),
+    clientId: uuid('client_id').notNull(),
+    siteId: uuid('site_id').notNull(),
+    zoneId: uuid('zone_id'),
+  },
+  (t) => [primaryKey({ columns: [t.deviceId, t.channelNo] })],
+);
