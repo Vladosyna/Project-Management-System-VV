@@ -3,14 +3,33 @@ import { RuleViolation } from '../../kernel/index.ts';
 import { duplicateSnMacRule } from './duplicate-sn-mac.config.ts';
 
 export interface DuplicateSnMacInput {
-  readonly value: number;
+  /** The device being saved. */
+  readonly sn: string;
+  readonly mac: string | null;
+  /** Active (not archived) devices that share its SN or MAC, as the repository found them. */
+  readonly active: readonly {
+    readonly sn: string;
+    readonly mac: string | null;
+    readonly projectId: string;
+  }[];
 }
 
+const sameSn = (a: string, b: string) =>
+  duplicateSnMacRule.snCaseInsensitive ? a.toUpperCase() === b.toUpperCase() : a === b;
+
 export function checkDuplicateSnMac(input: DuplicateSnMacInput): void {
-  if (input.value > duplicateSnMacRule.limit) {
-    throw new RuleViolation(
-      duplicateSnMacRule.cite,
-      `${String(input.value)} is above ${String(duplicateSnMacRule.limit)}`,
-    );
+  for (const other of input.active) {
+    if (sameSn(other.sn, input.sn)) {
+      throw new RuleViolation(
+        duplicateSnMacRule.cite,
+        `SN ${input.sn} is already registered on ${other.projectId}`,
+      );
+    }
+    if (input.mac !== null && other.mac === input.mac) {
+      throw new RuleViolation(
+        duplicateSnMacRule.cite,
+        `MAC ${input.mac} is already registered on ${other.projectId}`,
+      );
+    }
   }
 }
