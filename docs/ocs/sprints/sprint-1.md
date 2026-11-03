@@ -22,7 +22,7 @@ Assumption to confirm at sign-off: country and city are codes on the site row (n
 |---|---|---|---|
 | E4.1a | Claude, `arch/`: `devices` module; **device** table + RLS (client sees only its own rows marked for clients; partners nothing); device's client = its site's client (composite FK); R6 backstop: unique SN (any case) and MAC among active rows | AC1 | data-model.md *Device*; R6 |
 | E4.1b | Xavier, `feat/`: `devices.device.register` with SN, MAC (normalised to `AA:BB:CC:DD:EE:FF`), model, firmware, site, switch/port/IP, status | AC1 | data-model.md *Device* |
-| E4.2 | Duplicate SN or MAC among active devices blocks at save | AC1 | R6 (`gen:rule devices duplicate-sn-mac`) |
+| E4.2 | Duplicate SN among active devices blocks at save; the MAC is the last value seen, not unique (D-29) | AC1 | R6 (`gen:rule devices duplicate-sn`) |
 | E4.3 | Device list per site (screen from mockup *Site*), EN + 中文 | AC1 | — |
 | E4.4 | Excel/CSV import with dry-run diff; re-running the same file changes nothing | AC2 | — |
 | E4.5 | Source records per device (packing list, as-built, platform, AIoT) | AC3 | — |
@@ -33,7 +33,7 @@ Assumption to confirm at sign-off: country and city are codes on the site row (n
 |---|---|---|---|
 | E2.1a | Claude, `arch/`: `intake` module; **handover_card** (versioned per project, Full/Light, status, Annex B content) and **handover_item** (§6 item provided or N/A + reason) + RLS internal only; DB backstops: N/A needs a reason, group F content never in the card, one open card per project | AC1, AC7 | SOP-DEL-01 §6, §8, Annex B |
 | E2.1b | Claude, `arch/`: Handover Card sections 1–11 of Annex B as zod schema in `@ocs/contracts` | AC1 | Annex B |
-| E2.1c | Leon, `feat/`: §6 checklist as cited config (item × Full/Light → Yes / If appl. / Changes / —); package Full vs Light from project type (`gen:rule intake package-tier`) | AC1 | SOP-DEL-01 §3, §6 |
+| E2.1c | Claude (for Leon), `feat/`: §6 checklist as cited config (33 items × Full/Light → Yes / If appl. / Changes / —, blocking A1, A4, A6, C2, D1, F1) + `handoverGaps`; package tier Full/Light from §3 (`decidePackageTier`); open question on add-points with installation, stricter reading by default | AC1 | SOP-DEL-01 §3, §6, §8 |
 | E2.2 | N/A needs a reason; blanks are not accepted | AC1 | SOP-DEL-01 §6, §11 |
 | E2.3a | Claude, `arch/`: **intake_decision** (one per card version; Returned needs the gaps, no PM), **intake_condition** (item, text, deadline, open/met/expired), **conditional_start** (missing items, deadline, written reference) + RLS internal only | AC2–AC4 | SOP-DEL-01 §8, §9 |
 | E2.3 | Intake review: Accepted / Accepted with conditions / Returned; blocking items A1, A4, A6, C2, D1, F1 can never be conditions | AC2 | SOP-DEL-01 §8 |

@@ -24,7 +24,7 @@ Conventions: UUID v7 `id`; `created_at/by`, `updated_at/by`; `archived_at` (no d
 - **RestrictedNote**: client/project scope, text, author — separate RLS (group F, `11_Internal Notes`).
 
 ## Devices
-- **Device**: sn, mac, model (G6, G6S, G6 WiFi, B1, CBox…), firmware, site_id, switch, port, ip, status (planned | shipped | received | installed | online | calibrated | faulty | lost), replaced_by_id.
+- **Device** (identified by sn, D-29): sn, mac (last seen, not unique), model (G6, G6S, G6 WiFi, B1, CBox…), firmware, site_id, switch, port, ip, status (planned | shipped | received | installed | online | calibrated | faulty | lost), replaced_by_id.
 - **DeviceSourceRecord**: device ref (sn/mac), source (packing_list | as_built | platform | aiot | import), payload, seen_at — for reconciliation.
 
 ## Work
