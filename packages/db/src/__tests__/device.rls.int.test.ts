@@ -109,18 +109,20 @@ it("a device's client is always its site's client", async () => {
   await expect(asStaff((tx) => tx.insert(device).values(deviceOf(clientA, siteB, 'SN-X')))).rejects.toThrow();
 });
 
-it('R6 backstop: the same SN (any case) or MAC is refused among active devices', async () => {
+it('R6 backstop: the same SN (any case) is refused among active devices', async () => {
   await expect(
     asStaff((tx) => tx.insert(device).values(deviceOf(clientB, siteB, 'sn-a1'))),
   ).rejects.toThrow();
-  await expect(
-    asStaff((tx) =>
-      tx.insert(device).values(deviceOf(clientB, siteB, 'SN-B2', { mac: 'AA:BB:CC:00:00:01' })),
-    ),
-  ).rejects.toThrow();
 });
 
-it('an archived device frees its SN and MAC', async () => {
+it('D-29: the MAC is not an identity — two active devices may report the same MAC', async () => {
+  await asStaff((tx) =>
+    tx.insert(device).values(deviceOf(clientB, siteB, 'SN-B2', { mac: 'AA:BB:CC:00:00:01' })),
+  );
+  expect(await visibleTo(staff)).toContain('SN-B2');
+});
+
+it('an archived device frees its SN', async () => {
   await asStaff((tx) => tx.update(device).set({ archivedAt: new Date() }).where(eq(device.sn, 'SN-A1')));
   await asStaff((tx) =>
     tx.insert(device).values(deviceOf(clientA, siteA, 'SN-A1', { mac: 'AA:BB:CC:00:00:01' })),

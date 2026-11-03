@@ -43,7 +43,7 @@ Dates from D-17. Each epic lists acceptance criteria (AC). An epic is done when 
 - AC4 Acceptance evidence: S = Installation Acceptance Form, L = Acceptance Certificate (file reference).
 
 ### E4 Devices registry
-- AC1 Device: SN, MAC, model, firmware, site, switch/port/IP, status; SN and MAC unique among active records (R6 blocks at save).
+- AC1 Device: SN, MAC, model, firmware, site, switch/port/IP, status; SN unique among active records (R6 blocks at save); MAC is the last value seen, not unique (D-29).
 - AC2 Import from Excel/CSV with dry-run diff; idempotent re-run.
 - AC3 Source records kept per device (packing list, as-built, platform, AIoT) to support reconciliation in Jan.
 
