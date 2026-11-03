@@ -84,12 +84,15 @@ describe('devices.device.register', () => {
     expect(await audited()).toBe(1);
   });
 
-  it('R6: the same SN (any case) or MAC is refused while it is active elsewhere — even for another client', async () => {
+  it('R6: the same SN (any case) is refused while it is active elsewhere — even for another client', async () => {
     await expect(register({ sn: 'g6-0001' })).rejects.toBeInstanceOf(RuleViolation);
-    await expect(register({ sn: 'G6-0002', mac: 'AABBCC000001' })).rejects.toBeInstanceOf(RuleViolation);
     await expect(
       t.kernel.execute(registerDevice, pm, { siteId: siteB, sn: 'G6-0001', model: 'G6' }, 'test'),
     ).rejects.toThrow(/CLIENTA-ES-MAD-001/);
-    await register({ sn: 'G6-0002', mac: 'AA:BB:CC:00:00:02' });
+  });
+
+  it('D-29: the MAC is not an identity — another device may report the same MAC after a restart', async () => {
+    await register({ sn: 'G6-0002', mac: 'AABBCC000001' });
+    expect(await countRows(testDb.url, `device WHERE mac = 'AA:BB:CC:00:00:01'`)).toBe(2);
   });
 });

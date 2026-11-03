@@ -1,12 +1,12 @@
 // devices.device.register — E4 AC1: a device on a project with SN, MAC, model, firmware, switch/port/IP and
-// status. R6: the same SN (any case) or MAC is refused while another active device has it.
+// status. R6: the same SN (any case) is refused while another active device has it. The MAC is stored but not
+// checked: it can change on restart (D-29).
 import { z } from 'zod';
-import { DEVICE_STATUSES } from '@ocs/db';
 import { defineCommand, NotFound, ValidationFailed } from '../../kernel/index.ts';
 import { normaliseMac } from '../mac.ts';
 import { devicesPermissions } from '../permissions.ts';
-import { activeDevicesWith, findActiveSite, insertDevice } from '../repository.ts';
-import { checkDuplicateSnMac } from '../rules/duplicate-sn-mac.ts';
+import { activeDevicesWithSn, DEVICE_STATUSES, findActiveSite, insertDevice } from '../repository.ts';
+import { checkDuplicateSn } from '../rules/duplicate-sn.ts';
 
 const text = (max: number) => z.string().trim().min(1).max(max);
 
@@ -33,7 +33,7 @@ export const registerDevice = defineCommand({
     }
     const project = await findActiveSite(ctx.tx, i.siteId);
     if (!project) throw new NotFound('site', i.siteId);
-    checkDuplicateSnMac({ sn: i.sn, mac, active: await activeDevicesWith(ctx.tx, i.sn, mac) });
+    checkDuplicateSn({ sn: i.sn, active: await activeDevicesWithSn(ctx.tx, i.sn) });
     const row = {
       id: ctx.newId(),
       clientId: project.clientId,
