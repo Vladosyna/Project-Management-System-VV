@@ -11,7 +11,7 @@ Working calendars (`packages/core/calendar`): **CN** from the State Council noti
 | R3 | Installed, not calibrated after 7 days | Installed, no calibration record | P1 | V1.1 |
 | R4 | Site late against plan | Actual completion > planned | P2 | V1.1 |
 | R5 | Invoice-ready, no invoice | No invoice 5 working days after acceptance gate | P1 | V1 |
-| R6 | Duplicate SN / MAC | Block at save: same SN or MAC in two active records | P0 | V1 |
+| R6 | Duplicate SN | Block at save: same SN (any case) in two active records. Not the MAC: it can change on restart (D-29) | P0 | V1 |
 | R7 | Site Information Card missing | Incomplete 10 calendar days after request (SOP-DEL-04) | P1 | V1 |
 | R8 | Installation date not agreed | Approved, no date 20 days before planned installation (template-configurable) | P1 | V1 |
 | R9 | Readiness / go-no-go not passed | ≤ configured working days to installation (PMI template: D−2), readiness not confirmed | P0 | V1 |
