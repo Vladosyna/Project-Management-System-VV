@@ -157,3 +157,20 @@ export async function lockAlertAction(tx: Tx, alertRef: string) {
       .where(and(eq(action.sourceKind, 'alert'), eq(action.sourceRef, alertRef), isNull(action.archivedAt)))
   )[0];
 }
+
+/** Withdraws the open or in-progress alert actions with these refs; returns what was withdrawn (never deleted). */
+export async function cancelOpenAlertActions(tx: Tx, refs: string[]) {
+  if (refs.length === 0) return [];
+  return tx
+    .update(action)
+    .set({ status: 'cancelled' })
+    .where(
+      and(
+        eq(action.sourceKind, 'alert'),
+        inArray(action.sourceRef, refs),
+        inArray(action.status, ['open', 'in_progress']),
+        isNull(action.archivedAt),
+      ),
+    )
+    .returning({ id: action.id, ref: action.sourceRef, siteId: action.siteId, clientId: action.clientId });
+}

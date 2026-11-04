@@ -10,3 +10,4 @@ export { recordVisit } from './commands/record-visit.ts';
 export { projectFeed } from './queries/project-feed.ts';
 export { staffList } from './queries/staff-list.ts';
 export { raiseAlert } from './commands/raise-alert.ts';
+export { resolveAlert } from './commands/resolve-alert.ts';
