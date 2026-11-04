@@ -47,6 +47,7 @@ export const registerDevice = defineCommand({
       ip: i.ip ?? null,
       status: i.status,
       createdAt: ctx.now,
+      registeredAt: ctx.now,
     };
     await insertDevice(ctx.tx, row);
     ctx.emit('devices.device.registered', { deviceId: row.id, siteId: row.siteId, sn: row.sn }, row.clientId);
