@@ -2,7 +2,8 @@
 // worker reads the platform (apps/worker adapters/device-platform) and runs this as the system actor; the
 // adapter never writes tables (ocs-integration §3). Idempotent: the same snapshot twice changes nothing more.
 // - Devices match on SN in any case (D-29): MAC, IP and platform status are refreshed; offline_since is set
-//   when a device is first seen offline, with a went_offline event (R15 reads it).
+//   when a device is first seen offline, with a went_offline event (R15 reads it). Devices whose offline
+//   episode ended are listed in the result, so the alert job can withdraw their R15 action.
 // - A new SN is added as installed. An SN active on another project is reported, not moved.
 // - Devices on the project that the platform does not list are left as they are (manual or imported ones).
 import { z } from 'zod';
@@ -63,6 +64,8 @@ export const syncDevices = defineCommand({
     );
     const bySn = new Map(known.map((d) => [d.sn.toUpperCase(), d]));
     const elsewhere: { sn: string; projectId: string }[] = [];
+    /** Back online or disabled: the alert job withdraws the R15 action of that episode (Vlad, 4 Nov). */
+    const offlineEnded: { deviceId: string; sn: string; offlineSince: string }[] = [];
     let updated = 0;
     const rows = [];
     for (const d of i.devices) {
@@ -110,11 +113,14 @@ export const syncDevices = defineCommand({
         });
       }
       if (change.event === 'went_offline') event(change.event, id, d.sn, change.offlineSince);
-      if (change.event === 'offline_ended') event(change.event, id, d.sn, was?.offlineSince ?? null);
+      if (change.event === 'offline_ended' && was?.offlineSince) {
+        event(change.event, id, d.sn, was.offlineSince);
+        offlineEnded.push({ deviceId: id, sn: d.sn, offlineSince: was.offlineSince.toISOString() });
+      }
     }
     await insertDevices(ctx.tx, rows);
 
-    const result = { added: rows.length, updated, elsewhere };
+    const result = { added: rows.length, updated, elsewhere, offlineEnded };
     return {
       result,
       audit: {

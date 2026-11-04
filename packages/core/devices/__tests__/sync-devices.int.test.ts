@@ -74,7 +74,7 @@ describe('devices.platform.syncDevices', () => {
   });
 
   it('first sync adds the devices; one seen offline gets offline_since and a went_offline event', async () => {
-    expect(await run({ devices })).toEqual({ added: 2, updated: 0, elsewhere: [] });
+    expect(await run({ devices })).toEqual({ added: 2, updated: 0, elsewhere: [], offlineEnded: [] });
     expect(
       await rows(
         `device WHERE sn = 'SN-0001' AND mac = 'AA:BB:CC:00:00:01' AND status = 'installed' AND platform_status = 'online'`,
@@ -87,7 +87,7 @@ describe('devices.platform.syncDevices', () => {
 
   it('the same snapshot again changes nothing and raises no event (idempotent)', async () => {
     clock.advance({ minutes: 15 });
-    expect(await run({ devices })).toEqual({ added: 0, updated: 0, elsewhere: [] });
+    expect(await run({ devices })).toEqual({ added: 0, updated: 0, elsewhere: [], offlineEnded: [] });
     expect(await rows(`device WHERE sn = 'SN-0002' AND offline_since < synced_at`)).toBe(1);
     expect(await events('devices.device.went_offline')).toBe(1);
   });
@@ -101,6 +101,9 @@ describe('devices.platform.syncDevices', () => {
       ],
     });
     expect(r.updated).toBe(2);
+    expect(r.offlineEnded).toEqual([
+      { deviceId: expect.any(String) as string, sn: 'SN-0002', offlineSince: '2026-11-03T10:00:00.000Z' },
+    ]);
     expect(
       await rows(`device WHERE sn = 'SN-0001' AND mac = 'AA:BB:CC:00:00:99' AND offline_since = $1`, [
         clock.now(),
