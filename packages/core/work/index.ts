@@ -9,3 +9,4 @@ export { commentToAction } from './commands/comment-to-action.ts';
 export { recordVisit } from './commands/record-visit.ts';
 export { projectFeed } from './queries/project-feed.ts';
 export { staffList } from './queries/staff-list.ts';
+export { raiseAlert } from './commands/raise-alert.ts';
