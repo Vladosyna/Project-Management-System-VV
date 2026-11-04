@@ -6,6 +6,7 @@ External roles (`client`, `partner`) are switched off in the checker until the V
 | Permission | What it allows | director | pm | sales | rnd | finance | management | sponsor | admin | client | partner | system |
 |---|---|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 | `devices.device.register` | Register a device on a project: SN, MAC, model, firmware, network, status (E4 AC1) | ✓ | ✓ |  | ✓ |  |  |  |  |  |  |  |
+| `devices.platform.syncDevices` | Sync a project's devices and their online status from the device platform (system only, E4, D-29) |  |  |  |  |  |  |  |  |  |  | ✓ |
 | `identity.invitation.accept` | Grant the invited roles once the invited person has set a password (system only) |  |  |  |  |  |  |  |  |  |  | ✓ |
 | `identity.invitation.bootstrapAdmin` | Invite the first admin while no user exists (system only, installation) |  |  |  |  |  |  |  |  |  |  | ✓ |
 | `identity.invitation.readByToken` | Look up an open invitation by its link token (system only) |  |  |  |  |  |  |  |  |  |  | ✓ |
