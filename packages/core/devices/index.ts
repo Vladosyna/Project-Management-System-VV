@@ -2,3 +2,4 @@
 // Public API: other modules and apps may import only what this file exports (02-architecture §2).
 export { devicesPermissions } from './permissions.ts';
 export { registerDevice } from './commands/register-device.ts';
+export { syncZones } from './commands/sync-zones.ts';

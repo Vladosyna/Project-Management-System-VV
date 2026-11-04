@@ -7,5 +7,9 @@ export const devicesPermissions = {
     description: 'Register a device on a project: SN, MAC, model, firmware, network, status (E4 AC1)',
     roles: ['director', 'pm', 'rnd'],
   }),
+  syncZones: permission('devices.zones.sync', {
+    description: 'Sync zones',
+    roles: [],
+  }),
   // gen:permissions — `pnpm gen:command` and `pnpm gen:query` add entries above this line.
 };
