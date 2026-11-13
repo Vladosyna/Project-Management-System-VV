@@ -166,3 +166,17 @@ export async function confirmDevice(
 ): Promise<void> {
   await tx.update(device).set(values).where(eq(device.id, id));
 }
+
+/** Active projects linked to a mall on the device platform (07-integrations: site = mall). */
+export async function platformLinkedSites(tx: Tx) {
+  return tx
+    .select({
+      siteId: site.id,
+      projectId: site.projectId,
+      platformRef: site.platformRef,
+      alertsEnabled: site.deviceAlertsEnabled,
+    })
+    .from(site)
+    .where(and(isNull(site.archivedAt), isNotNull(site.platformRef)))
+    .orderBy(site.projectId);
+}

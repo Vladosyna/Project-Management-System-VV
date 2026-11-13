@@ -9,6 +9,7 @@ import {
   eq,
   inArray,
   isNull,
+  or,
   site,
   sql,
   visit,
@@ -158,16 +159,30 @@ export async function lockAlertAction(tx: Tx, alertRef: string) {
   )[0];
 }
 
-/** Withdraws the open or in-progress alert actions with these refs; returns what was withdrawn (never deleted). */
-export async function cancelOpenAlertActions(tx: Tx, refs: string[]) {
-  if (refs.length === 0) return [];
+/**
+ * Withdraws the open or in-progress alert actions with these refs, or whose ref starts with `prefix` except `keep`;
+ * returns what was withdrawn (never deleted).
+ */
+export async function cancelOpenAlertActions(
+  tx: Tx,
+  refs: string[],
+  superseded?: { prefix: string; keep: string | null },
+) {
+  if (refs.length === 0 && !superseded) return [];
+  const byRef = refs.length > 0 ? inArray(action.sourceRef, refs) : undefined;
+  const byPrefix = superseded
+    ? and(
+        sql`starts_with(${action.sourceRef}, ${superseded.prefix})`,
+        superseded.keep === null ? undefined : sql`${action.sourceRef} <> ${superseded.keep}`,
+      )
+    : undefined;
   return tx
     .update(action)
     .set({ status: 'cancelled' })
     .where(
       and(
         eq(action.sourceKind, 'alert'),
-        inArray(action.sourceRef, refs),
+        or(byRef, byPrefix),
         inArray(action.status, ['open', 'in_progress']),
         isNull(action.archivedAt),
       ),

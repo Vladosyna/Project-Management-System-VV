@@ -59,4 +59,29 @@ describe('work.alert.resolve', () => {
   it('resolving again changes nothing (idempotent)', async () => {
     expect((await resolve('R15:a')).withdrawn).toEqual([]);
   });
+
+  it('a summary alert is superseded: older refs with the prefix go, the current one stays', async () => {
+    const recon = ['RECON:s1:aaa', 'RECON:s1:bbb', 'RECON:s2:ccc'];
+    const alerts = recon.map((ref) => ({ siteId: w.siteId, ref, title: ref }));
+    await w.t.kernel.execute(raiseAlert, job, { alerts }, 'system');
+    const r = await w.t.kernel.execute(
+      resolveAlert,
+      job,
+      {
+        refs: [],
+        reason: 'Reconciliation changed',
+        superseded: { prefix: 'RECON:s1:', keep: 'RECON:s1:bbb' },
+      },
+      'system',
+    );
+    expect(r.withdrawn.map((x) => x.ref)).toEqual(['RECON:s1:aaa']);
+    const none = await w.t.kernel.execute(
+      resolveAlert,
+      job,
+      { refs: [], reason: 'Reconciled', superseded: { prefix: 'RECON:s1:', keep: null } },
+      'system',
+    );
+    expect(none.withdrawn.map((x) => x.ref)).toEqual(['RECON:s1:bbb']);
+    expect(await Promise.all(status('RECON:s2:ccc'))).toEqual([1, 0, 0]);
+  });
 });

@@ -20,5 +20,9 @@ export const devicesPermissions = {
     description: 'Devices offline longer than R15 allows on projects with alerts on (system only)',
     roles: ['system'],
   }),
+  platformSites: permission('devices.platformSites.read', {
+    description: 'Projects linked to a mall on the device platform, with their alerts switch (system only)',
+    roles: ['system'],
+  }),
   // gen:permissions — `pnpm gen:command` and `pnpm gen:query` add entries above this line.
 };
