@@ -81,6 +81,8 @@ describe('devices.platform.syncDevices', () => {
       offlineEnded: [],
       notRegistered: ['SN-0001', 'SN-0002'],
       notOnPlatform: [],
+      channelsBound: 0,
+      unknownGates: [],
     });
     expect(
       await rows(
@@ -101,6 +103,8 @@ describe('devices.platform.syncDevices', () => {
       offlineEnded: [],
       notRegistered: ['SN-0001', 'SN-0002'],
       notOnPlatform: [],
+      channelsBound: 0,
+      unknownGates: [],
     });
     expect(await rows(`device WHERE sn = 'SN-0002' AND offline_since < synced_at`)).toBe(1);
     expect(await events('devices.device.went_offline')).toBe(1);
@@ -145,5 +149,37 @@ describe('devices.platform.syncDevices', () => {
     expect(await rows(`device WHERE upper(sn) = 'SN-0001'`)).toBe(1);
     const r = await run({ devices });
     expect([r.notRegistered, r.notOnPlatform]).toEqual([['SN-0002'], ['SN-0010']]);
+  });
+
+  it('channels count the gates they are bound to on the platform; re-bound in place, unbound when gone', async () => {
+    const gate = (ref: string) =>
+      runAsOwner(
+        testDb.url,
+        `INSERT INTO zone (id, client_id, site_id, kind, platform_ref, name)
+         SELECT gen_random_uuid(), client_id, id, 'gate', $2, $2 FROM site WHERE id = $1`,
+        [siteA, ref],
+      );
+    await gate('gate-1');
+    await gate('gate-2');
+    const withChannels = (channels: { no: number; gateRef: string | null }[]) => [
+      { ...devices[0], channels },
+    ];
+    const first = await run({
+      devices: withChannels([
+        { no: 1, gateRef: 'gate-1' },
+        { no: 2, gateRef: 'gate-9' },
+      ]),
+    });
+    expect([first.channelsBound, first.unknownGates]).toEqual([1, ['gate-9']]);
+    const bound = (no: number, ref: string | null) =>
+      rows(
+        `device_channel c JOIN device d ON d.id = c.device_id LEFT JOIN zone z ON z.id = c.zone_id
+         WHERE d.sn = 'SN-0001' AND c.channel_no = $1 AND z.platform_ref IS NOT DISTINCT FROM $2`,
+        [no, ref],
+      );
+    expect([await bound(1, 'gate-1'), await bound(2, null)]).toEqual([1, 1]);
+    await run({ devices: withChannels([{ no: 2, gateRef: 'gate-2' }]) });
+    expect([await bound(1, null), await bound(2, 'gate-2')]).toEqual([1, 1]);
+    expect(await rows(`device_channel c JOIN device d ON d.id = c.device_id WHERE d.sn = 'SN-0001'`)).toBe(2);
   });
 });

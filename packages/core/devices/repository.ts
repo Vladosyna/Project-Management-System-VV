@@ -1,5 +1,17 @@
 // devices repository — the only place in this module that touches tables.
-import { and, device, eq, inArray, isNotNull, isNull, site, sql, zone, type Tx } from '@ocs/db';
+import {
+  and,
+  device,
+  deviceChannel,
+  eq,
+  inArray,
+  isNotNull,
+  isNull,
+  site,
+  sql,
+  zone,
+  type Tx,
+} from '@ocs/db';
 
 /** The device life cycle, re-exported so commands validate against the schema's own list. */
 export { DEVICE_STATUSES } from '@ocs/db';
@@ -179,4 +191,49 @@ export async function platformLinkedSites(tx: Tx) {
     .from(site)
     .where(and(isNull(site.archivedAt), isNotNull(site.platformRef)))
     .orderBy(site.projectId);
+}
+
+/** Active gates of a project by platform ref (channel binding). */
+export async function activeGatesOf(tx: Tx, siteId: string): Promise<Map<string, string>> {
+  const rows = await tx
+    .select({ id: zone.id, ref: zone.platformRef })
+    .from(zone)
+    .where(and(eq(zone.siteId, siteId), eq(zone.kind, 'gate'), isNull(zone.archivedAt)));
+  return new Map(rows.map((r) => [r.ref, r.id]));
+}
+
+/** Insert or re-bind channels in place (never deleted). */
+export async function upsertChannels(tx: Tx, rows: (typeof deviceChannel.$inferInsert)[]): Promise<void> {
+  if (rows.length === 0) return;
+  await tx
+    .insert(deviceChannel)
+    .values(rows)
+    .onConflictDoUpdate({
+      target: [deviceChannel.deviceId, deviceChannel.channelNo],
+      set: { zoneId: sql`excluded.zone_id` },
+    });
+}
+
+/** Channels of these devices that the platform no longer lists keep their row, unbound. */
+export async function unbindChannelsNotIn(
+  tx: Tx,
+  devices: { deviceId: string; nos: number[] }[],
+): Promise<void> {
+  for (const d of devices) {
+    await tx
+      .update(deviceChannel)
+      .set({ zoneId: null })
+      .where(
+        and(
+          eq(deviceChannel.deviceId, d.deviceId),
+          isNotNull(deviceChannel.zoneId),
+          d.nos.length > 0
+            ? sql`${deviceChannel.channelNo} NOT IN (${sql.join(
+                d.nos.map((n) => sql`${n}`),
+                sql`, `,
+              )})`
+            : undefined,
+        ),
+      );
+  }
 }

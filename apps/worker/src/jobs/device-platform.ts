@@ -63,6 +63,12 @@ export async function runDevicePlatformJob(
             sn: d.serialnum,
             model: hardware ?? 'unknown',
             status,
+            channels: (d.channelList ?? []).flatMap((c) => {
+              const no = Number.parseInt(c.channelNo, 10);
+              return Number.isInteger(no) && no >= 1 && no <= 64
+                ? [{ no, gateRef: c.site?.gateUnid ?? null }]
+                : [];
+            }),
             ...(d.mac ? { mac: d.mac } : {}),
             ...(ip ? { ip } : {}),
           },
