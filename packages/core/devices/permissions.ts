@@ -7,9 +7,14 @@ export const devicesPermissions = {
     description: 'Register a device on a project: SN, MAC, model, firmware, network, status (E4 AC1)',
     roles: ['director', 'pm', 'rnd'],
   }),
-  syncZones: permission('devices.zones.sync', {
-    description: 'Sync zones',
-    roles: [],
+  syncDevices: permission('devices.platform.syncDevices', {
+    description:
+      "Sync a project's devices and their online status from the device platform (system only, E4, D-29)",
+    roles: ['system'],
+  }),
+  syncZones: permission('devices.platform.syncZones', {
+    description: "Sync a project's zones (stores, areas, gates) from the device platform (system only, E4)",
+    roles: ['system'],
   }),
   // gen:permissions — `pnpm gen:command` and `pnpm gen:query` add entries above this line.
 };

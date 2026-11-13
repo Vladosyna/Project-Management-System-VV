@@ -27,6 +27,8 @@ export async function insertDevice(tx: Tx, row: typeof device.$inferInsert): Pro
   await tx.insert(device).values(row);
 }
 
+export { DEVICE_PLATFORM_STATUSES } from '@ocs/db';
+
 /** A project with its mall on the device platform (07-integrations: site = mall). */
 export async function findPlatformSite(tx: Tx, id: string) {
   return (
@@ -65,4 +67,36 @@ export async function updateZone(
 /** Archive, never delete (SOP-DEL-02). */
 export async function archiveZones(tx: Tx, ids: string[], at: Date): Promise<void> {
   if (ids.length > 0) await tx.update(zone).set({ archivedAt: at }).where(inArray(zone.id, ids));
+}
+
+/** Active devices, on any project, whose SN (any case) is one of these — with the Project ID they sit on. */
+export async function activeDevicesBySn(tx: Tx, sns: string[]) {
+  if (sns.length === 0) return [];
+  const upper = sns.map((sn) => sn.toUpperCase());
+  return tx
+    .select({
+      id: device.id,
+      siteId: device.siteId,
+      sn: device.sn,
+      mac: device.mac,
+      ip: device.ip,
+      platformStatus: device.platformStatus,
+      offlineSince: device.offlineSince,
+      projectId: site.projectId,
+    })
+    .from(device)
+    .innerJoin(site, eq(site.id, device.siteId))
+    .where(and(isNull(device.archivedAt), inArray(sql`upper(${device.sn})`, upper)));
+}
+
+export async function updateDeviceFromPlatform(
+  tx: Tx,
+  id: string,
+  values: Pick<typeof device.$inferInsert, 'mac' | 'ip' | 'platformStatus' | 'offlineSince' | 'syncedAt'>,
+): Promise<void> {
+  await tx.update(device).set(values).where(eq(device.id, id));
+}
+
+export async function insertDevices(tx: Tx, rows: (typeof device.$inferInsert)[]): Promise<void> {
+  if (rows.length > 0) await tx.insert(device).values(rows);
 }

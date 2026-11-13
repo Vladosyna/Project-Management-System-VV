@@ -6,6 +6,7 @@ import { aStaffActor, countRows, createTestDatabase, runAsOwner, type TestDataba
 import {
   Conflict,
   Forbidden,
+  grantOf,
   NotFound,
   openTestKernel,
   systemActor,
@@ -48,6 +49,10 @@ afterAll(async () => {
 });
 
 describe('devices.platform.syncZones', () => {
+  it('is held by the system role only (the worker job runs it)', () => {
+    expect(grantOf(syncZones.permission)?.roles).toEqual(['system']);
+  });
+
   it('refuses anyone but the system actor, a bad snapshot, and a project without a mall', async () => {
     await expect(
       t.kernel.execute(syncZones, aStaffActor(), { siteId: siteA, zones: [] }, 'test'),
