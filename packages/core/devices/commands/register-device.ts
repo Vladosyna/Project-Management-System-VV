@@ -5,7 +5,13 @@ import { z } from 'zod';
 import { defineCommand, NotFound, ValidationFailed } from '../../kernel/index.ts';
 import { normaliseMac } from '../mac.ts';
 import { devicesPermissions } from '../permissions.ts';
-import { activeDevicesWithSn, DEVICE_STATUSES, findActiveSite, insertDevice } from '../repository.ts';
+import {
+  activeDevicesWithSn,
+  confirmDevice,
+  DEVICE_STATUSES,
+  findActiveSite,
+  insertDevice,
+} from '../repository.ts';
 import { checkDuplicateSn } from '../rules/duplicate-sn.ts';
 
 const text = (max: number) => z.string().trim().min(1).max(max);
@@ -33,7 +39,39 @@ export const registerDevice = defineCommand({
     }
     const project = await findActiveSite(ctx.tx, i.siteId);
     if (!project) throw new NotFound('site', i.siteId);
-    checkDuplicateSn({ sn: i.sn, active: await activeDevicesWithSn(ctx.tx, i.sn) });
+    const active = await activeDevicesWithSn(ctx.tx, i.sn);
+    // Reconciliation (Vlad, 4 Nov): the platform already brought this SN in on this project and nobody had
+    // registered it — registering it confirms that device instead of adding a duplicate.
+    const fromPlatform = active.find((d) => d.siteId === project.id && d.registeredAt === null);
+    if (fromPlatform) {
+      const values = {
+        model: i.model,
+        status: i.status,
+        registeredAt: ctx.now,
+        ...(mac === null ? {} : { mac }),
+        ...(i.firmware === undefined ? {} : { firmware: i.firmware }),
+        ...(i.switchName === undefined ? {} : { switchName: i.switchName }),
+        ...(i.switchPort === undefined ? {} : { switchPort: i.switchPort }),
+        ...(i.ip === undefined ? {} : { ip: i.ip }),
+      };
+      await confirmDevice(ctx.tx, fromPlatform.id, values);
+      ctx.emit(
+        'devices.device.registered',
+        { deviceId: fromPlatform.id, siteId: project.id, sn: i.sn },
+        project.clientId,
+      );
+      return {
+        result: { id: fromPlatform.id, mac },
+        audit: {
+          objectType: 'device',
+          objectId: fromPlatform.id,
+          clientId: project.clientId,
+          before: null,
+          after: values,
+        },
+      };
+    }
+    checkDuplicateSn({ sn: i.sn, active });
     const row = {
       id: ctx.newId(),
       clientId: project.clientId,
