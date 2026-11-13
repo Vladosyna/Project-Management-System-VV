@@ -206,6 +206,14 @@ test('a PM comments on a Site with a mention turns it into an action and records
       .getByText('Source: Site visit'),
   ).toBeVisible();
   await pm.screenshot({ path: 'test-results/site-visit-en.png', fullPage: true });
+
+  // E4 (Vlad, 3 Nov): alerts need the mall; linking it and ticking the box saves both.
+  await pm.getByRole('checkbox', { name: /offline more than 24 h/ }).check();
+  await pm.getByRole('button', { name: 'Save', exact: true }).click();
+  await expect(pm.getByText('Link the mall first: alerts need it.')).toBeVisible();
+  await pm.getByLabel('Mall on the device platform').fill('mall-a');
+  await pm.getByRole('button', { name: 'Save', exact: true }).click();
+  await expect(pm.getByText('Saved.')).toBeVisible();
 });
 
 /** Screens built with `pnpm gen:screen` — each must open for a signed-in user and show its title. */

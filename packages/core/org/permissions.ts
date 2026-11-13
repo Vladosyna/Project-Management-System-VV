@@ -43,5 +43,10 @@ export const orgPermissions = {
     description: 'See partners with real names and their client letters (staff)',
     roles: ['director', 'admin', 'pm'],
   }),
+  setDeviceAlerts: permission('org.site.setDeviceAlerts', {
+    description:
+      'Link a project to its mall on the device platform and switch its offline alerts on or off (E4)',
+    roles: ['director', 'pm'],
+  }),
   // gen:permissions — `pnpm gen:command` and `pnpm gen:query` add entries above this line.
 };

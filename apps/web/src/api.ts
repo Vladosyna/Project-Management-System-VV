@@ -48,6 +48,9 @@ export interface SiteSummary {
   readonly name: string;
   readonly cityName: string;
   readonly standard: 'L' | 'S';
+  /** Staff only (E4): the mall on the device platform and the offline alerts checkbox. */
+  readonly platformRef?: string | null;
+  readonly deviceAlertsEnabled?: boolean;
 }
 
 async function getJson<T>(path: string): Promise<T> {
@@ -170,5 +173,24 @@ export async function recordVisit(siteId: string, input: VisitInput): Promise<'o
   });
   if ([400, 403, 422].includes(res.status)) return 'rejected';
   if (!res.ok) throw new Error(`POST visit → ${String(res.status)}`);
+  return 'ok';
+}
+
+/** E4: link a project to its mall and switch its offline alerts. Conflict: the mall is linked elsewhere. */
+export async function saveDeviceAlerts(
+  siteId: string,
+  platformRef: string | null,
+  alertsEnabled: boolean,
+): Promise<'ok' | 'forbidden' | 'conflict' | 'needsMall'> {
+  const res = await fetch(`/api/sites/${encodeURIComponent(siteId)}/device-alerts`, {
+    method: 'PUT',
+    credentials: 'same-origin',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ platformRef, alertsEnabled }),
+  });
+  if (res.status === 403) return 'forbidden';
+  if (res.status === 409) return 'conflict';
+  if (res.status === 422) return 'needsMall';
+  if (!res.ok) throw new Error(`PUT device-alerts → ${String(res.status)}`);
   return 'ok';
 }
