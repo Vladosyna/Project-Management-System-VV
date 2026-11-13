@@ -16,5 +16,9 @@ export const devicesPermissions = {
     description: "Sync a project's zones (stores, areas, gates) from the device platform (system only, E4)",
     roles: ['system'],
   }),
+  offlineDue: permission('devices.offline.due', {
+    description: 'Devices offline longer than R15 allows on projects with alerts on (system only)',
+    roles: ['system'],
+  }),
   // gen:permissions — `pnpm gen:command` and `pnpm gen:query` add entries above this line.
 };

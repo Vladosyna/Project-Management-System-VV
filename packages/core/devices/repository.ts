@@ -100,3 +100,30 @@ export async function updateDeviceFromPlatform(
 export async function insertDevices(tx: Tx, rows: (typeof device.$inferInsert)[]): Promise<void> {
   if (rows.length > 0) await tx.insert(device).values(rows);
 }
+
+/** Active devices offline since before `cutoff` on active projects, with the project's PM and alerts switch (R15). */
+export async function offlineDevicesSince(tx: Tx, cutoff: Date) {
+  return tx
+    .select({
+      deviceId: device.id,
+      sn: device.sn,
+      platformStatus: device.platformStatus,
+      offlineSince: device.offlineSince,
+      siteId: site.id,
+      clientId: site.clientId,
+      projectId: site.projectId,
+      pmId: site.pmId,
+      alertsEnabled: site.deviceAlertsEnabled,
+    })
+    .from(device)
+    .innerJoin(site, eq(site.id, device.siteId))
+    .where(
+      and(
+        isNull(device.archivedAt),
+        isNull(site.archivedAt),
+        eq(device.platformStatus, 'offline'),
+        sql`${device.offlineSince} < ${cutoff}`,
+      ),
+    )
+    .orderBy(device.offlineSince);
+}
