@@ -12,6 +12,10 @@ export const devicesPermissions = {
       "Sync a project's devices and their online status from the device platform (system only, E4, D-29)",
     roles: ['system'],
   }),
+  syncZones: permission('devices.platform.syncZones', {
+    description: "Sync a project's zones (stores, areas, gates) from the device platform (system only, E4)",
+    roles: ['system'],
+  }),
   offlineDue: permission('devices.offline.due', {
     description: 'Devices offline longer than R15 allows on projects with alerts on (system only)',
     roles: ['system'],

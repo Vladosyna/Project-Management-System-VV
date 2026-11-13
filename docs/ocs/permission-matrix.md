@@ -8,6 +8,7 @@ External roles (`client`, `partner`) are switched off in the checker until the V
 | `devices.device.register` | Register a device on a project: SN, MAC, model, firmware, network, status (E4 AC1) | ✓ | ✓ |  | ✓ |  |  |  |  |  |  |  |
 | `devices.offline.due` | Devices offline longer than R15 allows on projects with alerts on (system only) |  |  |  |  |  |  |  |  |  |  | ✓ |
 | `devices.platform.syncDevices` | Sync a project's devices and their online status from the device platform (system only, E4, D-29) |  |  |  |  |  |  |  |  |  |  | ✓ |
+| `devices.platform.syncZones` | Sync a project's zones (stores, areas, gates) from the device platform (system only, E4) |  |  |  |  |  |  |  |  |  |  | ✓ |
 | `identity.invitation.accept` | Grant the invited roles once the invited person has set a password (system only) |  |  |  |  |  |  |  |  |  |  | ✓ |
 | `identity.invitation.bootstrapAdmin` | Invite the first admin while no user exists (system only, installation) |  |  |  |  |  |  |  |  |  |  | ✓ |
 | `identity.invitation.readByToken` | Look up an open invitation by its link token (system only) |  |  |  |  |  |  |  |  |  |  | ✓ |
@@ -29,6 +30,8 @@ External roles (`client`, `partner`) are switched off in the checker until the V
 | `work.action.complete` | Mark an action done (its owner, or a director or PM) | ✓ | ✓ | ✓ | ✓ |  |  | ✓ |  |  |  |  |
 | `work.action.create` | Create an action with one owner and a due date (SOP-DEL-03) | ✓ | ✓ | ✓ | ✓ |  |  | ✓ |  |  |  |  |
 | `work.action.list` | See open actions by project or owner | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |  |  |  |
+| `work.alert.raise` | Raise an automatic alert (e.g. R15 device offline) as an internal action owned by the project's PM (system only) |  |  |  |  |  |  |  |  |  |  | ✓ |
+| `work.alert.resolve` | Withdraw the open actions of alerts that cleared, e.g. a device back online (system only) |  |  |  |  |  |  |  |  |  |  | ✓ |
 | `work.comment.add` | Comment on a project, @mentioning staff (E5 AC2) | ✓ | ✓ | ✓ | ✓ | ✓ |  | ✓ |  |  |  |  |
 | `work.comment.toAction` | Turn a comment into an action with an owner and a due date (E5 AC2) | ✓ | ✓ |  |  |  |  |  |  |  |  |  |
 | `work.feed.list` | See a project's feed: actions, comments and visits with their sources (E5 AC4) | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |  |  |  |

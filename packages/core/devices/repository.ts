@@ -1,5 +1,5 @@
 // devices repository — the only place in this module that touches tables.
-import { and, device, eq, inArray, isNull, site, sql, type Tx } from '@ocs/db';
+import { and, device, eq, inArray, isNull, site, sql, zone, type Tx } from '@ocs/db';
 
 /** The device life cycle, re-exported so commands validate against the schema's own list. */
 export { DEVICE_STATUSES } from '@ocs/db';
@@ -37,6 +37,36 @@ export async function findPlatformSite(tx: Tx, id: string) {
       .from(site)
       .where(and(eq(site.id, id), isNull(site.archivedAt)))
   )[0];
+}
+
+export async function activeZonesOf(tx: Tx, siteId: string) {
+  return tx
+    .select({
+      id: zone.id,
+      platformRef: zone.platformRef,
+      kind: zone.kind,
+      name: zone.name,
+      entrance: zone.entrance,
+    })
+    .from(zone)
+    .where(and(eq(zone.siteId, siteId), isNull(zone.archivedAt)));
+}
+
+export async function insertZones(tx: Tx, rows: (typeof zone.$inferInsert)[]): Promise<void> {
+  if (rows.length > 0) await tx.insert(zone).values(rows);
+}
+
+export async function updateZone(
+  tx: Tx,
+  id: string,
+  values: Pick<typeof zone.$inferInsert, 'kind' | 'name' | 'entrance'>,
+): Promise<void> {
+  await tx.update(zone).set(values).where(eq(zone.id, id));
+}
+
+/** Archive, never delete (SOP-DEL-02). */
+export async function archiveZones(tx: Tx, ids: string[], at: Date): Promise<void> {
+  if (ids.length > 0) await tx.update(zone).set({ archivedAt: at }).where(inArray(zone.id, ids));
 }
 
 /** Active devices, on any project, whose SN (any case) is one of these — with the Project ID they sit on. */

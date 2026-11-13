@@ -35,5 +35,14 @@ export const workPermissions = {
     description: 'See active staff to @mention or assign (E5 AC2)',
     roles: ['director', 'pm', 'sales', 'rnd', 'finance', 'management', 'sponsor', 'admin'],
   }),
+  raiseAlert: permission('work.alert.raise', {
+    description:
+      "Raise an automatic alert (e.g. R15 device offline) as an internal action owned by the project's PM (system only)",
+    roles: ['system'],
+  }),
+  resolveAlert: permission('work.alert.resolve', {
+    description: 'Withdraw the open actions of alerts that cleared, e.g. a device back online (system only)',
+    roles: ['system'],
+  }),
   // gen:permissions — `pnpm gen:command` and `pnpm gen:query` add entries above this line.
 };

@@ -183,6 +183,8 @@ export const device = pgTable('device', {
   /** Migration 0015: when OCS first saw it offline (set only while offline; R15 measures from it). */
   offlineSince: timestamp('offline_since', { withTimezone: true }),
   syncedAt: timestamp('synced_at', { withTimezone: true }),
+  /** Migration 0016: when registered in OCS by SN (manual or import); null: only from the platform so far. */
+  registeredAt: timestamp('registered_at', { withTimezone: true }),
   visibility: text('visibility', { enum: ['internal', 'client'] })
     .notNull()
     .default('internal'),
