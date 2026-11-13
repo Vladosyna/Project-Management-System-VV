@@ -6,3 +6,4 @@ export { syncDevices } from './commands/sync-devices.ts';
 export { syncZones } from './commands/sync-zones.ts';
 export { offlineDue } from './queries/offline-due.ts';
 export { platformSites } from './queries/platform-sites.ts';
+export { siteDevices } from './queries/site-devices.ts';
