@@ -207,6 +207,7 @@ test('a PM comments on a Site with a mention turns it into an action and records
   ).toBeVisible();
   await pm.screenshot({ path: 'test-results/site-visit-en.png', fullPage: true });
 
+  await expect(pm.getByText(/^No devices yet/)).toBeVisible();
   // E4 (Vlad, 3 Nov): alerts need the mall; linking it and ticking the box saves both.
   await pm.getByRole('checkbox', { name: /offline more than 24 h/ }).check();
   await pm.getByRole('button', { name: 'Save', exact: true }).click();

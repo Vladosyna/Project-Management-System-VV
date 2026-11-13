@@ -237,3 +237,30 @@ export async function unbindChannelsNotIn(
       );
   }
 }
+
+/** A project's active devices with the gate each channel counts (site page, Devices tab). */
+export async function siteDevicesWithGates(tx: Tx, siteId: string) {
+  const devices = await tx
+    .select({
+      id: device.id,
+      sn: device.sn,
+      model: device.model,
+      mac: device.mac,
+      ip: device.ip,
+      status: device.status,
+      platformStatus: device.platformStatus,
+      offlineSince: device.offlineSince,
+      syncedAt: device.syncedAt,
+      registeredAt: device.registeredAt,
+    })
+    .from(device)
+    .where(and(eq(device.siteId, siteId), isNull(device.archivedAt)))
+    .orderBy(device.sn);
+  const channels = await tx
+    .select({ deviceId: deviceChannel.deviceId, channelNo: deviceChannel.channelNo, gate: zone.name })
+    .from(deviceChannel)
+    .leftJoin(zone, eq(zone.id, deviceChannel.zoneId))
+    .where(eq(deviceChannel.siteId, siteId))
+    .orderBy(deviceChannel.channelNo);
+  return { devices, channels };
+}

@@ -25,6 +25,7 @@ import {
 import { sourceLabel } from '../source.ts';
 import { CommentToAction } from './comment-to-action.tsx';
 import { DeviceAlerts } from './device-alerts.tsx';
+import { SiteDevices } from './site-devices.tsx';
 import { VisitForm } from './visit-form.tsx';
 
 type State =
@@ -88,6 +89,7 @@ export function SitePage(props: { siteId: string }) {
       />
       <div className="ocs-stack">
         <Card title={t('site.devices')} titleId="site-devices">
+          <SiteDevices siteId={props.siteId} />
           <DeviceAlerts site={site} onDone={reload} />
         </Card>
         <Card title={t('site.timeline')} titleId="site-timeline">

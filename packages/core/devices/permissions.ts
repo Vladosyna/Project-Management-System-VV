@@ -24,5 +24,9 @@ export const devicesPermissions = {
     description: 'Projects linked to a mall on the device platform, with their alerts switch (system only)',
     roles: ['system'],
   }),
+  siteDevices: permission('devices.siteDevices.read', {
+    description: "See a project's devices: platform status, offline since, the gate each channel counts (E4)",
+    roles: ['director', 'pm', 'sales', 'rnd', 'management', 'sponsor'],
+  }),
   // gen:permissions — `pnpm gen:command` and `pnpm gen:query` add entries above this line.
 };

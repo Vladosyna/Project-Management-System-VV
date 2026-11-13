@@ -194,3 +194,21 @@ export async function saveDeviceAlerts(
   if (!res.ok) throw new Error(`PUT device-alerts → ${String(res.status)}`);
   return 'ok';
 }
+
+export interface SiteDevice {
+  readonly id: string;
+  readonly sn: string;
+  readonly model: string;
+  readonly platformStatus: 'online' | 'offline' | 'disabled' | null;
+  readonly offlineSince: string | null;
+  readonly registered: boolean;
+  readonly channels: readonly { readonly no: number; readonly gate: string | null }[];
+}
+
+/** E4: a project's devices; undefined when the user may not see them. */
+export async function loadSiteDevices(siteId: string): Promise<SiteDevice[] | undefined> {
+  const res = await fetch(`/api/sites/${encodeURIComponent(siteId)}/devices`, { credentials: 'same-origin' });
+  if (res.status === 403) return undefined;
+  if (!res.ok) throw new Error(`GET devices → ${String(res.status)}`);
+  return (await res.json()) as SiteDevice[];
+}
