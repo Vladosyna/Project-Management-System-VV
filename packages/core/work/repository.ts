@@ -133,3 +133,44 @@ export async function listActiveStaff(tx: Tx): Promise<{ id: string; name: strin
     .where(and(eq(authUser.kind, 'staff'), isNull(authUser.archivedAt)))
     .orderBy(asc(authUser.name));
 }
+
+/** The project's PM, who owns the alerts raised on it (R15). */
+export async function findSitePm(tx: Tx, id: string) {
+  return (
+    await tx
+      .select({ id: site.id, clientId: site.clientId, pmId: site.pmId })
+      .from(site)
+      .where(and(eq(site.id, id), isNull(site.archivedAt)))
+  )[0];
+}
+
+/**
+ * The action already raised for this alert, if any (open or done). Serialised per alert ref for the rest of the
+ * transaction, so two runs of the alert job cannot both create it.
+ */
+export async function lockAlertAction(tx: Tx, alertRef: string) {
+  await tx.execute(sql`SELECT pg_advisory_xact_lock(hashtext(${alertRef}))`);
+  return (
+    await tx
+      .select({ id: action.id })
+      .from(action)
+      .where(and(eq(action.sourceKind, 'alert'), eq(action.sourceRef, alertRef), isNull(action.archivedAt)))
+  )[0];
+}
+
+/** Withdraws the open or in-progress alert actions with these refs; returns what was withdrawn (never deleted). */
+export async function cancelOpenAlertActions(tx: Tx, refs: string[]) {
+  if (refs.length === 0) return [];
+  return tx
+    .update(action)
+    .set({ status: 'cancelled' })
+    .where(
+      and(
+        eq(action.sourceKind, 'alert'),
+        inArray(action.sourceRef, refs),
+        inArray(action.status, ['open', 'in_progress']),
+        isNull(action.archivedAt),
+      ),
+    )
+    .returning({ id: action.id, ref: action.sourceRef, siteId: action.siteId, clientId: action.clientId });
+}
