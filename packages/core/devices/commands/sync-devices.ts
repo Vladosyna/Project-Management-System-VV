@@ -15,6 +15,7 @@ import {
   DEVICE_PLATFORM_STATUSES,
   findPlatformSite,
   insertDevices,
+  registeredNotListed,
   updateDeviceFromPlatform,
 } from '../repository.ts';
 import { offlineChange } from '../sync/offline.ts';
@@ -66,6 +67,8 @@ export const syncDevices = defineCommand({
     const elsewhere: { sn: string; projectId: string }[] = [];
     /** Back online or disabled: the alert job withdraws the R15 action of that episode (Vlad, 4 Nov). */
     const offlineEnded: { deviceId: string; sn: string; offlineSince: string }[] = [];
+    /** Reconciliation (Vlad, 4 Nov): on the platform here, but nobody registered the SN in OCS. */
+    const notRegistered: string[] = [];
     let updated = 0;
     const rows = [];
     for (const d of i.devices) {
@@ -82,6 +85,7 @@ export const syncDevices = defineCommand({
         was ? { status: was.platformStatus, offlineSince: was.offlineSince } : null,
       );
       const id = was?.id ?? ctx.newId();
+      if (!was?.registeredAt) notRegistered.push(d.sn);
       if (was) {
         const same =
           was.mac === mac &&
@@ -119,8 +123,21 @@ export const syncDevices = defineCommand({
       }
     }
     await insertDevices(ctx.tx, rows);
+    /** Reconciliation, the other way: registered in OCS on this project, but the platform does not list it. */
+    const notOnPlatform = await registeredNotListed(
+      ctx.tx,
+      project.id,
+      i.devices.map((d) => d.sn),
+    );
 
-    const result = { added: rows.length, updated, elsewhere, offlineEnded };
+    const result = {
+      added: rows.length,
+      updated,
+      elsewhere,
+      offlineEnded,
+      notRegistered: notRegistered.sort(),
+      notOnPlatform,
+    };
     return {
       result,
       audit: {
