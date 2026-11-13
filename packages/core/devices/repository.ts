@@ -1,5 +1,5 @@
 // devices repository — the only place in this module that touches tables.
-import { and, device, eq, inArray, isNull, site, sql, zone, type Tx } from '@ocs/db';
+import { and, device, eq, inArray, isNotNull, isNull, site, sql, zone, type Tx } from '@ocs/db';
 
 /** The device life cycle, re-exported so commands validate against the schema's own list. */
 export { DEVICE_STATUSES } from '@ocs/db';
@@ -126,4 +126,18 @@ export async function offlineDevicesSince(tx: Tx, cutoff: Date) {
       ),
     )
     .orderBy(device.offlineSince);
+}
+
+/** Active projects linked to a mall on the device platform (07-integrations: site = mall). */
+export async function platformLinkedSites(tx: Tx) {
+  return tx
+    .select({
+      siteId: site.id,
+      projectId: site.projectId,
+      platformRef: site.platformRef,
+      alertsEnabled: site.deviceAlertsEnabled,
+    })
+    .from(site)
+    .where(and(isNull(site.archivedAt), isNotNull(site.platformRef)))
+    .orderBy(site.projectId);
 }

@@ -9,6 +9,7 @@ External roles (`client`, `partner`) are switched off in the checker until the V
 | `devices.offline.due` | Devices offline longer than R15 allows on projects with alerts on (system only) |  |  |  |  |  |  |  |  |  |  | ✓ |
 | `devices.platform.syncDevices` | Sync a project's devices and their online status from the device platform (system only, E4, D-29) |  |  |  |  |  |  |  |  |  |  | ✓ |
 | `devices.platform.syncZones` | Sync a project's zones (stores, areas, gates) from the device platform (system only, E4) |  |  |  |  |  |  |  |  |  |  | ✓ |
+| `devices.platformSites.read` | Projects linked to a mall on the device platform, with their alerts switch (system only) |  |  |  |  |  |  |  |  |  |  | ✓ |
 | `identity.invitation.accept` | Grant the invited roles once the invited person has set a password (system only) |  |  |  |  |  |  |  |  |  |  | ✓ |
 | `identity.invitation.bootstrapAdmin` | Invite the first admin while no user exists (system only, installation) |  |  |  |  |  |  |  |  |  |  | ✓ |
 | `identity.invitation.readByToken` | Look up an open invitation by its link token (system only) |  |  |  |  |  |  |  |  |  |  | ✓ |
