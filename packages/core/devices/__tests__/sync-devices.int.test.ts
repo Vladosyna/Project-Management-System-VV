@@ -74,7 +74,14 @@ describe('devices.platform.syncDevices', () => {
   });
 
   it('first sync adds the devices; one seen offline gets offline_since and a went_offline event', async () => {
-    expect(await run({ devices })).toEqual({ added: 2, updated: 0, elsewhere: [], offlineEnded: [] });
+    expect(await run({ devices })).toEqual({
+      added: 2,
+      updated: 0,
+      elsewhere: [],
+      offlineEnded: [],
+      notRegistered: ['SN-0001', 'SN-0002'],
+      notOnPlatform: [],
+    });
     expect(
       await rows(
         `device WHERE sn = 'SN-0001' AND mac = 'AA:BB:CC:00:00:01' AND status = 'installed' AND platform_status = 'online'`,
@@ -87,7 +94,14 @@ describe('devices.platform.syncDevices', () => {
 
   it('the same snapshot again changes nothing and raises no event (idempotent)', async () => {
     clock.advance({ minutes: 15 });
-    expect(await run({ devices })).toEqual({ added: 0, updated: 0, elsewhere: [], offlineEnded: [] });
+    expect(await run({ devices })).toEqual({
+      added: 0,
+      updated: 0,
+      elsewhere: [],
+      offlineEnded: [],
+      notRegistered: ['SN-0001', 'SN-0002'],
+      notOnPlatform: [],
+    });
     expect(await rows(`device WHERE sn = 'SN-0002' AND offline_since < synced_at`)).toBe(1);
     expect(await events('devices.device.went_offline')).toBe(1);
   });
@@ -123,5 +137,13 @@ describe('devices.platform.syncDevices', () => {
     expect(r.elsewhere.map((e) => [e.sn, e.projectId.endsWith('-002')])).toEqual([['sn-0009', true]]);
     expect(await rows(`device WHERE sn = 'SN-0009' AND site_id = $1`, [siteB])).toBe(1);
     expect(await rows(`device WHERE site_id = $1 AND archived_at IS NULL`, [siteA])).toBe(2);
+  });
+
+  it('reconciliation: registering a platform SN confirms it; a registered SN the platform omits is reported', async () => {
+    await t.kernel.execute(registerDevice, pm, { siteId: siteA, sn: 'sn-0001', model: 'G6-8MA' }, 'test');
+    await t.kernel.execute(registerDevice, pm, { siteId: siteA, sn: 'SN-0010', model: 'G6' }, 'test');
+    expect(await rows(`device WHERE upper(sn) = 'SN-0001'`)).toBe(1);
+    const r = await run({ devices });
+    expect([r.notRegistered, r.notOnPlatform]).toEqual([['SN-0002'], ['SN-0010']]);
   });
 });

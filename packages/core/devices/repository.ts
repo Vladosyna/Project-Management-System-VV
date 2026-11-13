@@ -17,7 +17,13 @@ export async function findActiveSite(tx: Tx, id: string) {
 /** Active devices with this SN (any case), with the Project ID they sit on (R6). */
 export async function activeDevicesWithSn(tx: Tx, sn: string) {
   return tx
-    .select({ sn: device.sn, projectId: site.projectId })
+    .select({
+      id: device.id,
+      siteId: device.siteId,
+      sn: device.sn,
+      registeredAt: device.registeredAt,
+      projectId: site.projectId,
+    })
     .from(device)
     .innerJoin(site, eq(site.id, device.siteId))
     .where(and(isNull(device.archivedAt), sql`upper(${device.sn}) = upper(${sn})`));
@@ -82,6 +88,7 @@ export async function activeDevicesBySn(tx: Tx, sns: string[]) {
       ip: device.ip,
       platformStatus: device.platformStatus,
       offlineSince: device.offlineSince,
+      registeredAt: device.registeredAt,
       projectId: site.projectId,
     })
     .from(device)
@@ -126,6 +133,38 @@ export async function offlineDevicesSince(tx: Tx, cutoff: Date) {
       ),
     )
     .orderBy(device.offlineSince);
+}
+
+/** Reconciliation: active devices registered in OCS on this project whose SN the platform did not list. */
+export async function registeredNotListed(tx: Tx, siteId: string, sns: string[]) {
+  const upper = sns.map((sn) => sn.toUpperCase());
+  const rows = await tx
+    .select({ sn: device.sn })
+    .from(device)
+    .where(
+      and(
+        eq(device.siteId, siteId),
+        isNull(device.archivedAt),
+        isNotNull(device.registeredAt),
+        upper.length > 0
+          ? sql`upper(${device.sn}) NOT IN (${sql.join(
+              upper.map((u) => sql`${u}`),
+              sql`, `,
+            )})`
+          : undefined,
+      ),
+    )
+    .orderBy(device.sn);
+  return rows.map((r) => r.sn);
+}
+
+/** A device the platform brought in, now registered in OCS by SN: the registration confirms it. */
+export async function confirmDevice(
+  tx: Tx,
+  id: string,
+  values: Partial<typeof device.$inferInsert> & { registeredAt: Date },
+): Promise<void> {
+  await tx.update(device).set(values).where(eq(device.id, id));
 }
 
 /** Active projects linked to a mall on the device platform (07-integrations: site = mall). */
