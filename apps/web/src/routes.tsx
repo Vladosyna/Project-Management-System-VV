@@ -18,6 +18,7 @@ import { SetupMfaPage } from './pages/setup-mfa.tsx';
 import { PortfolioPage } from './pages/portfolio.tsx';
 import { ActionsPage } from './pages/actions.tsx';
 import { SitePage } from './pages/site.tsx';
+import { SITE_TABS, type SiteTab } from './pages/site-overview.tsx';
 import { SitesPage } from './pages/sites.tsx';
 // gen:screen-imports
 
@@ -106,12 +107,23 @@ const siteRoute = createRoute({
   },
 });
 
+/** One tab of a project/site: devices, actions, timeline, settings (Vlad, 13 Nov: overview, then drill down). */
+const siteTabRoute = createRoute({
+  getParentRoute: () => shellRoute,
+  path: '/sites/$siteId/$tab',
+  component: function SiteTabPage() {
+    const p = siteTabRoute.useParams({ select: (x: { siteId: string; tab: string }) => x });
+    const tab = (SITE_TABS as readonly string[]).includes(p.tab) ? (p.tab as SiteTab) : 'overview';
+    return <SitePage siteId={p.siteId} tab={tab} />;
+  },
+});
+
 const notYetRoutes = NAV.filter((n) => n.href !== '/' && !(n.href in SCREENS)).map((n) =>
   createRoute({ getParentRoute: () => shellRoute, path: n.href, component: NotYetPage }),
 );
 
 const routeTree = rootRoute.addChildren([
-  shellRoute.addChildren([homeRoute, siteRoute, ...screenRoutes, ...notYetRoutes]),
+  shellRoute.addChildren([homeRoute, siteRoute, siteTabRoute, ...screenRoutes, ...notYetRoutes]),
   createRoute({ getParentRoute: () => rootRoute, path: '/login', component: LoginPage }),
   createRoute({
     getParentRoute: () => rootRoute,

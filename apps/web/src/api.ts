@@ -84,6 +84,11 @@ export async function loadActions(mine: boolean): Promise<OpenAction[]> {
   return getJson<OpenAction[]>(`/api/actions${mine ? '?mine=true' : ''}`);
 }
 
+/** Open actions of one project. */
+export async function loadSiteActions(siteId: string): Promise<OpenAction[]> {
+  return getJson<OpenAction[]>(`/api/actions?siteId=${encodeURIComponent(siteId)}`);
+}
+
 export interface FeedItem {
   readonly kind: 'action' | 'comment' | 'visit';
   readonly id: string;

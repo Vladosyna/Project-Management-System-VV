@@ -110,6 +110,10 @@ test('a Site page shows its timeline with the source on every item (E5 AC4)', as
   await signInWithPassword(page);
   await page.getByRole('link', { name: 'Sites' }).click();
   await page.getByRole('link', { name: 'CLIENTA-ES-MAD-001' }).click();
+  // Overview first (Vlad, 13 Nov): a tile per topic, each opening its tab.
+  await expect(page.getByRole('link', { name: /^Open actions/ })).toBeVisible();
+  await page.screenshot({ path: 'test-results/site-overview-en.png', fullPage: true });
+  await page.getByRole('link', { name: /^Last visit/ }).click();
   await expect(page.getByRole('heading', { level: 2, name: 'Timeline & comments' })).toBeVisible();
   await expect(page.getByText('Provide the floor plan')).toBeVisible();
   await expect(page.getByText('Source: Mail · Message 0001')).toBeVisible();
@@ -125,6 +129,7 @@ test('a PM comments on a Site with a mention turns it into an action and records
   await signInWithPassword(page);
   await page.getByRole('link', { name: 'Sites' }).click();
   await page.getByRole('link', { name: 'CLIENTA-ES-MAD-002' }).click();
+  await page.getByRole('link', { name: 'Timeline', exact: true }).click();
   await page.getByLabel('Comment', { exact: true }).fill('Admins do not comment');
   await page.getByRole('button', { name: 'Add comment' }).click();
   await expect(page.getByText('Your role may not comment on projects.')).toBeVisible();
@@ -153,6 +158,7 @@ test('a PM comments on a Site with a mention turns it into an action and records
 
   await pm.getByRole('link', { name: 'Sites' }).click();
   await pm.getByRole('link', { name: 'CLIENTA-ES-MAD-002' }).click();
+  await pm.getByRole('link', { name: 'Timeline', exact: true }).click();
   await pm.getByLabel('Comment', { exact: true }).fill('Ceiling height checked — 4.2 m');
   await pm.getByRole('checkbox', { name: 'Person 01' }).check();
   await pm.getByRole('button', { name: 'Add comment' }).click();
@@ -181,6 +187,7 @@ test('a PM comments on a Site with a mention turns it into an action and records
   // action item land on the timeline.
   await pm.getByRole('link', { name: 'Sites' }).click();
   await pm.getByRole('link', { name: 'CLIENTA-ES-MAD-002' }).click();
+  await pm.getByRole('link', { name: 'Timeline', exact: true }).click();
   await pm.getByRole('button', { name: 'Record a visit' }).click();
   await pm.getByLabel('Attendee').fill('Person 02');
   await pm.getByRole('button', { name: 'Add attendee' }).click();
@@ -207,7 +214,9 @@ test('a PM comments on a Site with a mention turns it into an action and records
   ).toBeVisible();
   await pm.screenshot({ path: 'test-results/site-visit-en.png', fullPage: true });
 
+  await pm.getByRole('link', { name: 'Devices', exact: true }).click();
   await expect(pm.getByText(/^No devices yet/)).toBeVisible();
+  await pm.getByRole('link', { name: 'Settings', exact: true }).click();
   // E4 (Vlad, 3 Nov): alerts need the mall; linking it and ticking the box saves both.
   await pm.getByRole('checkbox', { name: /offline more than 24 h/ }).check();
   await pm.getByRole('button', { name: 'Save', exact: true }).click();

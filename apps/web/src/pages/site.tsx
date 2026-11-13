@@ -26,6 +26,8 @@ import { sourceLabel } from '../source.ts';
 import { CommentToAction } from './comment-to-action.tsx';
 import { DeviceAlerts } from './device-alerts.tsx';
 import { SiteDevices } from './site-devices.tsx';
+import { SITE_TABS, SiteActions, SiteOverview, type SiteTab } from './site-overview.tsx';
+import { Link } from '@tanstack/react-router';
 import { VisitForm } from './visit-form.tsx';
 
 type State =
@@ -34,7 +36,8 @@ type State =
   | { kind: 'missing' }
   | { kind: 'loaded'; site: SiteSummary; client: ClientSummary | undefined; feed: FeedItem[] };
 
-export function SitePage(props: { siteId: string }) {
+export function SitePage(props: { siteId: string; tab?: SiteTab }) {
+  const tab = props.tab ?? 'overview';
   const { t } = useI18n();
   const [state, setState] = useState<State>({ kind: 'loading' });
 
@@ -87,62 +90,88 @@ export function SitePage(props: { siteId: string }) {
         eyebrow={`/ ${client?.name ?? ''} / ${site.cityName} · ${site.projectId}`}
         title={`${site.name} · ${t('site.standard', { standard: site.standard })}`}
       />
+      <nav className="ocs-tabs" aria-label={t('site.tabs')}>
+        {SITE_TABS.map((key) => (
+          <Link
+            key={key}
+            to={key === 'overview' ? '/sites/$siteId' : '/sites/$siteId/$tab'}
+            params={key === 'overview' ? { siteId: props.siteId } : { siteId: props.siteId, tab: key }}
+            aria-current={key === tab ? 'page' : undefined}
+          >
+            {t(`site.tab.${key}`)}
+          </Link>
+        ))}
+      </nav>
       <div className="ocs-stack">
-        <Card title={t('site.devices')} titleId="site-devices">
-          <SiteDevices siteId={props.siteId} />
-          <DeviceAlerts site={site} onDone={reload} />
-        </Card>
-        <Card title={t('site.timeline')} titleId="site-timeline">
-          <VisitForm siteId={props.siteId} staff={staff} onDone={reload} />
-          <Form onSubmit={submit}>
-            <TextArea
-              id="comment-body"
-              label={t('site.comment')}
-              value={body}
-              required
-              onChange={(e) => {
-                setBody(e.currentTarget.value);
-              }}
-            />
-            {staff.length > 0 ? (
-              <CheckboxGroup
-                legend={t('site.mention')}
-                options={staff.map((s) => ({ id: s.id, label: s.name }))}
-                value={mentions}
-                onChange={setMentions}
+        {tab === 'overview' ? <SiteOverview site={site} feed={feed} /> : null}
+        {tab === 'devices' ? (
+          <Card title={t('site.devices')} titleId="site-devices">
+            <SiteDevices siteId={props.siteId} />
+          </Card>
+        ) : null}
+        {tab === 'actions' ? (
+          <Card title={t('site.tab.actions')} titleId="site-actions">
+            <SiteActions siteId={props.siteId} />
+          </Card>
+        ) : null}
+        {tab === 'settings' ? (
+          <Card title={t('site.tab.settings')} titleId="site-settings">
+            <DeviceAlerts site={site} onDone={reload} />
+          </Card>
+        ) : null}
+        {tab === 'timeline' ? (
+          <Card title={t('site.timeline')} titleId="site-timeline">
+            <VisitForm siteId={props.siteId} staff={staff} onDone={reload} />
+            <Form onSubmit={submit}>
+              <TextArea
+                id="comment-body"
+                label={t('site.comment')}
+                value={body}
+                required
+                onChange={(e) => {
+                  setBody(e.currentTarget.value);
+                }}
               />
-            ) : null}
-            {commentError ? (
-              <FormMessage tone="error">
-                {t(commentError === 'forbidden' ? 'site.commentForbidden' : 'site.commentFailed')}
-              </FormMessage>
-            ) : null}
-            <div>
-              <Button type="submit" disabled={body.trim() === ''}>
-                {t('site.addComment')}
-              </Button>
-            </div>
-          </Form>
-          {feed.length === 0 ? <p>{t('site.timelineEmpty')}</p> : null}
-          <ul className="ocs-board__list">
-            {feed.map((item) => (
-              <li key={`${item.kind}-${item.id}`} className="ocs-board__card">
-                <div className="ocs-board__meta">
-                  {item.at.slice(0, 10)} · {t(`site.kind.${item.kind}`)}
-                  {typeof item.detail.coverage === 'string'
-                    ? ` · ${t('site.coverage', { coverage: item.detail.coverage })}`
-                    : ''}{' '}
-                  {item.detail.escalate === true ? <StatusChip tone="escalated" /> : null}
-                </div>
-                <div className="ocs-board__title">{item.text}</div>
-                <div className="ocs-board__meta">{sourceLabel(t, item.source)}</div>
-                {item.kind === 'comment' ? (
-                  <CommentToAction commentId={item.id} staff={staff} onDone={reload} />
-                ) : null}
-              </li>
-            ))}
-          </ul>
-        </Card>
+              {staff.length > 0 ? (
+                <CheckboxGroup
+                  legend={t('site.mention')}
+                  options={staff.map((s) => ({ id: s.id, label: s.name }))}
+                  value={mentions}
+                  onChange={setMentions}
+                />
+              ) : null}
+              {commentError ? (
+                <FormMessage tone="error">
+                  {t(commentError === 'forbidden' ? 'site.commentForbidden' : 'site.commentFailed')}
+                </FormMessage>
+              ) : null}
+              <div>
+                <Button type="submit" disabled={body.trim() === ''}>
+                  {t('site.addComment')}
+                </Button>
+              </div>
+            </Form>
+            {feed.length === 0 ? <p>{t('site.timelineEmpty')}</p> : null}
+            <ul className="ocs-board__list">
+              {feed.map((item) => (
+                <li key={`${item.kind}-${item.id}`} className="ocs-board__card">
+                  <div className="ocs-board__meta">
+                    {item.at.slice(0, 10)} · {t(`site.kind.${item.kind}`)}
+                    {typeof item.detail.coverage === 'string'
+                      ? ` · ${t('site.coverage', { coverage: item.detail.coverage })}`
+                      : ''}{' '}
+                    {item.detail.escalate === true ? <StatusChip tone="escalated" /> : null}
+                  </div>
+                  <div className="ocs-board__title">{item.text}</div>
+                  <div className="ocs-board__meta">{sourceLabel(t, item.source)}</div>
+                  {item.kind === 'comment' ? (
+                    <CommentToAction commentId={item.id} staff={staff} onDone={reload} />
+                  ) : null}
+                </li>
+              ))}
+            </ul>
+          </Card>
+        ) : null}
       </div>
     </>
   );
