@@ -19,5 +19,9 @@ export const siteList = defineQuery({
       cityCode: s.cityCode,
       cityName: s.cityName,
       standard: s.standard,
+      // E4, internal: never shown to client users.
+      ...(ctx.actor.kind === 'staff'
+        ? { platformRef: s.platformRef, deviceAlertsEnabled: s.deviceAlertsEnabled }
+        : {}),
     })),
 });

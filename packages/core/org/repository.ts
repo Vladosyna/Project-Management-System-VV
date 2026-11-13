@@ -154,3 +154,22 @@ export async function partnersWithLetters(tx: Tx) {
     .where(isNull(partner.archivedAt))
     .orderBy(asc(partner.realName), asc(partnerAssignment.letter));
 }
+
+/** E4: the mall on the device platform and the offline alerts checkbox. */
+export async function setSiteDevicePlatform(
+  tx: Tx,
+  id: string,
+  values: { platformRef: string | null; deviceAlertsEnabled: boolean },
+): Promise<void> {
+  await tx.update(site).set(values).where(eq(site.id, id));
+}
+
+/** The other active project already linked to this mall, if any. */
+export async function siteLinkedTo(tx: Tx, platformRef: string, exceptId: string) {
+  return (
+    await tx
+      .select({ projectId: site.projectId })
+      .from(site)
+      .where(and(eq(site.platformRef, platformRef), isNull(site.archivedAt), sql`${site.id} <> ${exceptId}`))
+  )[0];
+}

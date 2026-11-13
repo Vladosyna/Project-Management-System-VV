@@ -2,7 +2,7 @@
 import { Hono } from 'hono';
 import type { Actor } from '@ocs/contracts';
 import { inviteUser, me } from '@ocs/core/identity';
-import { clientList, siteList } from '@ocs/core/org';
+import { clientList, setDeviceAlerts, siteList } from '@ocs/core/org';
 import {
   addComment,
   commentToAction,
@@ -101,6 +101,13 @@ export function createApp(rt: Runtime): Hono {
     const body = await c.req.json<Record<string, unknown>>();
     const input = { ...body, siteId: c.req.param('siteId') };
     return c.json(await rt.kernel.execute(recordVisit, c.get('actor'), input, 'web'), 201);
+  });
+
+  // E4: link the project to its mall on the device platform; the offline alerts checkbox (Vlad, 3 Nov).
+  api.put('/sites/:siteId/device-alerts', async (c) => {
+    const body = await c.req.json<Record<string, unknown>>();
+    const input = { ...body, siteId: c.req.param('siteId') };
+    return c.json(await rt.kernel.execute(setDeviceAlerts, c.get('actor'), input, 'web'));
   });
 
   app.route('/api', api);

@@ -28,6 +28,7 @@ External roles (`client`, `partner`) are switched off in the checker until the V
 | `org.site.changeStandard` | Change a site's standard L ↔ S (D-25) | ✓ | ✓ |  |  |  |  |  | ✓ |  |  |  |
 | `org.site.create` | Create a project/site; generates its Project ID | ✓ |  |  |  |  |  |  | ✓ |  |  |  |
 | `org.site.list` | See projects/sites | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |  |  |  |
+| `org.site.setDeviceAlerts` | Link a project to its mall on the device platform and switch its offline alerts on or off (E4) | ✓ | ✓ |  |  |  |  |  |  |  |  |  |
 | `work.action.complete` | Mark an action done (its owner, or a director or PM) | ✓ | ✓ | ✓ | ✓ |  |  | ✓ |  |  |  |  |
 | `work.action.create` | Create an action with one owner and a due date (SOP-DEL-03) | ✓ | ✓ | ✓ | ✓ |  |  | ✓ |  |  |  |  |
 | `work.action.list` | See open actions by project or owner | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |  |  |  |
