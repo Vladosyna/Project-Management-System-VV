@@ -77,7 +77,7 @@ describe('devices.device.register', () => {
     expect(
       await countRows(
         testDb.url,
-        `device WHERE id = $1 AND site_id = $2 AND status = 'installed' AND ip = '10.0.0.21'`,
+        `device WHERE id = $1 AND site_id = $2 AND status = 'installed' AND ip = '10.0.0.21' AND registered_at IS NOT NULL`,
         [id, siteA],
       ),
     ).toBe(1);
