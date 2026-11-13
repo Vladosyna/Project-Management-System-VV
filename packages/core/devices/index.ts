@@ -3,3 +3,4 @@
 export { devicesPermissions } from './permissions.ts';
 export { registerDevice } from './commands/register-device.ts';
 export { syncDevices } from './commands/sync-devices.ts';
+export { syncZones } from './commands/sync-zones.ts';

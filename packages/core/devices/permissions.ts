@@ -12,5 +12,9 @@ export const devicesPermissions = {
       "Sync a project's devices and their online status from the device platform (system only, E4, D-29)",
     roles: ['system'],
   }),
+  syncZones: permission('devices.platform.syncZones', {
+    description: "Sync a project's zones (stores, areas, gates) from the device platform (system only, E4)",
+    roles: ['system'],
+  }),
   // gen:permissions — `pnpm gen:command` and `pnpm gen:query` add entries above this line.
 };
