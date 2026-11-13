@@ -62,8 +62,22 @@ describe('device platform job', () => {
     ]);
     const [devices] = of(k.calls, 'devices.platform.syncDevices');
     expect(devices?.devices).toEqual([
-      { sn: 'SN-0001', model: 'G6', status: 'online', mac: '00-10-ff-00-00-01', ip: '192.168.2.10' },
-      { sn: 'SN-0002', model: 'G6', status: 'online', mac: '00-10-ff-00-00-01', ip: '192.168.2.10' },
+      {
+        sn: 'SN-0001',
+        model: 'G6',
+        status: 'online',
+        channels: [{ no: 1, gateRef: 'gate-1' }],
+        mac: '00-10-ff-00-00-01',
+        ip: '192.168.2.10',
+      },
+      {
+        sn: 'SN-0002',
+        model: 'G6',
+        status: 'online',
+        channels: [{ no: 1, gateRef: 'gate-2' }],
+        mac: '00-10-ff-00-00-01',
+        ip: '192.168.2.10',
+      },
     ]);
   });
 

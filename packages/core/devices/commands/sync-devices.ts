@@ -12,10 +12,13 @@ import { normaliseMac } from '../mac.ts';
 import { devicesPermissions } from '../permissions.ts';
 import {
   activeDevicesBySn,
+  activeGatesOf,
   DEVICE_PLATFORM_STATUSES,
   findPlatformSite,
   insertDevices,
   registeredNotListed,
+  unbindChannelsNotIn,
+  upsertChannels,
   updateDeviceFromPlatform,
 } from '../repository.ts';
 import { offlineChange } from '../sync/offline.ts';
@@ -37,6 +40,13 @@ export const syncDevices = defineCommand({
           mac: z.string().trim().max(30).optional(),
           ip: z.union([z.ipv4(), z.ipv6()]).optional(),
           status: z.enum(DEVICE_PLATFORM_STATUSES),
+          /** Which gate each channel counts (platform gateUnid); null while unbound. */
+          channels: z
+            .array(
+              z.object({ no: z.int().min(1).max(64), gateRef: z.string().trim().min(1).max(100).nullable() }),
+            )
+            .max(64)
+            .default([]),
         }),
       )
       .max(5000)
@@ -71,6 +81,7 @@ export const syncDevices = defineCommand({
     const notRegistered: string[] = [];
     let updated = 0;
     const rows = [];
+    const channelsOf: { deviceId: string; channels: { no: number; gateRef: string | null }[] }[] = [];
     for (const d of i.devices) {
       const mac = macOf(d.mac);
       const ip = d.ip ?? null;
@@ -85,6 +96,7 @@ export const syncDevices = defineCommand({
         was ? { status: was.platformStatus, offlineSince: was.offlineSince } : null,
       );
       const id = was?.id ?? ctx.newId();
+      channelsOf.push({ deviceId: id, channels: d.channels });
       if (!was?.registeredAt) notRegistered.push(d.sn);
       if (was) {
         const same =
@@ -123,6 +135,23 @@ export const syncDevices = defineCommand({
       }
     }
     await insertDevices(ctx.tx, rows);
+    // Channels → gates (07-integrations): a gate is a zone of this project, matched on its platform ref (zones
+    // sync first). A gate OCS does not know leaves the channel unbound and is reported; channels the platform no
+    // longer lists are unbound, never deleted.
+    const gates = await activeGatesOf(ctx.tx, project.id);
+    const unknownGates = new Set<string>();
+    const bindings = channelsOf.flatMap(({ deviceId, channels }) =>
+      channels.map((c) => {
+        const zoneId = c.gateRef === null ? null : (gates.get(c.gateRef) ?? null);
+        if (c.gateRef !== null && zoneId === null) unknownGates.add(c.gateRef);
+        return { deviceId, channelNo: c.no, clientId: project.clientId, siteId: project.id, zoneId };
+      }),
+    );
+    await upsertChannels(ctx.tx, bindings);
+    await unbindChannelsNotIn(
+      ctx.tx,
+      channelsOf.map(({ deviceId, channels }) => ({ deviceId, nos: channels.map((c) => c.no) })),
+    );
     /** Reconciliation, the other way: registered in OCS on this project, but the platform does not list it. */
     const notOnPlatform = await registeredNotListed(
       ctx.tx,
@@ -137,6 +166,8 @@ export const syncDevices = defineCommand({
       offlineEnded,
       notRegistered: notRegistered.sort(),
       notOnPlatform,
+      channelsBound: bindings.filter((b) => b.zoneId !== null).length,
+      unknownGates: [...unknownGates].sort(),
     };
     return {
       result,
