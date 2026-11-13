@@ -60,7 +60,8 @@ export function SiteOverview(props: { site: SiteSummary; feed: FeedItem[]; now?:
               {overDay.length > 0 ? (
                 <>
                   {' '}
-                  · {t('site.tile.overDay', { count: String(overDay.length) })} <StatusChip tone="escalated" />
+                  · {t('site.tile.overDay', { count: String(overDay.length) })}{' '}
+                  <StatusChip tone="escalated" />
                 </>
               ) : null}
             </>
