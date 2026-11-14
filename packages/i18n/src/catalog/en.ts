@@ -126,6 +126,9 @@ export const en = {
   'devices.alertsOn':
     'Raise an action when a device is offline more than 24 h, and when the device list differs from the platform',
   'devices.save': 'Save',
+  'register.title': 'Register a device by SN',
+  'register.save': 'Register device',
+  'versions.duplicate': 'This SN is already active on a project (R6).',
   'devices.col.firmware': 'Firmware · algorithm',
   'site.tile.firmwareIssues': '{count} with known firmware issues',
   'versions.title': 'Firmware and algorithm version',

@@ -2,9 +2,9 @@
 // problem of a firmware (R&D). The API refuses roles that may not; the forms say so.
 import { useState } from 'react';
 import { Button, CheckboxGroup, Form, FormMessage, SelectField, TextField, useI18n } from '@ocs/ui';
-import { saveFirmwareIssue, saveVersions, type SiteDevice } from '../api.ts';
+import { registerSiteDevice, saveFirmwareIssue, saveVersions, type SiteDevice } from '../api.ts';
 
-type Outcome = 'ok' | 'forbidden' | 'invalid' | 'failed';
+type Outcome = 'ok' | 'forbidden' | 'invalid' | 'duplicate' | 'failed';
 
 function Message(props: { outcome: Outcome | null }) {
   const { t } = useI18n();
@@ -156,6 +156,54 @@ export function FirmwareIssueForm() {
       <Message outcome={outcome} />
       <div>
         <Button type="submit">{t('issue.save')}</Button>
+      </div>
+    </Form>
+  );
+}
+
+/** E4 AC1 / D-29: register a device by SN by hand, when the platform does not list it. */
+export function RegisterDeviceForm(props: { siteId: string; onDone: () => void }) {
+  const { t } = useI18n();
+  const [sn, setSn] = useState('');
+  const [model, setModel] = useState('');
+  const [outcome, setOutcome] = useState<Outcome | null>(null);
+  const submit = async () => {
+    setOutcome(null);
+    try {
+      const result = await registerSiteDevice(props.siteId, { sn: sn.trim(), model: model.trim() });
+      setOutcome(result);
+      if (result === 'ok') {
+        setSn('');
+        props.onDone();
+      }
+    } catch {
+      setOutcome('failed');
+    }
+  };
+  return (
+    <Form onSubmit={submit}>
+      <h3>{t('register.title')}</h3>
+      <TextField
+        id="register-sn"
+        label={t('devices.col.sn')}
+        value={sn}
+        required
+        onChange={(e) => {
+          setSn(e.currentTarget.value);
+        }}
+      />
+      <TextField
+        id="register-model"
+        label={t('devices.col.model')}
+        value={model}
+        required
+        onChange={(e) => {
+          setModel(e.currentTarget.value);
+        }}
+      />
+      <Message outcome={outcome} />
+      <div>
+        <Button type="submit">{t('register.save')}</Button>
       </div>
     </Form>
   );
