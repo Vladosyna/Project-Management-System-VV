@@ -24,7 +24,8 @@ Conventions: UUID v7 `id`; `created_at/by`, `updated_at/by`; `archived_at` (no d
 - **RestrictedNote**: client/project scope, text, author — separate RLS (group F, `11_Internal Notes`).
 
 ## Devices
-- **Device** (identified by sn, D-29): sn, mac (last seen, not unique), model (G6, G6S, G6 WiFi, B1, CBox…), firmware, site_id, switch, port, ip, status (planned | shipped | received | installed | online | calibrated | faulty | lost), replaced_by_id; from the device platform: platform_status (online | offline | disabled), offline_since (when OCS first saw it offline, set only while offline), synced_at.
+- **Device** (identified by sn, D-29): sn, mac (last seen, not unique), model (G6, G6S, G6 WiFi, B1, CBox…), firmware, site_id, switch, port, ip, status (planned | shipped | received | installed | online | calibrated | faulty | lost), replaced_by_id; from the device platform: algorithm_version (D-31, by hand now, platform later), platform_status (online | offline | disabled), offline_since (when OCS first saw it offline, set only while offline), synced_at.
+- **FirmwareIssue** (D-31): model, firmware, summary, severity (info | degraded | critical), source; R&D reference data, staff only, archived not deleted. A device whose model and firmware match is flagged on its project.
 - **Zone**: site_id, kind (area = store or area | gate), platform_ref (areaUnid / gateUnid, unique per project while active), name, entrance (gate on the mall boundary), visibility.
 - **DeviceChannel**: device_id, channel_no, zone_id? (the gate the channel counts; null while unbound). Internal only; updated in place by the sync.
 - **DeviceSourceRecord**: device ref (sn/mac), source (packing_list | as_built | platform | aiot | import), payload, seen_at — for reconciliation.
