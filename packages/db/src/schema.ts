@@ -173,6 +173,8 @@ export const device = pgTable('device', {
   mac: text('mac'),
   model: text('model').notNull(),
   firmware: text('firmware'),
+  /** Migration 0017 (D-31): by hand now, from the device platform later. */
+  algorithmVersion: text('algorithm_version'),
   switchName: text('switch_name'),
   switchPort: text('switch_port'),
   ip: inet('ip'),
@@ -397,3 +399,16 @@ export const deviceChannel = pgTable(
   },
   (t) => [primaryKey({ columns: [t.deviceId, t.channelNo] })],
 );
+
+/** Migration 0017 (D-31). Known problems of a firmware version of a model; R&D reference data, staff only. */
+export const firmwareIssue = pgTable('firmware_issue', {
+  id: uuid('id').primaryKey(),
+  model: text('model').notNull(),
+  firmware: text('firmware').notNull(),
+  summary: text('summary').notNull(),
+  severity: text('severity', { enum: ['info', 'degraded', 'critical'] }).notNull(),
+  source: text('source'),
+  createdBy: uuid('created_by').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  archivedAt: timestamp('archived_at', { withTimezone: true }),
+});
