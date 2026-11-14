@@ -12,7 +12,7 @@ Conventions: UUID v7 `id`; `created_at/by`, `updated_at/by`; `archived_at` (no d
 ## Projects and sites
 - **Project/Site** (one row per SOP-DEL-02 "project/site"): project_id (`CLIENT-CC-CITY-NNN`, unique, immutable), client_id, programme_id?, country, city, site name, standard (L|S), package (Full|Light), phase, pm_user_id, sales_owner_id, time_zone (IANA), dingtalk_folder ref, status, gate_template_id?, platform_ref? (the mall on the device platform, unique while active), device_alerts_enabled (offline alerts checkbox, off by default).
 - **SiteStep** (migration 0018): site_id, step (card_received | card_complete | readiness_confirmed | go_no_go | installed | accepted | custom gate key), done_on, actor, evidence (folder path or document reference until files land), note; reached once while active, never edited, archived to correct. Site also carries planned_installation_date (only after card_complete, SOP-DEL-04 §1) and gate_template_id.
-- **GateTemplate** (migration 0018): client, programme?, name, gates [{key, name, order, readinessDays?}]; internal configuration, staff only.
+- **GateTemplate** (migrations 0018–0019, D-32): scope = client? (none: base template), programme?, country_code?; name, gates [{key, name, order, readinessDays?}]; one active per scope; a project takes the most specific (own template, programme+country, programme, client+country, client, base); changed by director/sponsor only; internal configuration, staff only.
 
 ## Intake (SOP-DEL-01)
 - **HandoverCard**: project_id, version, sections jsonb validated by zod per Annex B (1 Project identification … 11 Intake review), package Full|Light, submitted_at, sales_declaration_signed_by/at.
