@@ -12,7 +12,15 @@ import {
   type SiteSummary,
 } from '../api.ts';
 
-export const SITE_TABS = ['overview', 'devices', 'network', 'actions', 'timeline', 'settings'] as const;
+export const SITE_TABS = [
+  'overview',
+  'lifecycle',
+  'devices',
+  'network',
+  'actions',
+  'timeline',
+  'settings',
+] as const;
 export type SiteTab = (typeof SITE_TABS)[number];
 
 const DAY = 86_400_000;
