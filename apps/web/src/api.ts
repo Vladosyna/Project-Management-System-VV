@@ -262,3 +262,21 @@ export function saveFirmwareIssue(input: {
 }): Promise<WriteOutcome> {
   return send('POST', '/api/firmware-issues', input);
 }
+
+/** E4 AC1 / D-29: register a device by SN (fallback to the platform sync). R6 refuses a duplicate SN (422). */
+export async function registerSiteDevice(
+  siteId: string,
+  input: { sn: string; model: string },
+): Promise<WriteOutcome | 'duplicate'> {
+  const res = await fetch(`/api/sites/${encodeURIComponent(siteId)}/devices`, {
+    method: 'POST',
+    credentials: 'same-origin',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(input),
+  });
+  if (res.status === 403) return 'forbidden';
+  if (res.status === 422) return 'duplicate';
+  if (res.status === 400 || res.status === 404) return 'invalid';
+  if (!res.ok) throw new Error(`POST device → ${String(res.status)}`);
+  return 'ok';
+}
