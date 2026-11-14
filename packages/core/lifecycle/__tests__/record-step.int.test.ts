@@ -22,6 +22,7 @@ import {
 import { createClient, createSite } from '../../org/index.ts';
 import { planInstallation } from '../commands/plan-installation.ts';
 import { recordStep } from '../commands/record-step.ts';
+import { siteLifecycle } from '../queries/site-lifecycle.ts';
 
 const pm = aStaffActor({ roles: ['pm'] });
 const clock = createFakeClock(new Date('2026-11-16T09:00:00Z')); // a Monday
@@ -29,6 +30,7 @@ let testDb: TestDatabase;
 let t: TestKernel;
 let siteS: string;
 let siteL: string;
+const read = (siteId: string) => t.kernel.read(siteLifecycle, pm, { siteId });
 const step = (siteId: string, s: string, more: Record<string, unknown> = {}) =>
   t.kernel.execute(recordStep, pm, { siteId, step: s, doneOn: '2026-11-16', ...more }, 'test');
 
@@ -37,7 +39,7 @@ beforeAll(async () => {
   t = await openTestKernel(testDb.url, { clock: clock.now });
   const setup = aStaffActor({ roles: ['director'] });
   t.grant(setup, createClient.permission, createSite.permission);
-  t.grant(pm, recordStep.permission, planInstallation.permission);
+  t.grant(pm, recordStep.permission, planInstallation.permission, siteLifecycle.permission);
   const a = await t.kernel.execute(createClient, setup, { shortCode: 'CLIENTA', name: 'Client A' }, 'test');
   const place = { countryCode: 'ES', cityCode: 'MAD', cityName: 'Madrid', name: 'Store' };
   ({ id: siteS } = await t.kernel.execute(
@@ -112,5 +114,22 @@ describe('lifecycle (E3)', () => {
     expect(await countRows(testDb.url, `site_step WHERE site_id = $1 AND archived_at IS NULL`, [siteS])).toBe(
       6,
     );
+  });
+
+  it('R9: installation within the readiness window without confirmed readiness is at risk (template D−2)', async () => {
+    await step(siteL, 'card_received');
+    await step(siteL, 'card_complete');
+    await step(siteL, 'g1');
+    // Wed 18 Nov: 2 working days from Mon 16 Nov → inside the D−2 window.
+    await t.kernel.execute(planInstallation, pm, { siteId: siteL, date: '2026-11-18' }, 'test');
+    const at = await read(siteL);
+    expect([at.stage, at.workingDaysToInstallation, at.readinessAtRisk]).toEqual(['card_complete', 2, true]);
+    expect(at.gates.map((g) => [g.key, g.status])).toEqual([
+      ['g1', 'passed'],
+      ['g2', 'current'],
+      ['g3', 'not_started'],
+    ]);
+    await step(siteL, 'readiness_confirmed');
+    expect((await read(siteL)).readinessAtRisk).toBe(false);
   });
 });

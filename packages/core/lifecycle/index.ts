@@ -3,3 +3,4 @@
 export { lifecyclePermissions } from './permissions.ts';
 export { recordStep } from './commands/record-step.ts';
 export { planInstallation } from './commands/plan-installation.ts';
+export { siteLifecycle } from './queries/site-lifecycle.ts';

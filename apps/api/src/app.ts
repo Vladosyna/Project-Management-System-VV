@@ -3,6 +3,7 @@ import { Hono } from 'hono';
 import type { Actor } from '@ocs/contracts';
 import { inviteUser, me } from '@ocs/core/identity';
 import { recordFirmwareIssue, registerDevice, setVersions, siteDevices } from '@ocs/core/devices';
+import { siteLifecycle } from '@ocs/core/lifecycle';
 import { clientList, setDeviceAlerts, siteList } from '@ocs/core/org';
 import {
   addComment,
@@ -124,6 +125,11 @@ export function createApp(rt: Runtime): Hono {
   });
   api.post('/firmware-issues', async (c) =>
     c.json(await rt.kernel.execute(recordFirmwareIssue, c.get('actor'), await c.req.json(), 'web'), 201),
+  );
+
+  // E3 (SOP-DEL-04): life cycle — steps, gates, planned installation, R9 readiness.
+  api.get('/sites/:siteId/lifecycle', async (c) =>
+    c.json(await rt.kernel.read(siteLifecycle, c.get('actor'), { siteId: c.req.param('siteId') })),
   );
 
   // E4: link the project to its mall on the device platform; the offline alerts checkbox (Vlad, 3 Nov).
