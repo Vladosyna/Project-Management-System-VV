@@ -22,6 +22,7 @@ External roles (`client`, `partner`) are switched off in the checker until the V
 | `identity.user.invite` | Invite a new staff user by link | ✓ |  |  |  |  |  |  | ✓ |  |  |  |
 | `identity.user.read` | See the user list with roles and MFA status | ✓ |  |  |  |  |  |  | ✓ |  |  |  |
 | `lifecycle.installation.plan` | Set the planned installation date, only once the site card is complete (SOP-DEL-04 §1) | ✓ | ✓ |  |  |  |  |  |  |  |  |  |
+| `lifecycle.siteLifecycle.read` | See a project's steps, gates, installation plan and readiness (E3) | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |  |  |  |
 | `lifecycle.step.record` | Record a step reached on a project — base step or gate — with date and evidence (E3 AC1) | ✓ | ✓ | ✓ |  |  |  |  |  |  |  |  |
 | `org.client.create` | Create a client (top of the SOP-DEL-02 hierarchy) | ✓ |  |  |  |  |  |  | ✓ |  |  |  |
 | `org.client.list` | See the client list | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |  |  |  |

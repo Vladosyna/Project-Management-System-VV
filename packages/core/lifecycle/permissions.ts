@@ -11,5 +11,9 @@ export const lifecyclePermissions = {
     description: 'Set the planned installation date, only once the site card is complete (SOP-DEL-04 §1)',
     roles: ['director', 'pm'],
   }),
+  siteLifecycle: permission('lifecycle.siteLifecycle.read', {
+    description: "See a project's steps, gates, installation plan and readiness (E3)",
+    roles: ['director', 'pm', 'sales', 'rnd', 'finance', 'management', 'sponsor', 'admin'],
+  }),
   // gen:permissions — `pnpm gen:command` and `pnpm gen:query` add entries above this line.
 };
