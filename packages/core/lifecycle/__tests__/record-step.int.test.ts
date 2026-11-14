@@ -107,7 +107,7 @@ describe('lifecycle (E3)', () => {
   it('steps go in order, once; a gate must be in the template; acceptance needs its evidence', async () => {
     await expect(step(siteS, 'installed')).rejects.toBeInstanceOf(RuleViolation);
     await expect(step(siteS, 'card_complete')).rejects.toBeInstanceOf(Conflict);
-    await expect(step(siteS, 'g1')).rejects.toBeInstanceOf(RuleViolation);
+    await expect(step(siteS, 'g9')).rejects.toBeInstanceOf(RuleViolation);
     for (const s of ['readiness_confirmed', 'go_no_go', 'installed']) await step(siteS, s);
     await expect(step(siteS, 'accepted')).rejects.toBeInstanceOf(RuleViolation);
     await step(siteS, 'accepted', { evidence: '02/Installation Acceptance Form.pdf' });

@@ -15,5 +15,17 @@ export const lifecyclePermissions = {
     description: "See a project's steps, gates, installation plan and readiness (E3)",
     roles: ['director', 'pm', 'sales', 'rnd', 'finance', 'management', 'sponsor', 'admin'],
   }),
+  saveGateTemplate: permission('lifecycle.gateTemplate.save', {
+    description: 'Create or replace the gate template of a scope: base, client, programme, country (D-32)',
+    roles: ['director', 'sponsor'],
+  }),
+  archiveGateTemplate: permission('lifecycle.gateTemplate.archive', {
+    description: 'Archive a gate template; its projects fall back to the next scope (D-32)',
+    roles: ['director', 'sponsor'],
+  }),
+  gateTemplates: permission('lifecycle.gateTemplates.read', {
+    description: 'See the gate templates and their scopes (D-32)',
+    roles: ['director', 'sponsor', 'pm', 'management'],
+  }),
   // gen:permissions — `pnpm gen:command` and `pnpm gen:query` add entries above this line.
 };
