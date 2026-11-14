@@ -28,5 +28,13 @@ export const devicesPermissions = {
     description: "See a project's devices: platform status, offline since, the gate each channel counts (E4)",
     roles: ['director', 'pm', 'sales', 'rnd', 'management', 'sponsor'],
   }),
+  setVersions: permission('devices.device.setVersions', {
+    description: 'Set firmware and algorithm version on devices of a project (D-31)',
+    roles: ['director', 'pm', 'rnd'],
+  }),
+  recordFirmwareIssue: permission('devices.firmwareIssue.record', {
+    description: 'Record a known problem of a firmware version of a model (D-31, R&D reference)',
+    roles: ['director', 'rnd'],
+  }),
   // gen:permissions — `pnpm gen:command` and `pnpm gen:query` add entries above this line.
 };

@@ -7,3 +7,5 @@ export { syncZones } from './commands/sync-zones.ts';
 export { offlineDue } from './queries/offline-due.ts';
 export { platformSites } from './queries/platform-sites.ts';
 export { siteDevices } from './queries/site-devices.ts';
+export { setVersions } from './commands/set-versions.ts';
+export { recordFirmwareIssue } from './commands/record-firmware-issue.ts';

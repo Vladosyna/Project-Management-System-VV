@@ -4,6 +4,7 @@ import {
   device,
   deviceChannel,
   eq,
+  firmwareIssue,
   inArray,
   isNotNull,
   isNull,
@@ -249,6 +250,8 @@ export async function siteDevicesWithGates(tx: Tx, siteId: string) {
       ip: device.ip,
       switchName: device.switchName,
       switchPort: device.switchPort,
+      firmware: device.firmware,
+      algorithmVersion: device.algorithmVersion,
       status: device.status,
       platformStatus: device.platformStatus,
       offlineSince: device.offlineSince,
@@ -265,4 +268,45 @@ export async function siteDevicesWithGates(tx: Tx, siteId: string) {
     .where(eq(deviceChannel.siteId, siteId))
     .orderBy(deviceChannel.channelNo);
   return { devices, channels };
+}
+
+/** Active devices of this project among these ids. */
+export async function activeDevicesOfSite(tx: Tx, siteId: string, ids: string[]) {
+  if (ids.length === 0) return [];
+  return tx
+    .select({
+      id: device.id,
+      clientId: device.clientId,
+      firmware: device.firmware,
+      algorithmVersion: device.algorithmVersion,
+    })
+    .from(device)
+    .where(and(eq(device.siteId, siteId), isNull(device.archivedAt), inArray(device.id, ids)));
+}
+
+export async function setDeviceVersions(
+  tx: Tx,
+  ids: string[],
+  values: { firmware?: string; algorithmVersion?: string },
+): Promise<void> {
+  await tx.update(device).set(values).where(inArray(device.id, ids));
+}
+
+export async function insertFirmwareIssue(tx: Tx, row: typeof firmwareIssue.$inferInsert): Promise<void> {
+  await tx.insert(firmwareIssue).values(row);
+}
+
+/** Active known problems, for matching devices by model (any case) and firmware. */
+export async function activeFirmwareIssues(tx: Tx) {
+  return tx
+    .select({
+      id: firmwareIssue.id,
+      model: firmwareIssue.model,
+      firmware: firmwareIssue.firmware,
+      summary: firmwareIssue.summary,
+      severity: firmwareIssue.severity,
+      source: firmwareIssue.source,
+    })
+    .from(firmwareIssue)
+    .where(isNull(firmwareIssue.archivedAt));
 }
