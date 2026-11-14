@@ -280,3 +280,55 @@ export async function registerSiteDevice(
   if (!res.ok) throw new Error(`POST device → ${String(res.status)}`);
   return 'ok';
 }
+
+export interface SiteLifecycle {
+  readonly stage: string | null;
+  readonly steps: readonly {
+    readonly id: string;
+    readonly step: string;
+    readonly doneOn: string;
+    readonly evidence: string | null;
+    readonly note: string | null;
+  }[];
+  readonly baseSteps: readonly string[];
+  readonly template: { readonly id: string; readonly name: string } | null;
+  readonly gates: readonly {
+    readonly key: string;
+    readonly name: string;
+    readonly status: 'passed' | 'current' | 'not_started';
+    readonly doneOn: string | null;
+  }[];
+  readonly plannedInstallationDate: string | null;
+  readonly workingDaysToInstallation: number | null;
+  readonly readinessAtRisk: boolean;
+}
+
+export async function loadLifecycle(siteId: string): Promise<SiteLifecycle | undefined> {
+  const res = await fetch(`/api/sites/${encodeURIComponent(siteId)}/lifecycle`, {
+    credentials: 'same-origin',
+  });
+  if (res.status === 403) return undefined;
+  if (!res.ok) throw new Error(`GET lifecycle → ${String(res.status)}`);
+  return (await res.json()) as SiteLifecycle;
+}
+
+/** 'rule': refused by SOP-DEL-04 / E3 (order, evidence, card first); 'conflict': already recorded. */
+export async function writeLifecycle(
+  method: 'POST' | 'PUT',
+  siteId: string,
+  path: 'steps' | 'installation',
+  body: Record<string, string>,
+): Promise<'ok' | 'forbidden' | 'rule' | 'conflict' | 'invalid'> {
+  const res = await fetch(`/api/sites/${encodeURIComponent(siteId)}/${path}`, {
+    method,
+    credentials: 'same-origin',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  if (res.status === 403) return 'forbidden';
+  if (res.status === 422) return 'rule';
+  if (res.status === 409) return 'conflict';
+  if (res.status === 400 || res.status === 404) return 'invalid';
+  if (!res.ok) throw new Error(`${method} ${path} → ${String(res.status)}`);
+  return 'ok';
+}

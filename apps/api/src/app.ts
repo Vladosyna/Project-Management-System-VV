@@ -3,7 +3,7 @@ import { Hono } from 'hono';
 import type { Actor } from '@ocs/contracts';
 import { inviteUser, me } from '@ocs/core/identity';
 import { recordFirmwareIssue, registerDevice, setVersions, siteDevices } from '@ocs/core/devices';
-import { siteLifecycle } from '@ocs/core/lifecycle';
+import { planInstallation, recordStep, siteLifecycle } from '@ocs/core/lifecycle';
 import { clientList, setDeviceAlerts, siteList } from '@ocs/core/org';
 import {
   addComment,
@@ -131,6 +131,24 @@ export function createApp(rt: Runtime): Hono {
   api.get('/sites/:siteId/lifecycle', async (c) =>
     c.json(await rt.kernel.read(siteLifecycle, c.get('actor'), { siteId: c.req.param('siteId') })),
   );
+  api.post('/sites/:siteId/steps', async (c) => {
+    const body = await c.req.json<Record<string, unknown>>();
+    return c.json(
+      await rt.kernel.execute(recordStep, c.get('actor'), { ...body, siteId: c.req.param('siteId') }, 'web'),
+      201,
+    );
+  });
+  api.put('/sites/:siteId/installation', async (c) => {
+    const body = await c.req.json<Record<string, unknown>>();
+    return c.json(
+      await rt.kernel.execute(
+        planInstallation,
+        c.get('actor'),
+        { ...body, siteId: c.req.param('siteId') },
+        'web',
+      ),
+    );
+  });
 
   // E4: link the project to its mall on the device platform; the offline alerts checkbox (Vlad, 3 Nov).
   api.put('/sites/:siteId/device-alerts', async (c) => {
