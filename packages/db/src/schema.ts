@@ -114,6 +114,9 @@ export const site = pgTable('site', {
   platformRef: text('platform_ref'),
   /** Migration 0015: offline alerts on or off for this project (checkbox, off by default). */
   deviceAlertsEnabled: boolean('device_alerts_enabled').notNull().default(false),
+  /** Migration 0018 (E3): the client's gate template for this project, and the planned installation date. */
+  gateTemplateId: uuid('gate_template_id'),
+  plannedInstallationDate: date('planned_installation_date'),
   visibility: text('visibility', { enum: ['internal', 'client'] })
     .notNull()
     .default('internal'),
@@ -409,6 +412,36 @@ export const firmwareIssue = pgTable('firmware_issue', {
   severity: text('severity', { enum: ['info', 'degraded', 'critical'] }).notNull(),
   source: text('source'),
   createdBy: uuid('created_by').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  archivedAt: timestamp('archived_at', { withTimezone: true }),
+});
+
+/** Migration 0018 (E3, SOP-DEL-04). A client's gates in order; internal configuration. */
+export const gateTemplate = pgTable('gate_template', {
+  id: uuid('id').primaryKey(),
+  clientId: uuid('client_id').notNull(),
+  programmeId: uuid('programme_id'),
+  name: text('name').notNull(),
+  gates: jsonb('gates')
+    .$type<{ key: string; name: string; order: number; readinessDays?: number }[]>()
+    .notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  archivedAt: timestamp('archived_at', { withTimezone: true }),
+});
+
+/** Migration 0018 (E3). A step reached on a project: base step or gate key; never edited, only archived. */
+export const siteStep = pgTable('site_step', {
+  id: uuid('id').primaryKey(),
+  clientId: uuid('client_id').notNull(),
+  siteId: uuid('site_id').notNull(),
+  step: text('step').notNull(),
+  doneOn: date('done_on').notNull(),
+  actorId: uuid('actor_id').notNull(),
+  evidence: text('evidence'),
+  note: text('note'),
+  visibility: text('visibility', { enum: ['internal', 'client'] })
+    .notNull()
+    .default('internal'),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   archivedAt: timestamp('archived_at', { withTimezone: true }),
 });
