@@ -2,7 +2,7 @@
 import { Hono } from 'hono';
 import type { Actor } from '@ocs/contracts';
 import { inviteUser, me } from '@ocs/core/identity';
-import { recordFirmwareIssue, setVersions, siteDevices } from '@ocs/core/devices';
+import { recordFirmwareIssue, registerDevice, setVersions, siteDevices } from '@ocs/core/devices';
 import { clientList, setDeviceAlerts, siteList } from '@ocs/core/org';
 import {
   addComment,
@@ -108,6 +108,13 @@ export function createApp(rt: Runtime): Hono {
   api.get('/sites/:siteId/devices', async (c) =>
     c.json(await rt.kernel.read(siteDevices, c.get('actor'), { siteId: c.req.param('siteId') })),
   );
+
+  // E4 AC1 / D-29 fallback: register a device by SN when it is not (yet) on the device platform.
+  api.post('/sites/:siteId/devices', async (c) => {
+    const body = await c.req.json<Record<string, unknown>>();
+    const input = { ...body, siteId: c.req.param('siteId') };
+    return c.json(await rt.kernel.execute(registerDevice, c.get('actor'), input, 'web'), 201);
+  });
 
   // D-31: firmware and algorithm version of devices; known firmware problems (R&D reference).
   api.post('/sites/:siteId/devices/versions', async (c) => {

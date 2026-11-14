@@ -216,6 +216,20 @@ test('a PM comments on a Site with a mention turns it into an action and records
 
   await pm.getByRole('link', { name: 'Devices', exact: true }).click();
   await expect(pm.getByText(/^No devices yet/)).toBeVisible();
+  // D-29 fallback and D-31: register a device by SN, then set its firmware; an issue is R&D's to record.
+  await pm.getByLabel('Serial').fill('SN-E2E-0001');
+  await pm.getByLabel('Model', { exact: true }).first().fill('G6');
+  await pm.getByRole('button', { name: 'Register device' }).click();
+  await expect(pm.getByRole('cell', { name: 'SN-E2E-0001' })).toBeVisible();
+  await pm.getByRole('checkbox', { name: 'SN-E2E-0001' }).check();
+  await pm.getByLabel('Firmware', { exact: true }).first().fill('3.2.1');
+  await pm.getByRole('button', { name: 'Save versions' }).click();
+  await expect(pm.getByRole('cell', { name: /^3\.2\.1/ })).toBeVisible();
+  await pm.getByLabel('What goes wrong').fill('Counts drop after 72 h');
+  await pm.getByLabel('Model', { exact: true }).last().fill('G6');
+  await pm.getByLabel('Firmware', { exact: true }).last().fill('3.2.1');
+  await pm.getByRole('button', { name: 'Record problem' }).click();
+  await expect(pm.getByText('Your role cannot change this.')).toBeVisible();
   await pm.getByRole('link', { name: 'Network', exact: true }).click();
   await expect(pm.getByRole('heading', { level: 2, name: 'Network' })).toBeVisible();
   await pm.getByRole('link', { name: 'Settings', exact: true }).click();
