@@ -75,13 +75,15 @@ export function SiteOverview(props: { site: SiteSummary; feed: FeedItem[]; now?:
           )
         }
       />
-      <Tile
-        siteId={id}
-        tab="network"
-        label={t('site.tile.network')}
-        value={devices ? String(switchesWithOffline(devices)) : '—'}
-        note={t('site.tile.networkNote')}
-      />
+      {devices?.some((d) => d.switchName) ? (
+        <Tile
+          siteId={id}
+          tab="network"
+          label={t('site.tile.network')}
+          value={String(switchesWithOffline(devices))}
+          note={t('site.tile.networkNote')}
+        />
+      ) : null}
       <Tile
         siteId={id}
         tab="actions"

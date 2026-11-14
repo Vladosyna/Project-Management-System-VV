@@ -130,6 +130,8 @@ export const zh = {
   'site.tile.network': '有离线设备的交换机',
   'site.tile.networkNote': '按交换机和端口',
   'network.noSwitch': '未记录交换机',
+  'network.allOnline': '无需处理：所有交换机上均无离线设备。',
+  'network.quiet': '另有 {count} 台交换机上的设备全部在线。',
   'network.summary': '{total} 台设备，{offline} 台离线',
   'network.col.port': '端口',
   'network.col.ip': 'IP',

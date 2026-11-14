@@ -130,6 +130,8 @@ export const en = {
   'site.tile.network': 'Switches with offline devices',
   'site.tile.networkNote': 'By switch and port',
   'network.noSwitch': 'No switch recorded',
+  'network.allOnline': 'Nothing to look at: no device is offline on any switch.',
+  'network.quiet': '{count} other switches have every device online.',
   'network.summary': '{total} devices, {offline} offline',
   'network.col.port': 'Port',
   'network.col.ip': 'IP',

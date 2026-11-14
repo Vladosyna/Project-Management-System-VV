@@ -32,12 +32,17 @@ export function SiteNetwork(props: { siteId: string; now?: Date }) {
     bySwitch.set(key, [...(bySwitch.get(key) ?? []), d]);
   }
   const offlineOf = (list: SiteDevice[]) => list.filter((d) => d.platformStatus === 'offline').length;
-  const groups = [...bySwitch.entries()].sort(
+  const all = [...bySwitch.entries()].sort(
     ([a, la], [b, lb]) =>
       offlineOf(lb) - offlineOf(la) || (a === '' ? 1 : b === '' ? -1 : a.localeCompare(b)),
   );
+  // Vlad, 14 Nov: skip what has nothing to show — switches with every device online fold into one line.
+  const groups = all.filter(([, list]) => offlineOf(list) > 0);
+  const quiet = all.length - groups.length;
   return (
     <div className="ocs-stack">
+      {groups.length === 0 ? <p>{t('network.allOnline')}</p> : null}
+      {groups.length > 0 && quiet > 0 ? <p>{t('network.quiet', { count: String(quiet) })}</p> : null}
       {groups.map(([name, list]) => (
         <section key={name || 'none'} aria-label={name || t('network.noSwitch')}>
           <h3>
