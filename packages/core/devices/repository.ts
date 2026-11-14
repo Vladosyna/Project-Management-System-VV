@@ -247,6 +247,8 @@ export async function siteDevicesWithGates(tx: Tx, siteId: string) {
       model: device.model,
       mac: device.mac,
       ip: device.ip,
+      switchName: device.switchName,
+      switchPort: device.switchPort,
       status: device.status,
       platformStatus: device.platformStatus,
       offlineSince: device.offlineSince,

@@ -204,6 +204,9 @@ export interface SiteDevice {
   readonly id: string;
   readonly sn: string;
   readonly model: string;
+  readonly ip: string | null;
+  readonly switchName: string | null;
+  readonly switchPort: string | null;
   readonly platformStatus: 'online' | 'offline' | 'disabled' | null;
   readonly offlineSince: string | null;
   readonly registered: boolean;
