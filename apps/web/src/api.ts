@@ -207,6 +207,14 @@ export interface SiteDevice {
   readonly ip: string | null;
   readonly switchName: string | null;
   readonly switchPort: string | null;
+  readonly firmware: string | null;
+  readonly algorithmVersion: string | null;
+  readonly firmwareIssues: readonly {
+    readonly id: string;
+    readonly summary: string;
+    readonly severity: 'info' | 'degraded' | 'critical';
+    readonly source: string | null;
+  }[];
   readonly platformStatus: 'online' | 'offline' | 'disabled' | null;
   readonly offlineSince: string | null;
   readonly registered: boolean;
@@ -219,4 +227,38 @@ export async function loadSiteDevices(siteId: string): Promise<SiteDevice[] | un
   if (res.status === 403) return undefined;
   if (!res.ok) throw new Error(`GET devices → ${String(res.status)}`);
   return (await res.json()) as SiteDevice[];
+}
+
+type WriteOutcome = 'ok' | 'forbidden' | 'invalid';
+
+async function send(method: string, path: string, body: unknown): Promise<WriteOutcome> {
+  const res = await fetch(path, {
+    method,
+    credentials: 'same-origin',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  if (res.status === 403) return 'forbidden';
+  if (res.status === 400 || res.status === 404) return 'invalid';
+  if (!res.ok) throw new Error(`${method} ${path} → ${String(res.status)}`);
+  return 'ok';
+}
+
+/** D-31: firmware and/or algorithm version on devices of a project. */
+export function saveVersions(
+  siteId: string,
+  input: { deviceIds: readonly string[]; firmware?: string; algorithmVersion?: string },
+): Promise<WriteOutcome> {
+  return send('POST', `/api/sites/${encodeURIComponent(siteId)}/devices/versions`, input);
+}
+
+/** D-31: a known problem of one firmware of one model (R&D). */
+export function saveFirmwareIssue(input: {
+  model: string;
+  firmware: string;
+  summary: string;
+  severity: 'info' | 'degraded' | 'critical';
+  source?: string;
+}): Promise<WriteOutcome> {
+  return send('POST', '/api/firmware-issues', input);
 }
