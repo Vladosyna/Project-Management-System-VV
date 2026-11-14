@@ -1,7 +1,7 @@
 // Worker entry point: runs the device platform job on a fixed interval. Configuration and secrets come from the
 // environment / secret store only (CLAUDE.md §3 rule 6); nothing here is a default credential.
-// pg-boss scheduling replaces the interval when the queue lands (P-05).
-import { createRuntime } from '@ocs/core/runtime';
+// Scheduling is pg-boss (P-05), one run per tick across all worker instances.
+import { createRuntime, startScheduledJobs } from '@ocs/core/runtime';
 import { createDevicePlatform } from './adapters/device-platform/index.ts';
 import { runDevicePlatformJob } from './jobs/device-platform.ts';
 
@@ -33,27 +33,22 @@ const platform = createDevicePlatform({
   appkey: env('OCS_PLATFORM_APPKEY'),
 });
 
-let running = false;
-async function tick() {
-  if (running) return;
-  running = true;
-  try {
-    const run = await runDevicePlatformJob(runtime.kernel, platform);
-    console.log(JSON.stringify({ job: 'device-platform', ...run }));
-  } catch (error) {
-    console.error(
-      JSON.stringify({ job: 'device-platform', error: error instanceof Error ? error.name : 'Error' }),
-    );
-  } finally {
-    running = false;
-  }
-}
-
-await tick();
-const timer = setInterval(() => void tick(), minutes * 60_000);
+// A role that may create and own the pgboss schema; defaults to the main URL.
+const queue = await startScheduledJobs(env('OCS_QUEUE_DATABASE_URL') || env('OCS_DATABASE_URL'), [
+  {
+    name: 'device-platform',
+    everyMinutes: minutes,
+    run: async () => {
+      const run = await runDevicePlatformJob(runtime.kernel, platform);
+      console.log(JSON.stringify({ job: 'device-platform', ...run }));
+    },
+  },
+]);
 const stop = () => {
-  clearInterval(timer);
-  void runtime.close().then(() => process.exit(0));
+  void queue
+    .stop()
+    .then(() => runtime.close())
+    .then(() => process.exit(0));
 };
 process.on('SIGTERM', stop);
 process.on('SIGINT', stop);

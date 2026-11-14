@@ -1,6 +1,10 @@
 // runtime — the composition root: database pools, kernel, permission checker, auth (protected).
 // Apps (api, worker, mcp) start OCS only through createRuntime.
 import { createAuthPool, createDatabase, migrateUp } from '@ocs/db';
+
+/** Scheduled jobs for the worker (P-05, pg-boss). */
+export { startScheduledJobs } from '@ocs/db';
+export type { JobScheduler, ScheduledJob } from '@ocs/db';
 import { createKernel, type Kernel } from '../kernel/index.ts';
 import { createRoleChecker } from '../permissions/index.ts';
 import { createAuth, createIdentityService, type Auth, type IdentityService } from '../identity/index.ts';

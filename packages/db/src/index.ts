@@ -23,3 +23,5 @@ export { comment } from './schema.ts';
 export { VISIT_TYPES, visit } from './schema.ts';
 export { DEVICE_PLATFORM_STATUSES, deviceChannel, zone } from './schema.ts';
 export { firmwareIssue } from './schema.ts';
+export { cronEvery, startScheduledJobs } from './queue.ts';
+export type { JobScheduler, ScheduledJob } from './queue.ts';
