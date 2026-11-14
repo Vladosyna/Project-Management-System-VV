@@ -52,7 +52,7 @@ beforeAll(async () => {
     { clientId: a.id, ...place, standard: 'L' },
     'test',
   ));
-  // Gate templates have no command yet (seeded per client); anonymised D−2 template like PMI's.
+  // Gate templates have no command yet (seeded per client); anonymised template with a D−2 readiness check.
   const template = randomUUID();
   await runAsOwner(
     testDb.url,
