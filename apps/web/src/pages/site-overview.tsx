@@ -12,10 +12,15 @@ import {
   type SiteSummary,
 } from '../api.ts';
 
-export const SITE_TABS = ['overview', 'devices', 'actions', 'timeline', 'settings'] as const;
+export const SITE_TABS = ['overview', 'devices', 'network', 'actions', 'timeline', 'settings'] as const;
 export type SiteTab = (typeof SITE_TABS)[number];
 
 const DAY = 86_400_000;
+
+/** Switches with at least one offline device (devices without a switch are not counted). */
+const switchesWithOffline = (devices: SiteDevice[]) =>
+  new Set(devices.filter((d) => d.platformStatus === 'offline' && d.switchName).map((d) => d.switchName))
+    .size;
 
 function Tile(props: { siteId: string; tab: SiteTab; label: string; value: string; note: ReactNode }) {
   return (
@@ -70,6 +75,15 @@ export function SiteOverview(props: { site: SiteSummary; feed: FeedItem[]; now?:
           )
         }
       />
+      {devices?.some((d) => d.switchName) ? (
+        <Tile
+          siteId={id}
+          tab="network"
+          label={t('site.tile.network')}
+          value={String(switchesWithOffline(devices))}
+          note={t('site.tile.networkNote')}
+        />
+      ) : null}
       <Tile
         siteId={id}
         tab="actions"

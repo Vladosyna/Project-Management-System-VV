@@ -31,7 +31,12 @@ beforeAll(async () => {
      SELECT gen_random_uuid(), client_id, id, 'gate', 'gate-1', 'Gate 1' FROM site WHERE id = $1`,
     [siteA],
   );
-  await t.kernel.execute(registerDevice, pm, { siteId: siteA, sn: 'SN-0009', model: 'G6' }, 'test');
+  await t.kernel.execute(
+    registerDevice,
+    pm,
+    { siteId: siteA, sn: 'SN-0009', model: 'G6', switchName: 'SW-01', switchPort: 'Gi1/0/3' },
+    'test',
+  );
   const devices = [
     {
       sn: 'SN-0001',
@@ -66,6 +71,7 @@ describe('devices.siteDevices.read', () => {
       ['SN-0001', 'offline', true, false],
       ['SN-0009', null, false, true],
     ]);
+    expect([list[1]?.switchName, list[1]?.switchPort]).toEqual(['SW-01', 'Gi1/0/3']);
     expect(list[0]?.channels).toEqual([
       { no: 1, gate: 'Gate 1' },
       { no: 2, gate: null },

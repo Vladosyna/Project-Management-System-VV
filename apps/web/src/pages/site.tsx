@@ -26,6 +26,7 @@ import { sourceLabel } from '../source.ts';
 import { CommentToAction } from './comment-to-action.tsx';
 import { DeviceAlerts } from './device-alerts.tsx';
 import { SiteDevices } from './site-devices.tsx';
+import { SiteNetwork } from './site-network.tsx';
 import { SITE_TABS, SiteActions, SiteOverview, type SiteTab } from './site-overview.tsx';
 import { Link } from '@tanstack/react-router';
 import { VisitForm } from './visit-form.tsx';
@@ -107,6 +108,11 @@ export function SitePage(props: { siteId: string; tab?: SiteTab }) {
         {tab === 'devices' ? (
           <Card title={t('site.devices')} titleId="site-devices">
             <SiteDevices siteId={props.siteId} />
+          </Card>
+        ) : null}
+        {tab === 'network' ? (
+          <Card title={t('site.tab.network')} titleId="site-network">
+            <SiteNetwork siteId={props.siteId} />
           </Card>
         ) : null}
         {tab === 'actions' ? (

@@ -18,6 +18,8 @@ export const siteDevices = defineQuery({
       model: d.model,
       mac: d.mac,
       ip: d.ip,
+      switchName: d.switchName,
+      switchPort: d.switchPort,
       status: d.status,
       platformStatus: d.platformStatus,
       offlineSince: d.offlineSince?.toISOString() ?? null,

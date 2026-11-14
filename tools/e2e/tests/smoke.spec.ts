@@ -216,6 +216,8 @@ test('a PM comments on a Site with a mention turns it into an action and records
 
   await pm.getByRole('link', { name: 'Devices', exact: true }).click();
   await expect(pm.getByText(/^No devices yet/)).toBeVisible();
+  await pm.getByRole('link', { name: 'Network', exact: true }).click();
+  await expect(pm.getByRole('heading', { level: 2, name: 'Network' })).toBeVisible();
   await pm.getByRole('link', { name: 'Settings', exact: true }).click();
   // E4 (Vlad, 3 Nov): alerts need the mall; linking it and ticking the box saves both.
   await pm.getByRole('checkbox', { name: /offline more than 24 h/ }).check();
