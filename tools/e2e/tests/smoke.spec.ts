@@ -214,6 +214,23 @@ test('a PM comments on a Site with a mention turns it into an action and records
   ).toBeVisible();
   await pm.screenshot({ path: 'test-results/site-visit-en.png', fullPage: true });
 
+  // E3 (SOP-DEL-04 §1): no installation date before the card is complete; steps go in order.
+  await pm.getByRole('link', { name: 'Lifecycle', exact: true }).click();
+  await pm.getByLabel('Planned installation').fill('2026-12-15');
+  await pm.getByRole('button', { name: 'Set installation date' }).click();
+  await expect(pm.getByText(/^Not allowed yet/)).toBeVisible();
+  for (const [step, label] of [
+    ['card_received', 'Card received'],
+    ['card_complete', 'Card complete'],
+  ] as const) {
+    await pm.getByLabel('Step', { exact: true }).selectOption(step);
+    await pm.getByLabel('Date', { exact: true }).fill('2026-11-16');
+    await pm.getByRole('button', { name: 'Record step' }).click();
+    await expect(pm.getByRole('row', { name: new RegExp(`^${label} 2026-11-16`) })).toBeVisible();
+  }
+  await pm.getByLabel('Planned installation').fill('2026-12-15');
+  await pm.getByRole('button', { name: 'Set installation date' }).click();
+  await expect(pm.getByText(/^Planned installation: 2026-12-15/)).toBeVisible();
   await pm.getByRole('link', { name: 'Devices', exact: true }).click();
   await expect(pm.getByText(/^No devices yet/)).toBeVisible();
   // D-29 fallback and D-31: register a device by SN, then set its firmware; an issue is R&D's to record.
