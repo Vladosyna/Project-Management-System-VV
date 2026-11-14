@@ -145,3 +145,24 @@ it('a gate template is internal configuration: staff only, gates as a non-empty 
       .where(eq(site.id, siteA)),
   );
 });
+
+it('gate templates have a scope: base, client, programme, country; one active per scope (0019)', async () => {
+  const of = (more: Partial<typeof gateTemplate.$inferInsert>) => ({
+    id: randomUUID(),
+    name: 'Gates',
+    gates: [{ key: 'g1', name: 'Go/no-go', order: 1 }],
+    ...more,
+  });
+  await asStaff((tx) => tx.insert(gateTemplate).values(of({ clientId: null })));
+  await expect(asStaff((tx) => tx.insert(gateTemplate).values(of({ clientId: null })))).rejects.toThrow();
+  await asStaff((tx) => tx.insert(gateTemplate).values(of({ clientId: clientB, countryCode: 'ES' })));
+  await expect(
+    asStaff((tx) => tx.insert(gateTemplate).values(of({ clientId: clientB, countryCode: 'ES' }))),
+  ).rejects.toThrow();
+  await expect(
+    asStaff((tx) => tx.insert(gateTemplate).values(of({ clientId: clientB, countryCode: 'es' }))),
+  ).rejects.toThrow();
+  await expect(
+    asStaff((tx) => tx.insert(gateTemplate).values(of({ clientId: null, programmeId: randomUUID() }))),
+  ).rejects.toThrow();
+});

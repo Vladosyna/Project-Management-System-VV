@@ -419,8 +419,11 @@ export const firmwareIssue = pgTable('firmware_issue', {
 /** Migration 0018 (E3, SOP-DEL-04). A client's gates in order; internal configuration. */
 export const gateTemplate = pgTable('gate_template', {
   id: uuid('id').primaryKey(),
-  clientId: uuid('client_id').notNull(),
+  /** Migration 0019: scope — null client is the base template; country narrows a client or programme. */
+  clientId: uuid('client_id'),
   programmeId: uuid('programme_id'),
+  countryCode: text('country_code'),
+  updatedBy: uuid('updated_by'),
   name: text('name').notNull(),
   gates: jsonb('gates')
     .$type<{ key: string; name: string; order: number; readinessDays?: number }[]>()
