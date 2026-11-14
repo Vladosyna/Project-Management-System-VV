@@ -48,6 +48,7 @@ export function SiteOverview(props: { site: SiteSummary; feed: FeedItem[]; now?:
   const now = (props.now ?? new Date()).getTime();
   const offline = devices?.filter((d) => d.platformStatus === 'offline') ?? [];
   const overDay = offline.filter((d) => d.offlineSince !== null && now - Date.parse(d.offlineSince) > DAY);
+  const withIssues = devices?.filter((d) => d.firmwareIssues.length > 0).length ?? 0;
   const visit = props.feed.find((f) => f.kind === 'visit');
   const coverage = typeof visit?.detail.coverage === 'string' ? visit.detail.coverage : null;
   const id = props.site.id;
@@ -62,6 +63,7 @@ export function SiteOverview(props: { site: SiteSummary; feed: FeedItem[]; now?:
           devices ? (
             <>
               {t('site.tile.devicesNote', { offline: String(offline.length) })}
+              {withIssues > 0 ? <> · {t('site.tile.firmwareIssues', { count: String(withIssues) })}</> : null}
               {overDay.length > 0 ? (
                 <>
                   {' '}
