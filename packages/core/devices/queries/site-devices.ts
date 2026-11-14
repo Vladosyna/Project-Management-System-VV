@@ -4,7 +4,7 @@
 import { z } from 'zod';
 import { defineQuery } from '../../kernel/index.ts';
 import { devicesPermissions } from '../permissions.ts';
-import { siteDevicesWithGates } from '../repository.ts';
+import { activeFirmwareIssues, siteDevicesWithGates } from '../repository.ts';
 
 export const siteDevices = defineQuery({
   name: 'devices.siteDevices.read',
@@ -12,6 +12,7 @@ export const siteDevices = defineQuery({
   input: z.object({ siteId: z.uuid() }),
   handle: async (ctx, i) => {
     const { devices, channels } = await siteDevicesWithGates(ctx.tx, i.siteId);
+    const issues = await activeFirmwareIssues(ctx.tx);
     return devices.map((d) => ({
       id: d.id,
       sn: d.sn,
@@ -20,6 +21,12 @@ export const siteDevices = defineQuery({
       ip: d.ip,
       switchName: d.switchName,
       switchPort: d.switchPort,
+      firmware: d.firmware,
+      algorithmVersion: d.algorithmVersion,
+      /** D-31: known problems of this model (any case) and firmware. */
+      firmwareIssues: issues
+        .filter((x) => x.firmware === d.firmware && x.model.toUpperCase() === d.model.toUpperCase())
+        .map((x) => ({ id: x.id, summary: x.summary, severity: x.severity, source: x.source })),
       status: d.status,
       platformStatus: d.platformStatus,
       offlineSince: d.offlineSince?.toISOString() ?? null,

@@ -6,6 +6,8 @@ External roles (`client`, `partner`) are switched off in the checker until the V
 | Permission | What it allows | director | pm | sales | rnd | finance | management | sponsor | admin | client | partner | system |
 |---|---|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 | `devices.device.register` | Register a device on a project: SN, MAC, model, firmware, network, status (E4 AC1) | ✓ | ✓ |  | ✓ |  |  |  |  |  |  |  |
+| `devices.device.setVersions` | Set firmware and algorithm version on devices of a project (D-31) | ✓ | ✓ |  | ✓ |  |  |  |  |  |  |  |
+| `devices.firmwareIssue.record` | Record a known problem of a firmware version of a model (D-31, R&D reference) | ✓ |  |  | ✓ |  |  |  |  |  |  |  |
 | `devices.offline.due` | Devices offline longer than R15 allows on projects with alerts on (system only) |  |  |  |  |  |  |  |  |  |  | ✓ |
 | `devices.platform.syncDevices` | Sync a project's devices and their online status from the device platform (system only, E4, D-29) |  |  |  |  |  |  |  |  |  |  | ✓ |
 | `devices.platform.syncZones` | Sync a project's zones (stores, areas, gates) from the device platform (system only, E4) |  |  |  |  |  |  |  |  |  |  | ✓ |
