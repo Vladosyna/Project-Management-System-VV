@@ -231,6 +231,12 @@ test('a PM comments on a Site with a mention turns it into an action and records
   await pm.getByLabel('Planned installation').fill('2026-12-15');
   await pm.getByRole('button', { name: 'Set installation date' }).click();
   await expect(pm.getByText(/^Planned installation: 2026-12-15/)).toBeVisible();
+  // The overview's Stage tile shows the last step and links to the Lifecycle tab.
+  await pm.getByRole('link', { name: 'Overview', exact: true }).click();
+  const stage = pm.getByRole('link', { name: /^Stage Card complete/ });
+  await expect(stage).toContainText('installation 2026-12-15');
+  await stage.click();
+  await expect(pm.getByText(/^Planned installation: 2026-12-15/)).toBeVisible();
   await pm.getByRole('link', { name: 'Devices', exact: true }).click();
   await expect(pm.getByText(/^No devices yet/)).toBeVisible();
   // D-29 fallback and D-31: register a device by SN, then set its firmware; an issue is R&D's to record.

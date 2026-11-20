@@ -4,13 +4,16 @@ import { Link } from '@tanstack/react-router';
 import { useEffect, useState, type ReactNode } from 'react';
 import { StatusChip, useI18n } from '@ocs/ui';
 import {
+  loadLifecycle,
   loadSiteActions,
   loadSiteDevices,
   type FeedItem,
   type OpenAction,
+  type SiteLifecycle,
   type SiteDevice,
   type SiteSummary,
 } from '../api.ts';
+import { STEP_LABELS } from './site-lifecycle.tsx';
 
 export const SITE_TABS = [
   'overview',
@@ -44,7 +47,11 @@ export function SiteOverview(props: { site: SiteSummary; feed: FeedItem[]; now?:
   const { t } = useI18n();
   const [devices, setDevices] = useState<SiteDevice[] | undefined>(undefined);
   const [actions, setActions] = useState<OpenAction[]>([]);
+  const [life, setLife] = useState<SiteLifecycle | undefined>(undefined);
   useEffect(() => {
+    loadLifecycle(props.site.id).then(setLife, () => {
+      setLife(undefined);
+    });
     loadSiteDevices(props.site.id).then(setDevices, () => {
       setDevices(undefined);
     });
@@ -60,8 +67,38 @@ export function SiteOverview(props: { site: SiteSummary; feed: FeedItem[]; now?:
   const visit = props.feed.find((f) => f.kind === 'visit');
   const coverage = typeof visit?.detail.coverage === 'string' ? visit.detail.coverage : null;
   const id = props.site.id;
+  /** E3: the last step recorded (base step or gate) and the gate to pass next. */
+  const stepName = (key: string) => {
+    const base = STEP_LABELS[key];
+    return life?.gates.find((g) => g.key === key)?.name ?? (base ? t(base) : key);
+  };
+  const nextGate = life?.gates.find((g) => g.status === 'current');
   return (
     <div className="ocs-tiles">
+      <Tile
+        siteId={id}
+        tab="lifecycle"
+        label={t('site.tile.stage')}
+        value={life ? (life.stage ? stepName(life.stage) : t('site.tile.notStarted')) : '—'}
+        note={
+          life ? (
+            <>
+              {nextGate ? t('site.tile.nextGate', { gate: nextGate.name }) : t('site.tile.noGate')}
+              {life.plannedInstallationDate
+                ? ` · ${t('site.tile.installOn', { date: life.plannedInstallationDate })}`
+                : null}
+              {life.readinessAtRisk ? (
+                <>
+                  {' '}
+                  · {t('lifecycle.readinessAtRisk')} <StatusChip tone="escalated" />
+                </>
+              ) : null}
+            </>
+          ) : (
+            t('site.tile.noAccess')
+          )
+        }
+      />
       <Tile
         siteId={id}
         tab="devices"
