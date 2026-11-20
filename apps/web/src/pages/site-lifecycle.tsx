@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { Button, Form, FormMessage, SelectField, StatusChip, TextField, useI18n } from '@ocs/ui';
 import { loadLifecycle, writeLifecycle, type SiteLifecycle as Lifecycle } from '../api.ts';
 
-const STEP_LABELS: Record<
+export const STEP_LABELS: Record<
   string,
   `lifecycle.step.${'card_received' | 'card_complete' | 'readiness_confirmed' | 'go_no_go' | 'installed' | 'accepted'}`
 > = {
