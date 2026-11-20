@@ -5,6 +5,7 @@
 import { useEffect, useState } from 'react';
 import { Button, CheckboxGroup, Form, FormMessage, SelectField, TextField, useI18n } from '@ocs/ui';
 import { intakeWrite, loadHandoverCard, type HandoverCardView } from '../api.ts';
+import { ConditionalStart } from './conditional-start.tsx';
 import { IntakeDecision } from './intake-decision.tsx';
 
 const CODES = [
@@ -244,6 +245,16 @@ export function SiteIntake(props: { siteId: string }) {
             </FormMessage>
           ) : null}
         </Form>
+      ) : null}
+      {card ? (
+        <ConditionalStart
+          siteId={props.siteId}
+          card={card}
+          codes={CODES}
+          onDone={() => {
+            setVersion((v) => v + 1);
+          }}
+        />
       ) : null}
       {card ? (
         <IntakeDecision
