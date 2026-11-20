@@ -16,7 +16,7 @@ const alert = (ref: string, siteId = w.siteId) => ({
   ref,
   title: `Device ${ref} offline — find the cause`,
 });
-const raise = (...alerts: ReturnType<typeof alert>[]) =>
+const raise = (...alerts: (ReturnType<typeof alert> & { ownerId?: string })[]) =>
   w.t.kernel.execute(raiseAlert, job, { alerts }, 'system');
 const actions = (where: string, params: unknown[] = []) =>
   countRows(w.testDb.url, `action WHERE ${where}`, params);
