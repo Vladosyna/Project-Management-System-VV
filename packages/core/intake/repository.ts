@@ -1,11 +1,23 @@
 // intake repository — the only place in this module that touches tables.
-import { and, eq, handoverCard, handoverItem, inArray, isNull, site, sql, type Tx } from '@ocs/db';
+import {
+  and,
+  eq,
+  handoverCard,
+  handoverItem,
+  intakeCondition,
+  intakeDecision,
+  inArray,
+  isNull,
+  site,
+  sql,
+  type Tx,
+} from '@ocs/db';
 
 /** The active project, locked until the transaction ends. */
 export async function lockActiveSite(tx: Tx, id: string) {
   return (
     await tx
-      .select({ id: site.id, clientId: site.clientId })
+      .select({ id: site.id, clientId: site.clientId, countryCode: site.countryCode })
       .from(site)
       .where(and(eq(site.id, id), isNull(site.archivedAt)))
       .for('update')
@@ -92,4 +104,14 @@ export async function replaceItems(
           : undefined,
       ),
     );
+}
+
+/** SOP-DEL-01 §8: the decision on one card version and its conditions. */
+export async function insertDecision(
+  tx: Tx,
+  row: typeof intakeDecision.$inferInsert,
+  conditions: readonly (typeof intakeCondition.$inferInsert)[],
+) {
+  await tx.insert(intakeDecision).values(row);
+  if (conditions.length > 0) await tx.insert(intakeCondition).values([...conditions]);
 }

@@ -13,5 +13,10 @@ export const intakePermissions = {
       'Submit the Handover Card for intake review; refused while a §6 item is missing (SOP-DEL-01 §5 step 3)',
     roles: ['sales', 'director'],
   }),
+  decideIntake: permission('intake.review.decide', {
+    description:
+      'Record the intake review decision: accepted, accepted with conditions or returned (SOP-DEL-01 §8)',
+    roles: ['director'],
+  }),
   // gen:permissions — `pnpm gen:command` and `pnpm gen:query` add entries above this line.
 };
