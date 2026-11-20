@@ -364,3 +364,54 @@ export function saveGateTemplateOf(input: {
 export function archiveGateTemplateOf(id: string): Promise<WriteOutcome> {
   return send('POST', `/api/gate-templates/${encodeURIComponent(id)}/archive`, {});
 }
+
+export type CardStatus = 'draft' | 'submitted' | 'accepted' | 'accepted_with_conditions' | 'returned';
+export interface HandoverCardView {
+  readonly id: string;
+  readonly version: number;
+  readonly status: CardStatus;
+  readonly package: 'full' | 'light';
+  readonly content: { identification?: { projectName?: string; projectType?: string } };
+  readonly items: readonly {
+    readonly code: string;
+    readonly status: 'provided' | 'na';
+    readonly value: string | null;
+    readonly naReason: string | null;
+  }[];
+  readonly gaps: readonly { readonly code: string; readonly blocking: boolean }[];
+  readonly decision: {
+    readonly decision: string;
+    readonly reasons: string | null;
+    readonly conditions: readonly { itemCode: string; text: string; deadline: string; status: string }[];
+  } | null;
+}
+
+/** E2: the project's latest Handover Card; null before one exists; undefined when the role may not see it. */
+export async function loadHandoverCard(siteId: string): Promise<HandoverCardView | null | undefined> {
+  const res = await fetch(`/api/sites/${encodeURIComponent(siteId)}/handover-card`, {
+    credentials: 'same-origin',
+  });
+  if (res.status === 403) return undefined;
+  if (!res.ok) throw new Error(`GET handover-card → ${String(res.status)}`);
+  return (await res.json()) as HandoverCardView | null;
+}
+
+/** E2 writes on a project: 'rule' = refused by the SOP (422), 'conflict' = under review (409). */
+export async function intakeWrite(
+  siteId: string,
+  path: 'handover-card' | 'handover-card/submit' | 'intake-decision' | 'conditional-start',
+  body: Record<string, unknown>,
+): Promise<'ok' | 'forbidden' | 'invalid' | 'rule' | 'conflict'> {
+  const res = await fetch(`/api/sites/${encodeURIComponent(siteId)}/${path}`, {
+    method: 'POST',
+    credentials: 'same-origin',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  if (res.status === 403) return 'forbidden';
+  if (res.status === 422) return 'rule';
+  if (res.status === 409) return 'conflict';
+  if (res.status === 400 || res.status === 404) return 'invalid';
+  if (!res.ok) throw new Error(`POST ${path} → ${String(res.status)}`);
+  return 'ok';
+}
