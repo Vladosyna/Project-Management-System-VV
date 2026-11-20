@@ -332,3 +332,35 @@ export async function writeLifecycle(
   if (!res.ok) throw new Error(`${method} ${path} → ${String(res.status)}`);
   return 'ok';
 }
+
+export interface GateTemplate {
+  readonly id: string;
+  readonly clientId: string | null;
+  readonly programmeId: string | null;
+  readonly countryCode: string | null;
+  readonly name: string;
+  readonly gates: readonly { readonly key: string; readonly name: string; readonly readinessDays?: number }[];
+  readonly since: string;
+}
+
+/** D-32: active gate templates; undefined when the role may not see them. */
+export async function loadGateTemplates(): Promise<GateTemplate[] | undefined> {
+  const res = await fetch('/api/gate-templates', { credentials: 'same-origin' });
+  if (res.status === 403) return undefined;
+  if (!res.ok) throw new Error(`GET gate-templates → ${String(res.status)}`);
+  return (await res.json()) as GateTemplate[];
+}
+
+/** D-32: save the gates of a scope (replaces its active template) — director or above. */
+export function saveGateTemplateOf(input: {
+  clientId: string | null;
+  countryCode: string | null;
+  name: string;
+  gates: readonly { key: string; name: string; readinessDays?: number }[];
+}): Promise<WriteOutcome> {
+  return send('POST', '/api/gate-templates', input);
+}
+
+export function archiveGateTemplateOf(id: string): Promise<WriteOutcome> {
+  return send('POST', `/api/gate-templates/${encodeURIComponent(id)}/archive`, {});
+}

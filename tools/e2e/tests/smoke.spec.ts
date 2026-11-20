@@ -264,6 +264,7 @@ const SCREENS: { path: string; heading: string }[] = [
   { path: '/portfolio', heading: 'Portfolio' },
   { path: '/actions', heading: 'Every open action, with an owner and a date' },
   { path: '/sites', heading: 'Sites' },
+  { path: '/admin', heading: 'Admin' },
   // gen:screens
 ];
 

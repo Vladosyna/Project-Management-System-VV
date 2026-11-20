@@ -20,6 +20,7 @@ import { ActionsPage } from './pages/actions.tsx';
 import { SitePage } from './pages/site.tsx';
 import { SITE_TABS, type SiteTab } from './pages/site-overview.tsx';
 import { SitesPage } from './pages/sites.tsx';
+import { AdminPage } from './pages/admin.tsx';
 // gen:screen-imports
 
 /** Navigation as in the Main mockup. Screens other than Home arrive with their epics. */
@@ -43,6 +44,7 @@ const SCREENS: Record<string, RouteComponent> = {
   '/portfolio': PortfolioPage,
   '/actions': ActionsPage,
   '/sites': SitesPage,
+  '/admin': AdminPage,
   // gen:screens
 };
 
