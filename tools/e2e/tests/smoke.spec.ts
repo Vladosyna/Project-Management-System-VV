@@ -336,6 +336,31 @@ test('Sales fills the Handover Card, sees what is missing and submits it (E2 AC1
   await sales.screenshot({ path: 'test-results/intake-submitted-en.png', fullPage: true });
 });
 
+test('the Delivery Director decides on the submitted card: a blocking item is refused as a condition (E2 AC2, SOP-DEL-01 §8)', async ({
+  page,
+  browser,
+}) => {
+  await signInWithPassword(page);
+  const director = await join(browser, page, 'director2.e2e@example.com', 'Person 05', ['director']);
+  await director.getByRole('link', { name: 'Sites' }).click();
+  await director.getByRole('link', { name: 'CLIENTA-ES-MAD-001' }).click();
+  await director.getByRole('link', { name: 'Intake', exact: true }).click();
+  await director.getByLabel('Decision').selectOption('accepted_with_conditions');
+  await director.getByRole('button', { name: 'Add condition' }).click();
+  await director.getByLabel('Condition item 1').selectOption('A4');
+  await director.getByLabel('What is missing, item 1').fill('Committed dates to follow');
+  const today = new Date().toISOString().slice(0, 10);
+  await director.getByLabel('Deadline, item 1').fill(today);
+  await director.getByRole('button', { name: 'Record decision' }).click();
+  await expect(director.getByText(/^Not allowed by SOP-DEL-01 §8/)).toBeVisible();
+  await director.getByLabel('Condition item 1').selectOption('B2');
+  await director.getByLabel('What is missing, item 1').fill('Secondary contact');
+  await director.getByRole('button', { name: 'Record decision' }).click();
+  await expect(director.getByText(/^Status: Accepted with conditions/)).toBeVisible();
+  await expect(director.getByText(`B2: Secondary contact — by ${today} (open)`)).toBeVisible();
+  await director.screenshot({ path: 'test-results/intake-decided-en.png', fullPage: true });
+});
+
 /** Screens built with `pnpm gen:screen` — each must open for a signed-in user and show its title. */
 const SCREENS: { path: string; heading: string }[] = [
   { path: '/portfolio', heading: 'Portfolio' },
