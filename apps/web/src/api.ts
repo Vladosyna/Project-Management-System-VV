@@ -384,6 +384,7 @@ export interface HandoverCardView {
     readonly reasons: string | null;
     readonly conditions: readonly { itemCode: string; text: string; deadline: string; status: string }[];
   } | null;
+  readonly conditionalStart: { missingItems: string[]; deadline: string; writtenRef: string } | null;
 }
 
 /** E2: the project's latest Handover Card; null before one exists; undefined when the role may not see it. */
@@ -414,4 +415,24 @@ export async function intakeWrite(
   if (res.status === 400 || res.status === 404) return 'invalid';
   if (!res.ok) throw new Error(`POST ${path} → ${String(res.status)}`);
   return 'ok';
+}
+
+export interface IntakeRegisterRow {
+  readonly projectId: string;
+  readonly version: number;
+  readonly submittedOn: string;
+  readonly decision: 'pending' | 'accepted' | 'accepted_with_conditions' | 'returned';
+  readonly decidedOn: string | null;
+  readonly returns: number;
+  readonly daysToAcceptance: number | null;
+}
+
+/** E2 AC6: the Intake Register, optionally one month of submissions; undefined when the role may not see it. */
+export async function loadIntakeRegister(month: string): Promise<IntakeRegisterRow[] | undefined> {
+  const res = await fetch(`/api/intake-register${month ? `?month=${encodeURIComponent(month)}` : ''}`, {
+    credentials: 'same-origin',
+  });
+  if (res.status === 403) return undefined;
+  if (!res.ok) throw new Error(`GET intake-register → ${String(res.status)}`);
+  return (await res.json()) as IntakeRegisterRow[];
 }

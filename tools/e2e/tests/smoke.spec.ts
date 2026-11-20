@@ -341,6 +341,16 @@ test('the Delivery Director decides on the submitted card: a blocking item is re
   browser,
 }) => {
   await signInWithPassword(page);
+  // SOP-DEL-01 §9: before the decision, the sponsor authorises a Conditional Start; the director may not.
+  const sponsor = await join(browser, page, 'sponsor.e2e@example.com', 'Person 06', ['sponsor']);
+  await sponsor.getByRole('link', { name: 'Sites' }).click();
+  await sponsor.getByRole('link', { name: 'CLIENTA-ES-MAD-001' }).click();
+  await sponsor.getByRole('link', { name: 'Intake', exact: true }).click();
+  await sponsor.getByRole('checkbox', { name: 'C3' }).check();
+  await sponsor.getByLabel('Deadline (within 5 working days)').fill(new Date().toISOString().slice(0, 10));
+  await sponsor.getByLabel(/^Written authorisation in DingTalk/).fill('DingTalk msg E2E-1');
+  await sponsor.getByRole('button', { name: 'Authorise Conditional Start' }).click();
+  await expect(sponsor.getByText(/^Conditional Start authorised: C3 missing/)).toBeVisible();
   const director = await join(browser, page, 'director2.e2e@example.com', 'Person 05', ['director']);
   await director.getByRole('link', { name: 'Sites' }).click();
   await director.getByRole('link', { name: 'CLIENTA-ES-MAD-001' }).click();
@@ -359,6 +369,12 @@ test('the Delivery Director decides on the submitted card: a blocking item is re
   await expect(director.getByText(/^Status: Accepted with conditions/)).toBeVisible();
   await expect(director.getByText(`B2: Secondary contact — by ${today} (open)`)).toBeVisible();
   await director.screenshot({ path: 'test-results/intake-decided-en.png', fullPage: true });
+  // SOP-DEL-01 §12: the submission is in the Intake Register.
+  await director.goto('/intake-register');
+  await expect(
+    director.getByRole('row', { name: /^CLIENTA-ES-MAD-001 1 .* Accepted with conditions/ }),
+  ).toBeVisible();
+  await director.screenshot({ path: 'test-results/intake-register-en.png', fullPage: true });
 });
 
 /** Screens built with `pnpm gen:screen` — each must open for a signed-in user and show its title. */
@@ -367,6 +383,7 @@ const SCREENS: { path: string; heading: string }[] = [
   { path: '/actions', heading: 'Every open action, with an owner and a date' },
   { path: '/sites', heading: 'Sites' },
   { path: '/admin', heading: 'Admin' },
+  { path: '/intake-register', heading: 'Intake Register' },
   // gen:screens
 ];
 
