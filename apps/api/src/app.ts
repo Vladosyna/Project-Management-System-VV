@@ -3,7 +3,14 @@ import { Hono } from 'hono';
 import type { Actor } from '@ocs/contracts';
 import { inviteUser, me } from '@ocs/core/identity';
 import { recordFirmwareIssue, registerDevice, setVersions, siteDevices } from '@ocs/core/devices';
-import { planInstallation, recordStep, siteLifecycle } from '@ocs/core/lifecycle';
+import {
+  archiveGateTemplate,
+  gateTemplates,
+  planInstallation,
+  recordStep,
+  saveGateTemplate,
+  siteLifecycle,
+} from '@ocs/core/lifecycle';
 import { clientList, setDeviceAlerts, siteList } from '@ocs/core/org';
 import {
   addComment,
@@ -149,6 +156,15 @@ export function createApp(rt: Runtime): Hono {
       ),
     );
   });
+
+  // D-32: gate templates by scope (base, client, client + country); a director or above changes them.
+  api.get('/gate-templates', async (c) => c.json(await rt.kernel.read(gateTemplates, c.get('actor'), {})));
+  api.post('/gate-templates', async (c) =>
+    c.json(await rt.kernel.execute(saveGateTemplate, c.get('actor'), await c.req.json(), 'web'), 201),
+  );
+  api.post('/gate-templates/:id/archive', async (c) =>
+    c.json(await rt.kernel.execute(archiveGateTemplate, c.get('actor'), { id: c.req.param('id') }, 'web')),
+  );
 
   // E4: link the project to its mall on the device platform; the offline alerts checkbox (Vlad, 3 Nov).
   api.put('/sites/:siteId/device-alerts', async (c) => {
