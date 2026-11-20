@@ -1,0 +1,51 @@
+// intake.register.read — E2 AC6, SOP-DEL-01 §12: "The Delivery Director logs every submission: Project ID, date
+// submitted, decision, days to acceptance, number of returns. Reviewed monthly with the Sales Lead." One row per
+// submitted card version, optionally for one month of submissions. Days to acceptance: working days from the
+// project's first submission to its acceptance (project country calendar, GB fallback — as in E3).
+import { z } from 'zod';
+import { calendarIds, localDateIn, workingDaysBetween, type CalendarId } from '../../calendar/index.ts';
+import { defineQuery } from '../../kernel/index.ts';
+import { intakePermissions } from '../permissions.ts';
+import { submissions } from '../repository.ts';
+
+const calendarOf = (country: string): CalendarId =>
+  (calendarIds as readonly string[]).includes(country) ? (country as CalendarId) : 'GB';
+const day = (d: Date) => localDateIn(d, 'UTC');
+
+export const intakeRegister = defineQuery({
+  name: 'intake.register.read',
+  permission: intakePermissions.intakeRegister,
+  input: z.object({
+    month: z
+      .string()
+      .regex(/^\d{4}-(0[1-9]|1[0-2])$/)
+      .optional(),
+  }),
+  handle: async (ctx, i) => {
+    const all = await submissions(ctx.tx);
+    const firstOf = new Map<string, Date>();
+    for (const s of all) if (s.submittedAt && !firstOf.has(s.siteId)) firstOf.set(s.siteId, s.submittedAt);
+    return all
+      .flatMap((s) => {
+        const submitted = s.submittedAt;
+        if (!submitted) return [];
+        const accepted = s.decision === 'accepted' || s.decision === 'accepted_with_conditions';
+        const first = firstOf.get(s.siteId) ?? submitted;
+        const row = {
+          projectId: s.projectId,
+          version: s.version,
+          submittedOn: day(submitted),
+          decision: s.decision ?? 'pending',
+          decidedOn: s.decidedAt ? day(s.decidedAt) : null,
+          /** Returns before this submission: every earlier version came back. */
+          returns: s.version - 1,
+          daysToAcceptance:
+            accepted && s.decidedAt
+              ? workingDaysBetween(day(first), day(s.decidedAt), calendarOf(s.countryCode))
+              : null,
+        };
+        return [row];
+      })
+      .filter((r) => i.month === undefined || r.submittedOn.startsWith(i.month));
+  },
+});
