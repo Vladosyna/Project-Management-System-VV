@@ -13,5 +13,10 @@ export const intakePermissions = {
       'Submit the Handover Card for intake review; refused while a §6 item is missing (SOP-DEL-01 §5 step 3)',
     roles: ['sales', 'director'],
   }),
+  authoriseConditionalStart: permission('intake.conditionalStart.authorise', {
+    description:
+      'Authorise Delivery to start before acceptance, naming the missing items and a deadline (SOP-DEL-01 §9)',
+    roles: ['sponsor'],
+  }),
   // gen:permissions — `pnpm gen:command` and `pnpm gen:query` add entries above this line.
 };

@@ -1,11 +1,22 @@
 // intake repository — the only place in this module that touches tables.
-import { and, eq, handoverCard, handoverItem, inArray, isNull, site, sql, type Tx } from '@ocs/db';
+import {
+  and,
+  conditionalStart,
+  eq,
+  handoverCard,
+  handoverItem,
+  inArray,
+  isNull,
+  site,
+  sql,
+  type Tx,
+} from '@ocs/db';
 
 /** The active project, locked until the transaction ends. */
 export async function lockActiveSite(tx: Tx, id: string) {
   return (
     await tx
-      .select({ id: site.id, clientId: site.clientId })
+      .select({ id: site.id, clientId: site.clientId, countryCode: site.countryCode })
       .from(site)
       .where(and(eq(site.id, id), isNull(site.archivedAt)))
       .for('update')
@@ -92,4 +103,18 @@ export async function replaceItems(
           : undefined,
       ),
     );
+}
+
+/** SOP-DEL-01 §9: the active Conditional Start of a card version, if any. */
+export async function activeConditionalStart(tx: Tx, cardId: string) {
+  return (
+    await tx
+      .select({ id: conditionalStart.id })
+      .from(conditionalStart)
+      .where(and(eq(conditionalStart.cardId, cardId), isNull(conditionalStart.archivedAt)))
+  )[0];
+}
+
+export async function insertConditionalStart(tx: Tx, row: typeof conditionalStart.$inferInsert) {
+  await tx.insert(conditionalStart).values(row);
 }
