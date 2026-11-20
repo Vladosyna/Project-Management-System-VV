@@ -5,3 +5,4 @@ export { saveHandoverCard } from './commands/save-handover-card.ts';
 export { submitHandoverCard } from './commands/submit-handover-card.ts';
 export { authoriseConditionalStart } from './commands/authorise-conditional-start.ts';
 export { decideIntake } from './commands/decide-intake.ts';
+export { intakeRegister } from './queries/intake-register.ts';

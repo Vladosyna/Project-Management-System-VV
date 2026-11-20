@@ -8,6 +8,7 @@ import {
   intakeCondition,
   intakeDecision,
   inArray,
+  isNotNull,
   isNull,
   site,
   sql,
@@ -129,4 +130,23 @@ export async function insertDecision(
 ) {
   await tx.insert(intakeDecision).values(row);
   if (conditions.length > 0) await tx.insert(intakeCondition).values([...conditions]);
+}
+
+/** SOP-DEL-01 §12 Intake Register: every submitted card version with its project and decision. */
+export async function submissions(tx: Tx) {
+  return tx
+    .select({
+      siteId: site.id,
+      projectId: site.projectId,
+      countryCode: site.countryCode,
+      version: handoverCard.version,
+      submittedAt: handoverCard.submittedAt,
+      decision: intakeDecision.decision,
+      decidedAt: intakeDecision.decidedAt,
+    })
+    .from(handoverCard)
+    .innerJoin(site, eq(site.id, handoverCard.siteId))
+    .leftJoin(intakeDecision, eq(intakeDecision.cardId, handoverCard.id))
+    .where(and(isNotNull(handoverCard.submittedAt), isNull(handoverCard.archivedAt)))
+    .orderBy(site.projectId, handoverCard.version);
 }

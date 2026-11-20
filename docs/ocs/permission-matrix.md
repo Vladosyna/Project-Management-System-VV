@@ -24,6 +24,7 @@ External roles (`client`, `partner`) are switched off in the checker until the V
 | `intake.conditionalStart.authorise` | Authorise Delivery to start before acceptance, naming the missing items and a deadline (SOP-DEL-01 §9) |  |  |  |  |  |  | ✓ |  |  |  |  |
 | `intake.handoverCard.save` | Save the Handover Card draft of a project: Annex B content and the §6 items it covers (SOP-DEL-01 §5 step 2) | ✓ |  | ✓ |  |  |  |  |  |  |  |  |
 | `intake.handoverCard.submit` | Submit the Handover Card for intake review; refused while a §6 item is missing (SOP-DEL-01 §5 step 3) | ✓ |  | ✓ |  |  |  |  |  |  |  |  |
+| `intake.register.read` | Intake Register: each project's submissions, decision, working days to acceptance and returns (SOP-DEL-01 §12) | ✓ |  |  |  |  | ✓ | ✓ |  |  |  |  |
 | `intake.review.decide` | Record the intake review decision: accepted, accepted with conditions or returned (SOP-DEL-01 §8) | ✓ |  |  |  |  |  |  |  |  |  |  |
 | `lifecycle.gateTemplate.archive` | Archive a gate template; its projects fall back to the next scope (D-32) | ✓ |  |  |  |  |  | ✓ |  |  |  |  |
 | `lifecycle.gateTemplate.save` | Create or replace the gate template of a scope: base, client, programme, country (D-32) | ✓ |  |  |  |  |  | ✓ |  |  |  |  |
