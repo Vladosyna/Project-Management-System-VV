@@ -4,3 +4,6 @@ export { lifecyclePermissions } from './permissions.ts';
 export { recordStep } from './commands/record-step.ts';
 export { planInstallation } from './commands/plan-installation.ts';
 export { siteLifecycle } from './queries/site-lifecycle.ts';
+export { saveGateTemplate } from './commands/save-gate-template.ts';
+export { archiveGateTemplate } from './commands/archive-gate-template.ts';
+export { gateTemplates } from './queries/gate-templates.ts';

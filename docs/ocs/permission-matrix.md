@@ -21,6 +21,9 @@ External roles (`client`, `partner`) are switched off in the checker until the V
 | `identity.user.assignRoles` | Grant or remove roles of a user |  |  |  |  |  |  |  | ✓ |  |  |  |
 | `identity.user.invite` | Invite a new staff user by link | ✓ |  |  |  |  |  |  | ✓ |  |  |  |
 | `identity.user.read` | See the user list with roles and MFA status | ✓ |  |  |  |  |  |  | ✓ |  |  |  |
+| `lifecycle.gateTemplate.archive` | Archive a gate template; its projects fall back to the next scope (D-32) | ✓ |  |  |  |  |  | ✓ |  |  |  |  |
+| `lifecycle.gateTemplate.save` | Create or replace the gate template of a scope: base, client, programme, country (D-32) | ✓ |  |  |  |  |  | ✓ |  |  |  |  |
+| `lifecycle.gateTemplates.read` | See the gate templates and their scopes (D-32) | ✓ | ✓ |  |  |  | ✓ | ✓ |  |  |  |  |
 | `lifecycle.installation.plan` | Set the planned installation date, only once the site card is complete (SOP-DEL-04 §1) | ✓ | ✓ |  |  |  |  |  |  |  |  |  |
 | `lifecycle.siteLifecycle.read` | See a project's steps, gates, installation plan and readiness (E3) | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |  |  |  |
 | `lifecycle.step.record` | Record a step reached on a project — base step or gate — with date and evidence (E3 AC1) | ✓ | ✓ | ✓ |  |  |  |  |  |  |  |  |

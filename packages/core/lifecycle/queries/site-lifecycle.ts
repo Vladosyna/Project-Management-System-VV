@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { calendarIds, localDateIn, workingDaysBetween, type CalendarId } from '../../calendar/index.ts';
 import { defineQuery, NotFound } from '../../kernel/index.ts';
 import { lifecyclePermissions } from '../permissions.ts';
-import { activeSteps, findActiveSite, findTemplate } from '../repository.ts';
+import { activeSteps, findActiveSite, templateFor } from '../repository.ts';
 import { installationPlanRule } from '../rules/installation-plan.config.ts';
 import { readinessAtRisk } from '../rules/readiness.ts';
 
@@ -21,7 +21,7 @@ export const siteLifecycle = defineQuery({
     if (!project) throw new NotFound('site', i.siteId);
     const steps = await activeSteps(ctx.tx, project.id);
     const reached = steps.map((s) => s.step);
-    const template = project.gateTemplateId ? await findTemplate(ctx.tx, project.gateTemplateId) : undefined;
+    const template = await templateFor(ctx.tx, project);
     const gates = [...(template?.gates ?? [])].sort((a, b) => a.order - b.order);
     const firstOpen = gates.find((g) => !reached.includes(g.key))?.key;
     const today = localDateIn(ctx.now, 'UTC');

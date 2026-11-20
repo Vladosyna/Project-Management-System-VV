@@ -3,7 +3,7 @@
 import { z } from 'zod';
 import { Conflict, defineCommand, NotFound, RuleViolation } from '../../kernel/index.ts';
 import { lifecyclePermissions } from '../permissions.ts';
-import { activeSteps, findTemplate, insertStep, lockActiveSite } from '../repository.ts';
+import { activeSteps, templateFor, insertStep, lockActiveSite } from '../repository.ts';
 import { checkStep, isBaseStep } from '../rules/installation-plan.ts';
 
 export const recordStep = defineCommand({
@@ -21,9 +21,7 @@ export const recordStep = defineCommand({
     const project = await lockActiveSite(ctx.tx, i.siteId);
     if (!project) throw new NotFound('site', i.siteId);
     if (!isBaseStep(i.step)) {
-      const template = project.gateTemplateId
-        ? await findTemplate(ctx.tx, project.gateTemplateId)
-        : undefined;
+      const template = await templateFor(ctx.tx, project);
       if (!template?.gates.some((g) => g.key === i.step)) {
         throw new RuleViolation('E3 AC3', `"${i.step}" is not a step or a gate of this project`);
       }
