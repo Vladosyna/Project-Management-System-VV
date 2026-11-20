@@ -1,6 +1,7 @@
 // intake repository — the only place in this module that touches tables.
 import {
   and,
+  conditionalStart,
   eq,
   handoverCard,
   handoverItem,
@@ -104,6 +105,20 @@ export async function replaceItems(
           : undefined,
       ),
     );
+}
+
+/** SOP-DEL-01 §9: the active Conditional Start of a card version, if any. */
+export async function activeConditionalStart(tx: Tx, cardId: string) {
+  return (
+    await tx
+      .select({ id: conditionalStart.id })
+      .from(conditionalStart)
+      .where(and(eq(conditionalStart.cardId, cardId), isNull(conditionalStart.archivedAt)))
+  )[0];
+}
+
+export async function insertConditionalStart(tx: Tx, row: typeof conditionalStart.$inferInsert) {
+  await tx.insert(conditionalStart).values(row);
 }
 
 /** SOP-DEL-01 §8: the decision on one card version and its conditions. */
