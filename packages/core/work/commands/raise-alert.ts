@@ -1,5 +1,5 @@
 // work.alert.raise — actions from automatic alerts (E5 AC1 source "alert"), e.g. R15 "sensor offline > 24 h".
-// Each action is owned by its project's PM, due the next day, internal (never shown to the client). One action
+// Each action is owned by its project's PM (or the owner the alert names), due the next day, internal (never shown to the client). One action
 // per alert ref: the caller names the episode (R15: device and the time it went offline), so a done action is not
 // raised again while the same episode lasts, and a new episode raises a new one. A batch per job run, one audit
 // record per run. System only (worker alert jobs).
@@ -22,6 +22,8 @@ export const raiseAlert = defineCommand({
           /** Stable per alert episode, e.g. "R15:<deviceId>:<offlineSince ISO>". */
           ref: z.string().trim().min(1).max(300),
           title: z.string().trim().min(1).max(300),
+          /** Owner other than the project's PM, e.g. Sales owner and director for an expired intake condition. */
+          ownerId: z.uuid().optional(),
         }),
       )
       .max(1000),
@@ -43,7 +45,8 @@ export const raiseAlert = defineCommand({
         skipped.push({ ref: alert.ref, reason: 'no_project' });
         continue;
       }
-      if (project.pmId === null) {
+      const ownerId = alert.ownerId ?? project.pmId;
+      if (ownerId === null) {
         skipped.push({ ref: alert.ref, reason: 'no_pm' });
         continue;
       }
@@ -52,7 +55,7 @@ export const raiseAlert = defineCommand({
         clientId: project.clientId,
         siteId: project.id,
         title: alert.title,
-        ownerId: project.pmId,
+        ownerId,
         due,
         sourceKind: 'alert' as const,
         sourceRef: alert.ref,

@@ -4,6 +4,7 @@
 import { createRuntime, startScheduledJobs } from '@ocs/core/runtime';
 import { createDevicePlatform } from './adapters/device-platform/index.ts';
 import { runDevicePlatformJob } from './jobs/device-platform.ts';
+import { runIntakeConditionsJob } from './jobs/intake-conditions.ts';
 
 const required = [
   'OCS_DATABASE_URL',
@@ -41,6 +42,15 @@ const queue = await startScheduledJobs(env('OCS_QUEUE_DATABASE_URL') || env('OCS
     run: async () => {
       const run = await runDevicePlatformJob(runtime.kernel, platform);
       console.log(JSON.stringify({ job: 'device-platform', ...run }));
+    },
+  },
+  {
+    // E2 AC3: hourly is enough for day deadlines; a run finds nothing new until the next expiry.
+    name: 'intake-conditions',
+    everyMinutes: 60,
+    run: async () => {
+      const run = await runIntakeConditionsJob(runtime.kernel);
+      console.log(JSON.stringify({ job: 'intake-conditions', ...run }));
     },
   },
 ]);

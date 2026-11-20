@@ -28,5 +28,10 @@ export const intakePermissions = {
       "Intake Register: each project's submissions, decision, working days to acceptance and returns (SOP-DEL-01 §12)",
     roles: ['director', 'sponsor', 'management'],
   }),
+  expireConditions: permission('intake.conditions.expire', {
+    description:
+      'Mark intake conditions past their deadline as expired, for the alert to Sales owner and Delivery Director (E2 AC3)',
+    roles: ['system'],
+  }),
   // gen:permissions — `pnpm gen:command` and `pnpm gen:query` add entries above this line.
 };
