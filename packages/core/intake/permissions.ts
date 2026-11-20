@@ -33,5 +33,10 @@ export const intakePermissions = {
       'Mark intake conditions past their deadline as expired, for the alert to Sales owner and Delivery Director (E2 AC3)',
     roles: ['system'],
   }),
+  handoverCard: permission('intake.handoverCard.read', {
+    description:
+      "See a project's current Handover Card: status, package, items, gaps, decision and conditions (E2)",
+    roles: ['sales', 'director', 'pm', 'sponsor', 'management'],
+  }),
   // gen:permissions — `pnpm gen:command` and `pnpm gen:query` add entries above this line.
 };

@@ -1,6 +1,7 @@
 // intake repository — the only place in this module that touches tables.
 import {
   and,
+  desc,
   conditionalStart,
   eq,
   handoverCard,
@@ -193,4 +194,45 @@ export async function directorIds(tx: Tx) {
     .from(userRole)
     .where(and(eq(userRole.role, 'director'), isNull(userRole.revokedAt)));
   return [...new Set(rows.map((r) => r.userId))].sort();
+}
+
+/** The project's latest card version (any status), for the card screen. */
+export async function latestCard(tx: Tx, siteId: string) {
+  return (
+    await tx
+      .select()
+      .from(handoverCard)
+      .where(and(eq(handoverCard.siteId, siteId), isNull(handoverCard.archivedAt)))
+      .orderBy(desc(handoverCard.version))
+      .limit(1)
+  )[0];
+}
+
+export async function decisionOf(tx: Tx, cardId: string) {
+  const [decision] = await tx.select().from(intakeDecision).where(eq(intakeDecision.cardId, cardId));
+  if (!decision) return null;
+  const conditions = await tx
+    .select({
+      itemCode: intakeCondition.itemCode,
+      text: intakeCondition.text,
+      deadline: intakeCondition.deadline,
+      status: intakeCondition.status,
+    })
+    .from(intakeCondition)
+    .where(and(eq(intakeCondition.decisionId, decision.id), isNull(intakeCondition.archivedAt)))
+    .orderBy(intakeCondition.itemCode);
+  return { ...decision, conditions };
+}
+
+export async function conditionalStartOf(tx: Tx, cardId: string) {
+  return (
+    await tx
+      .select({
+        missingItems: conditionalStart.missingItems,
+        deadline: conditionalStart.deadline,
+        writtenRef: conditionalStart.writtenRef,
+      })
+      .from(conditionalStart)
+      .where(and(eq(conditionalStart.cardId, cardId), isNull(conditionalStart.archivedAt)))
+  )[0];
 }

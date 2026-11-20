@@ -2,6 +2,14 @@
 import { Hono } from 'hono';
 import type { Actor } from '@ocs/contracts';
 import { inviteUser, me } from '@ocs/core/identity';
+import {
+  authoriseConditionalStart,
+  decideIntake,
+  handoverCardView,
+  intakeRegister,
+  saveHandoverCard,
+  submitHandoverCard,
+} from '@ocs/core/intake';
 import { recordFirmwareIssue, registerDevice, setVersions, siteDevices } from '@ocs/core/devices';
 import {
   archiveGateTemplate,
@@ -155,6 +163,31 @@ export function createApp(rt: Runtime): Hono {
         'web',
       ),
     );
+  });
+
+  // E2 (SOP-DEL-01): Handover Card, intake review, Conditional Start, Intake Register.
+  api.get('/sites/:siteId/handover-card', async (c) =>
+    c.json(await rt.kernel.read(handoverCardView, c.get('actor'), { siteId: c.req.param('siteId') })),
+  );
+  api.post('/sites/:siteId/handover-card', async (c) => {
+    const input = { ...(await c.req.json<Record<string, unknown>>()), siteId: c.req.param('siteId') };
+    return c.json(await rt.kernel.execute(saveHandoverCard, c.get('actor'), input, 'web'), 201);
+  });
+  api.post('/sites/:siteId/handover-card/submit', async (c) => {
+    const input = { ...(await c.req.json<Record<string, unknown>>()), siteId: c.req.param('siteId') };
+    return c.json(await rt.kernel.execute(submitHandoverCard, c.get('actor'), input, 'web'), 201);
+  });
+  api.post('/sites/:siteId/intake-decision', async (c) => {
+    const input = { ...(await c.req.json<Record<string, unknown>>()), siteId: c.req.param('siteId') };
+    return c.json(await rt.kernel.execute(decideIntake, c.get('actor'), input, 'web'), 201);
+  });
+  api.post('/sites/:siteId/conditional-start', async (c) => {
+    const input = { ...(await c.req.json<Record<string, unknown>>()), siteId: c.req.param('siteId') };
+    return c.json(await rt.kernel.execute(authoriseConditionalStart, c.get('actor'), input, 'web'), 201);
+  });
+  api.get('/intake-register', async (c) => {
+    const month = c.req.query('month');
+    return c.json(await rt.kernel.read(intakeRegister, c.get('actor'), month ? { month } : {}));
   });
 
   // D-32: gate templates by scope (base, client, client + country); a director or above changes them.
