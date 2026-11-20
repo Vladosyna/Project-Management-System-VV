@@ -17,6 +17,7 @@ import { STEP_LABELS } from './site-lifecycle.tsx';
 
 export const SITE_TABS = [
   'overview',
+  'intake',
   'lifecycle',
   'devices',
   'network',

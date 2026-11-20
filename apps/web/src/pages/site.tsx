@@ -26,6 +26,7 @@ import { sourceLabel } from '../source.ts';
 import { CommentToAction } from './comment-to-action.tsx';
 import { DeviceAlerts } from './device-alerts.tsx';
 import { SiteDevices } from './site-devices.tsx';
+import { SiteIntake } from './site-intake.tsx';
 import { SiteLifecycle } from './site-lifecycle.tsx';
 import { SiteNetwork } from './site-network.tsx';
 import { SITE_TABS, SiteActions, SiteOverview, type SiteTab } from './site-overview.tsx';
@@ -99,6 +100,8 @@ export function SitePage(props: { siteId: string; tab?: SiteTab }) {
             to={key === 'overview' ? '/sites/$siteId' : '/sites/$siteId/$tab'}
             params={key === 'overview' ? { siteId: props.siteId } : { siteId: props.siteId, tab: key }}
             aria-current={key === tab ? 'page' : undefined}
+            // Overview's path is a prefix of every tab's: match it exactly, or it shows as active everywhere.
+            activeOptions={{ exact: true }}
           >
             {t(`site.tab.${key}`)}
           </Link>
@@ -106,6 +109,11 @@ export function SitePage(props: { siteId: string; tab?: SiteTab }) {
       </nav>
       <div className="ocs-stack">
         {tab === 'overview' ? <SiteOverview site={site} feed={feed} /> : null}
+        {tab === 'intake' ? (
+          <Card title={t('intake.title')} titleId="site-intake">
+            <SiteIntake siteId={props.siteId} />
+          </Card>
+        ) : null}
         {tab === 'lifecycle' ? (
           <Card title={t('site.tab.lifecycle')} titleId="site-lifecycle">
             <SiteLifecycle siteId={props.siteId} />
