@@ -21,6 +21,8 @@ External roles (`client`, `partner`) are switched off in the checker until the V
 | `identity.user.assignRoles` | Grant or remove roles of a user |  |  |  |  |  |  |  | ✓ |  |  |  |
 | `identity.user.invite` | Invite a new staff user by link | ✓ |  |  |  |  |  |  | ✓ |  |  |  |
 | `identity.user.read` | See the user list with roles and MFA status | ✓ |  |  |  |  |  |  | ✓ |  |  |  |
+| `intake.handoverCard.save` | Save the Handover Card draft of a project: Annex B content and the §6 items it covers (SOP-DEL-01 §5 step 2) | ✓ |  | ✓ |  |  |  |  |  |  |  |  |
+| `intake.handoverCard.submit` | Submit the Handover Card for intake review; refused while a §6 item is missing (SOP-DEL-01 §5 step 3) | ✓ |  | ✓ |  |  |  |  |  |  |  |  |
 | `lifecycle.gateTemplate.archive` | Archive a gate template; its projects fall back to the next scope (D-32) | ✓ |  |  |  |  |  | ✓ |  |  |  |  |
 | `lifecycle.gateTemplate.save` | Create or replace the gate template of a scope: base, client, programme, country (D-32) | ✓ |  |  |  |  |  | ✓ |  |  |  |  |
 | `lifecycle.gateTemplates.read` | See the gate templates and their scopes (D-32) | ✓ | ✓ |  |  |  | ✓ | ✓ |  |  |  |  |
