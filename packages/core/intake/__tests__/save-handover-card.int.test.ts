@@ -35,20 +35,9 @@ const allItems = (except: string[] = []) =>
         : { code, status: 'provided' as const, value: `${code} in the project folder` },
     );
 const content = { identification: { projectName: 'Mall A counting', projectType: 'new' as const } };
+const draft = { siteId: '', content, items: allItems(), installsOrConfigures: true, newClientOrPlace: true };
 const save = (input: Record<string, unknown> = {}) =>
-  t.kernel.execute(
-    saveHandoverCard,
-    sales,
-    {
-      siteId: siteA,
-      content,
-      items: allItems(),
-      installsOrConfigures: true,
-      newClientOrPlace: true,
-      ...input,
-    },
-    'test',
-  );
+  t.kernel.execute(saveHandoverCard, sales, { ...draft, siteId: siteA, ...input }, 'test');
 const submit = () => t.kernel.execute(submitHandoverCard, sales, { siteId: siteA }, 'test');
 
 beforeAll(async () => {
@@ -70,14 +59,8 @@ afterAll(async () => {
 describe('intake.handoverCard.save', () => {
   it('is for Sales and the director; refuses others, an unknown project and bad input, recording nothing', async () => {
     expect(grantOf(saveHandoverCard.permission)?.roles).toEqual(['director', 'sales']);
-    await expect(
-      t.kernel.execute(
-        saveHandoverCard,
-        pm,
-        { siteId: siteA, content, items: [], installsOrConfigures: true, newClientOrPlace: true },
-        'test',
-      ),
-    ).rejects.toBeInstanceOf(Forbidden);
+    const asPm = t.kernel.execute(saveHandoverCard, pm, { ...draft, siteId: siteA }, 'test');
+    await expect(asPm).rejects.toBeInstanceOf(Forbidden);
     await expect(save({ siteId: randomUUID() })).rejects.toBeInstanceOf(NotFound);
     for (const bad of [
       { items: [{ code: 'A1', status: 'na', naReason: ' ' }] }, // N/A needs a reason (Annex B)
