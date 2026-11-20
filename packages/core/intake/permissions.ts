@@ -18,5 +18,10 @@ export const intakePermissions = {
       'Authorise Delivery to start before acceptance, naming the missing items and a deadline (SOP-DEL-01 §9)',
     roles: ['sponsor'],
   }),
+  decideIntake: permission('intake.review.decide', {
+    description:
+      'Record the intake review decision: accepted, accepted with conditions or returned (SOP-DEL-01 §8)',
+    roles: ['director'],
+  }),
   // gen:permissions — `pnpm gen:command` and `pnpm gen:query` add entries above this line.
 };

@@ -5,6 +5,8 @@ import {
   eq,
   handoverCard,
   handoverItem,
+  intakeCondition,
+  intakeDecision,
   inArray,
   isNull,
   site,
@@ -117,4 +119,14 @@ export async function activeConditionalStart(tx: Tx, cardId: string) {
 
 export async function insertConditionalStart(tx: Tx, row: typeof conditionalStart.$inferInsert) {
   await tx.insert(conditionalStart).values(row);
+}
+
+/** SOP-DEL-01 §8: the decision on one card version and its conditions. */
+export async function insertDecision(
+  tx: Tx,
+  row: typeof intakeDecision.$inferInsert,
+  conditions: readonly (typeof intakeCondition.$inferInsert)[],
+) {
+  await tx.insert(intakeDecision).values(row);
+  if (conditions.length > 0) await tx.insert(intakeCondition).values([...conditions]);
 }
