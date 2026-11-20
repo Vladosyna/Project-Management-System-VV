@@ -302,6 +302,40 @@ test('a director sets the gates of a client and a country; an admin may not see 
   await expect(base).toBeVisible();
 });
 
+test('Sales fills the Handover Card, sees what is missing and submits it (E2 AC1, SOP-DEL-01 §6)', async ({
+  page,
+  browser,
+}) => {
+  await signInWithPassword(page);
+  const sales = await join(browser, page, 'sales.e2e@example.com', 'Person 04', ['sales']);
+  await sales.getByRole('link', { name: 'Sites' }).click();
+  await sales.getByRole('link', { name: 'CLIENTA-ES-MAD-001' }).click();
+  await sales.getByRole('link', { name: 'Intake', exact: true }).click();
+  await expect(sales.getByText(/^No Handover Card yet/)).toBeVisible();
+  await sales.getByLabel('Project name').fill('Mall A counting');
+  await sales.getByLabel('Project type').selectOption('new');
+  // N/A without a reason is refused (Annex B: blanks are not accepted).
+  await sales.getByLabel('State A1').selectOption('na');
+  await sales.getByRole('button', { name: 'Save draft' }).click();
+  await expect(sales.getByText(/^Check the entries/)).toBeVisible();
+  await sales.getByLabel('State A1').selectOption('provided');
+  await sales.getByLabel(/^Summary, folder link or N\/A reason A1$/).fill('Signed PO in the folder');
+  await sales.getByRole('button', { name: 'Save draft' }).click();
+  await expect(sales.getByText(/^Still missing before submission: A2, A3/)).toBeVisible();
+  // Everything else provided; group F only as "recorded in the restricted notes".
+  for (const select of await sales.getByLabel(/^State [A-G][1-9]$/).all()) {
+    if ((await select.inputValue()) === 'none') await select.selectOption('provided');
+  }
+  await expect(sales.getByRole('row', { name: /^F1 Verbal commitments/ })).toContainText('restricted notes');
+  await sales.getByRole('button', { name: 'Save draft' }).click();
+  await expect(sales.getByText('Nothing missing: the card can be submitted.')).toBeVisible();
+  await sales.getByRole('button', { name: 'Submit for intake review' }).click();
+  await expect(
+    sales.getByText(/^Status: Submitted — under review · Version 1 · Package: Full/),
+  ).toBeVisible();
+  await sales.screenshot({ path: 'test-results/intake-submitted-en.png', fullPage: true });
+});
+
 /** Screens built with `pnpm gen:screen` — each must open for a signed-in user and show its title. */
 const SCREENS: { path: string; heading: string }[] = [
   { path: '/portfolio', heading: 'Portfolio' },
