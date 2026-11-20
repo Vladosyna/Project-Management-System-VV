@@ -3,3 +3,4 @@
 export { intakePermissions } from './permissions.ts';
 export { saveHandoverCard } from './commands/save-handover-card.ts';
 export { submitHandoverCard } from './commands/submit-handover-card.ts';
+export { decideIntake } from './commands/decide-intake.ts';
