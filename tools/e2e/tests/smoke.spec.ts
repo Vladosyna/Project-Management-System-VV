@@ -1,6 +1,6 @@
 // F0.9 / F0.11 e2e smoke: an invited admin gets in with password + TOTP, sees the shell from the Main
 // mockup in EN and 中文, navigates, adds a passkey and signs in with it (ADR-002 passkey gap).
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test, type Browser, type Page } from '@playwright/test';
 import { Secret, TOTP } from 'otpauth';
 
 const PASSWORD = 'correct horse battery staple';
@@ -259,6 +259,43 @@ test('a PM comments on a Site with a mention turns it into an action and records
   await expect(pm.getByText('Saved.')).toBeVisible();
 });
 
+test('a director sets the gates of a client and a country; an admin may not see them (D-32)', async ({
+  page,
+  browser,
+}) => {
+  await signInWithPassword(page);
+  await page.goto('/admin');
+  await expect(page.getByText('Only a director or sponsor can see gate templates.')).toBeVisible();
+
+  const director = await join(browser, page, 'director.e2e@example.com', 'Person 03', ['director']);
+  await director.getByRole('link', { name: 'Admin' }).click();
+  await expect(director.getByText('No gate templates yet.')).toBeVisible();
+  // Base template: two gates, typed in reverse and reordered; the key comes from the name.
+  await director.getByLabel('Template name').fill('Standard');
+  await director.getByLabel('Gate 1', { exact: true }).fill('Training done');
+  await director.getByRole('button', { name: 'Add gate' }).click();
+  await director.getByLabel('Gate 2', { exact: true }).fill('Site survey');
+  await expect(director.getByLabel('Key of gate 2')).toHaveValue('site_survey');
+  await director.getByRole('button', { name: 'Move up gate 2' }).click();
+  await director.getByRole('button', { name: 'Save template' }).click();
+  await expect(director.getByText('Saved.')).toBeVisible();
+  const base = director.getByRole('row', { name: /^All projects \(base\) Standard/ });
+  await expect(base.getByText('Site survey → Training done')).toBeVisible();
+  // The same client in Spain gets its own gates.
+  await director.getByLabel('Client').selectOption({ label: 'CLIENTA — Client A' });
+  await director.getByLabel('Country').fill('es');
+  await director.getByLabel('Template name').fill('Client A Spain');
+  await director.getByRole('button', { name: 'Add gate' }).click();
+  await director.getByLabel('Gate 3', { exact: true }).fill('Landlord sign-off');
+  await director.getByRole('button', { name: 'Save template' }).click();
+  const spain = director.getByRole('row', { name: /^CLIENTA · ES Client A Spain/ });
+  await expect(spain.getByText('Site survey → Training done → Landlord sign-off')).toBeVisible();
+  await director.screenshot({ path: 'test-results/gate-templates-en.png', fullPage: true });
+  await director.getByRole('button', { name: 'Archive: Client A Spain' }).click();
+  await expect(spain).toBeHidden();
+  await expect(base).toBeVisible();
+});
+
 /** Screens built with `pnpm gen:screen` — each must open for a signed-in user and show its title. */
 const SCREENS: { path: string; heading: string }[] = [
   { path: '/portfolio', heading: 'Portfolio' },
@@ -286,4 +323,27 @@ async function signInWithPassword(page: Page) {
   await page.getByLabel('Code from your authenticator app').fill(code());
   await page.getByRole('button', { name: 'Verify' }).click();
   await expectShell(page);
+}
+
+/** The signed-in admin invites a staff member, who joins with password + TOTP; returns their page. */
+async function join(browser: Browser, admin: Page, email: string, name: string, roles: string[]) {
+  const res = await admin.request.post('/api/users/invitations', { data: { email, roles } });
+  expect(res.status()).toBe(201);
+  const { link } = (await res.json()) as { link: string };
+  const page = await (await browser.newContext()).newPage();
+  await page.goto(link);
+  await page.getByLabel('Your name').fill(name);
+  await page.getByLabel('Password').fill(PASSWORD);
+  await page.getByRole('button', { name: 'Create account' }).click();
+  await expect(page.getByRole('heading', { name: 'Set up two-factor authentication' })).toBeVisible();
+  await page.getByLabel('Password').fill(PASSWORD);
+  await page.getByRole('button', { name: 'Continue' }).click();
+  await expect(page.getByRole('img', { name: 'QR code for the authenticator app' })).toBeVisible();
+  const secret = (await page.getByTestId('totp-secret').textContent()) ?? '';
+  await page
+    .getByLabel('Code from your authenticator app')
+    .fill(new TOTP({ secret: Secret.fromBase32(secret.trim()) }).generate());
+  await page.getByRole('button', { name: 'Confirm' }).click();
+  await expect(page.getByRole('heading', { level: 1 })).toContainText(name);
+  return page;
 }
