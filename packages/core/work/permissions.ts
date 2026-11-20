@@ -37,7 +37,7 @@ export const workPermissions = {
   }),
   raiseAlert: permission('work.alert.raise', {
     description:
-      "Raise an automatic alert (e.g. R15 device offline) as an internal action owned by the project's PM (system only)",
+      "Raise an automatic alert (e.g. R15 device offline) as an internal action owned by the project's PM or a named owner (system only)",
     roles: ['system'],
   }),
   resolveAlert: permission('work.alert.resolve', {

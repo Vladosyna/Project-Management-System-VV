@@ -6,3 +6,4 @@ export { submitHandoverCard } from './commands/submit-handover-card.ts';
 export { authoriseConditionalStart } from './commands/authorise-conditional-start.ts';
 export { decideIntake } from './commands/decide-intake.ts';
 export { intakeRegister } from './queries/intake-register.ts';
+export { expireConditions } from './commands/expire-conditions.ts';

@@ -22,6 +22,7 @@ External roles (`client`, `partner`) are switched off in the checker until the V
 | `identity.user.invite` | Invite a new staff user by link | ✓ |  |  |  |  |  |  | ✓ |  |  |  |
 | `identity.user.read` | See the user list with roles and MFA status | ✓ |  |  |  |  |  |  | ✓ |  |  |  |
 | `intake.conditionalStart.authorise` | Authorise Delivery to start before acceptance, naming the missing items and a deadline (SOP-DEL-01 §9) |  |  |  |  |  |  | ✓ |  |  |  |  |
+| `intake.conditions.expire` | Mark intake conditions past their deadline as expired, for the alert to Sales owner and Delivery Director (E2 AC3) |  |  |  |  |  |  |  |  |  |  | ✓ |
 | `intake.handoverCard.save` | Save the Handover Card draft of a project: Annex B content and the §6 items it covers (SOP-DEL-01 §5 step 2) | ✓ |  | ✓ |  |  |  |  |  |  |  |  |
 | `intake.handoverCard.submit` | Submit the Handover Card for intake review; refused while a §6 item is missing (SOP-DEL-01 §5 step 3) | ✓ |  | ✓ |  |  |  |  |  |  |  |  |
 | `intake.register.read` | Intake Register: each project's submissions, decision, working days to acceptance and returns (SOP-DEL-01 §12) | ✓ |  |  |  |  | ✓ | ✓ |  |  |  |  |
@@ -46,7 +47,7 @@ External roles (`client`, `partner`) are switched off in the checker until the V
 | `work.action.complete` | Mark an action done (its owner, or a director or PM) | ✓ | ✓ | ✓ | ✓ |  |  | ✓ |  |  |  |  |
 | `work.action.create` | Create an action with one owner and a due date (SOP-DEL-03) | ✓ | ✓ | ✓ | ✓ |  |  | ✓ |  |  |  |  |
 | `work.action.list` | See open actions by project or owner | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |  |  |  |
-| `work.alert.raise` | Raise an automatic alert (e.g. R15 device offline) as an internal action owned by the project's PM (system only) |  |  |  |  |  |  |  |  |  |  | ✓ |
+| `work.alert.raise` | Raise an automatic alert (e.g. R15 device offline) as an internal action owned by the project's PM or a named owner (system only) |  |  |  |  |  |  |  |  |  |  | ✓ |
 | `work.alert.resolve` | Withdraw the open actions of alerts that cleared, e.g. a device back online (system only) |  |  |  |  |  |  |  |  |  |  | ✓ |
 | `work.comment.add` | Comment on a project, @mentioning staff (E5 AC2) | ✓ | ✓ | ✓ | ✓ | ✓ |  | ✓ |  |  |  |  |
 | `work.comment.toAction` | Turn a comment into an action with an owner and a due date (E5 AC2) | ✓ | ✓ |  |  |  |  |  |  |  |  |  |

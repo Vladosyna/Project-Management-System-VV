@@ -74,4 +74,11 @@ describe('work.alert.raise', () => {
     ]);
     expect(await countRows(w.testDb.url, 'audit_event WHERE command = $1', [raiseAlert.name])).toBe(3);
   });
+
+  it('an alert may name its owner instead of the PM (expired intake condition → Sales owner, director)', async () => {
+    const sales = aStaffActor({ roles: ['sales'] });
+    const r = await raise({ ...alert('COND:c-1:s'), ownerId: sales.id });
+    expect(r.created).toHaveLength(1);
+    expect(await actions(`source_ref = 'COND:c-1:s' AND owner_id = $1`, [sales.id])).toBe(1);
+  });
 });

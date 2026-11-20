@@ -11,6 +11,7 @@ import {
   isNotNull,
   isNull,
   site,
+  userRole,
   sql,
   type Tx,
 } from '@ocs/db';
@@ -149,4 +150,47 @@ export async function submissions(tx: Tx) {
     .leftJoin(intakeDecision, eq(intakeDecision.cardId, handoverCard.id))
     .where(and(isNotNull(handoverCard.submittedAt), isNull(handoverCard.archivedAt)))
     .orderBy(site.projectId, handoverCard.version);
+}
+
+/** E2 AC3: open conditions whose deadline has passed, locked, with what the alert needs. */
+export async function lockOverdueConditions(tx: Tx, today: string) {
+  return tx
+    .select({
+      id: intakeCondition.id,
+      itemCode: intakeCondition.itemCode,
+      deadline: intakeCondition.deadline,
+      siteId: site.id,
+      projectId: site.projectId,
+      content: handoverCard.content,
+    })
+    .from(intakeCondition)
+    .innerJoin(intakeDecision, eq(intakeDecision.id, intakeCondition.decisionId))
+    .innerJoin(handoverCard, eq(handoverCard.id, intakeDecision.cardId))
+    .innerJoin(site, eq(site.id, handoverCard.siteId))
+    .where(
+      and(
+        eq(intakeCondition.status, 'open'),
+        isNull(intakeCondition.archivedAt),
+        sql`${intakeCondition.deadline} < ${today}`,
+      ),
+    )
+    .for('update', { of: intakeCondition });
+}
+
+export async function expireConditions(tx: Tx, ids: readonly string[]) {
+  if (ids.length > 0) {
+    await tx
+      .update(intakeCondition)
+      .set({ status: 'expired' })
+      .where(inArray(intakeCondition.id, [...ids]));
+  }
+}
+
+/** Holders of the Delivery Director role (SOP-DEL-01 §4). */
+export async function directorIds(tx: Tx) {
+  const rows = await tx
+    .select({ userId: userRole.userId })
+    .from(userRole)
+    .where(and(eq(userRole.role, 'director'), isNull(userRole.revokedAt)));
+  return [...new Set(rows.map((r) => r.userId))].sort();
 }
