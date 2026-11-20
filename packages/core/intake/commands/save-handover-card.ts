@@ -7,9 +7,8 @@ import { z } from 'zod';
 import { Conflict, defineCommand, NotFound, ValidationFailed } from '../../kernel/index.ts';
 import { intakePermissions } from '../permissions.ts';
 import {
-  hasAcceptedCard,
+  cardHistory,
   insertCard,
-  lastVersion,
   lockActiveSite,
   openCard,
   replaceItems,
@@ -61,14 +60,17 @@ export const saveHandoverCard = defineCommand({
 
     const card = await openCard(ctx.tx, project.id);
     if (card?.status === 'submitted') throw new Conflict('the card is under intake review');
+    const history = await cardHistory(ctx.tx, project.id);
     const tier = decidePackageTier({
       projectType,
-      siteFolderAccepted: await hasAcceptedCard(ctx.tx, project.id),
+      siteFolderAccepted: history.some(
+        (h) => h.status === 'accepted' || h.status === 'accepted_with_conditions',
+      ),
       installsOrConfigures: i.installsOrConfigures,
       newClientOrPlace: i.newClientOrPlace,
     });
     const id = card?.id ?? ctx.newId();
-    const version = card?.version ?? (await lastVersion(ctx.tx, project.id)) + 1;
+    const version = card?.version ?? Math.max(0, ...history.map((h) => h.version)) + 1;
     if (card) await updateCard(ctx.tx, id, { content: i.content, package: tier.tier });
     else {
       await insertCard(ctx.tx, {

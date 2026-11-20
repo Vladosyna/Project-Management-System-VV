@@ -1,5 +1,5 @@
 // intake repository — the only place in this module that touches tables.
-import { and, desc, eq, handoverCard, handoverItem, inArray, isNull, site, sql, type Tx } from '@ocs/db';
+import { and, eq, handoverCard, handoverItem, inArray, isNull, site, sql, type Tx } from '@ocs/db';
 
 /** The active project, locked until the transaction ends. */
 export async function lockActiveSite(tx: Tx, id: string) {
@@ -28,29 +28,12 @@ export async function openCard(tx: Tx, siteId: string) {
   )[0];
 }
 
-export async function lastVersion(tx: Tx, siteId: string) {
-  const [row] = await tx
-    .select({ version: handoverCard.version })
+/** Every card version of the project, for the next version number and §3 "folder already accepted". */
+export async function cardHistory(tx: Tx, siteId: string) {
+  return tx
+    .select({ version: handoverCard.version, status: handoverCard.status })
     .from(handoverCard)
-    .where(eq(handoverCard.siteId, siteId))
-    .orderBy(desc(handoverCard.version))
-    .limit(1);
-  return row?.version ?? 0;
-}
-
-/** SOP-DEL-01 §3: the site's folder was accepted in an earlier intake. */
-export async function hasAcceptedCard(tx: Tx, siteId: string) {
-  const rows = await tx
-    .select({ id: handoverCard.id })
-    .from(handoverCard)
-    .where(
-      and(
-        eq(handoverCard.siteId, siteId),
-        inArray(handoverCard.status, ['accepted', 'accepted_with_conditions']),
-      ),
-    )
-    .limit(1);
-  return rows.length > 0;
+    .where(eq(handoverCard.siteId, siteId));
 }
 
 export async function insertCard(tx: Tx, row: typeof handoverCard.$inferInsert) {
