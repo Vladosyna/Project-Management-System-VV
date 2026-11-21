@@ -45,6 +45,7 @@ Start: anything that changes a status, a date or an owner is a **proposal the pe
 ### Keep it current — with every change
 - **Decisions**: a new or changed decision → a new entry in `01-decisions.md` with date and who decided (arch/ branch). Never edit an old entry's meaning; supersede it.
 - **AI surface (D-33)**: new commands and queries come from `pnpm gen:command` / `gen:query`, which register them for AI automatically. Give each permission a **description an AI can act on**: what it does, for whom, with the SOP or epic reference. The registry test fails on weak descriptions — fix the description, never the test.
+- **User guide** (`docs/guide/user-guide.md`, Vlad 21 Nov): every change a person sees or does updates the guide in the same PR — screen, exact button names from the EN catalog, who may use it. Only what is merged and working.
 - **This file and `apps/mcp/src/instructions.ts`**: when a rule for agents changes, update both in the same PR.
 - **Permission matrix**: `pnpm gen:matrix` after any role change.
 - **Roadmap and open questions**: mark what shipped in `05-roadmap.md`; move answered questions out of the open list in `01-decisions.md` with the answer.
