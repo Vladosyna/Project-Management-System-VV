@@ -90,5 +90,68 @@ The full list is generated from the code: `docs/ocs/permission-matrix.md`.
 
 ---
 
+## 9. Coming — planned features
+
+Each section below is a placeholder for a feature on the roadmap (`docs/ocs/05-roadmap.md`). **Planned — not available yet** means exactly that: it is not in OCS today. When a feature ships, its placeholder is replaced by real instructions (screen, buttons, who may use it) in the same PR, and it moves up into the sections above. Targets are the roadmap's, not promises.
+
+### 9.1 Projects (menu **Projects**) — Planned — not available yet
+Client → programme → country → city → project hierarchy (SOP-DEL-02), Project IDs `CLIENT-CC-CITY-NNN`, folder standard L/S per site and changing it; partners with their client-facing label (Partner A/B/C). *Target: pilot / January.*
+
+### 9.2 Intake disputes — Planned — not available yet
+When Sales disagrees with a **Returned** decision: an escalation record to the sponsor with a 2-working-day timer (SOP-DEL-01 §9). *Target: pilot.*
+
+### 9.3 Handover Card — full Annex B sections — Planned — not available yet
+Stakeholders, commercial details, communication rules, open items and the change log as form sections, in addition to today's checklist. *Target: pilot.*
+
+### 9.4 Acceptance evidence — Planned — not available yet
+On **Lifecycle**: the Installation Acceptance Form (standard S) or the Acceptance Certificate (standard L) attached as a file reference when recording "accepted" (SOP-DEL-04). *Target: pilot.*
+
+### 9.5 Device import — Planned — not available yet
+Import devices from Excel/CSV with a dry-run preview of what would change, safe to run twice; source records per device (packing list, as-built, platform) for reconciliation. *Target: January.*
+
+### 9.6 Cases (menu **Cases**) — Planned — not available yet
+One case per problem (`CS-nnnn`) from the first email to the fix: owner, priority, internal ETA and committed client date, work items per team with ETAs (a reason is required to change one), a timeline of messages and changes, a client-facing title and view, and closing with root cause and fix type. *Target: pilot / January.*
+
+### 9.7 Mail intake — Planned — not available yet
+The case mailbox is read automatically; emails attach to their case or wait in an inbox for a person to confirm (attach / new case / action / not a case). Client replies are prepared as **drafts in your own mailbox** — OCS never sends. *Target: January.*
+
+### 9.8 More alerts — Planned — not available yet
+More automatic checks (domain rules R5–R23) arriving as actions with owner, level and due date, run hourly. *Target: pilot → January.*
+
+### 9.9 DingTalk notices and cards — Planned — not available yet
+Work notices to the person assigned (new work item, ETA due, alert) with a link to OCS; later interactive cards (accept / ask / reassign / set ETA) for R&D. Staff only, never clients. *Target: pilot (notices), January (cards).*
+
+### 9.10 Imports of existing trackers — Planned — not available yet
+Existing project trackers, the quote register and device lists brought in as actions/cases with their source, after a preview and the PM's confirmation; credentials found in sources are dropped. *Target: pilot.*
+
+### 9.11 Reports — Planned — not available yet
+The Monday pack per project exported from OCS data; the Intake Register monthly report. *Target: pilot.*
+
+### 9.12 AI assistant inside OCS — Planned — not available yet
+A central AI agent that reads the case mailbox and DingTalk messages and **proposes** (matches, summaries, ETAs found in text) for a person to accept, edit or reject. *Target: January.*
+
+### 9.13 Knowledge and capability matrix (menu **Knowledge**) — Planned — not available yet
+What each device/algorithm can do, maintained by hand; links to documents in DingTalk Drive. *Target: January.*
+
+### 9.14 Platform & algorithms (menu **Platform & algorithms**) — Planned — not available yet
+Algorithm and firmware views across projects; calibration queue and accuracy-test register. *Target: January → V1.1.*
+
+### 9.15 Commercial (menu **Commercial**) — Planned — not available yet
+Quote generator from the point design; later margin per project and the accounting (Kingdee) link. *Target: V1.1 → V2.*
+
+### 9.16 Client portal (menu **Client portal**) — Planned — not available yet
+Clients see their own projects and cases (client-visible items only, partners anonymous), with their own accounts and MFA, after an independent security review; site information forms (CIP-S/CIP-L) by link. *Target: V1.1.*
+
+### 9.17 Partner app (menu **Partner app**) — Planned — not available yet
+A phone app for installation partners (their assigned work only). *Target: V1.1.*
+
+### 9.18 Change calendar — Planned — not available yet
+Planned changes with a client-notice gate (rule R22) before anything client-affecting happens. *Target: V1.1.*
+
+### 9.19 Service monitoring and client reports — Planned — not available yet
+Hypercare monitors (data gaps, spikes, time shifts), a monthly client service report, decommissioning with a data-deletion record. *Target: V2.*
+
+---
+
 ## Keeping this guide current
-Every PR that adds or changes something a person sees or does updates this guide in the same PR: the screen, the button names exactly as in `packages/i18n/src/catalog/en.ts`, who may use it. Describe only what is merged and working — never planned features as if they existed (`docs/ocs/12-ai-agents.md`, Part B).
+Every PR that adds or changes something a person sees or does updates this guide in the same PR: the screen, the button names exactly as in `packages/i18n/src/catalog/en.ts`, who may use it. Describe only what is merged and working — never planned features as if they existed. When a planned feature ships, replace its placeholder in section 9 with real instructions and move it into the sections above (`docs/ocs/12-ai-agents.md`, Part B).
