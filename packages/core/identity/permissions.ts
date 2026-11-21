@@ -45,4 +45,9 @@ export const identityPermissions = {
       'partner',
     ],
   }),
+  revokeAgent: permission('identity.agent.revoke', {
+    description:
+      'Disconnect an AI agent the person connected to OCS: revoke its tokens and the consent at once (D-33)',
+    roles: ['director', 'pm', 'sales', 'rnd', 'finance', 'management', 'sponsor', 'admin'],
+  }),
 };

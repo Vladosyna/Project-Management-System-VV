@@ -249,6 +249,32 @@ export function createApp(rt: Runtime): Hono {
     return c.json(await rt.kernel.read(intakeRegister, c.get('actor'), month ? { month } : {}));
   });
 
+  // D-33: the AI agents the person connected (OAuth consents), and disconnecting one (tokens revoked at once).
+  api.get('/agents', async (c) => {
+    const headers = c.req.raw.headers;
+    const consents = (await rt.auth.api.getOAuthConsents({ headers })) as {
+      clientId: string;
+      scopes: string[] | string;
+      createdAt?: string | Date;
+    }[];
+    const agents = await Promise.all(
+      consents.map(async (consent) => {
+        const client = (await rt.auth.api
+          .getOAuthClientPublic({ query: { client_id: consent.clientId }, headers })
+          .catch(() => null)) as { client_name?: string } | null;
+        return {
+          clientId: consent.clientId,
+          name: client?.client_name ?? null,
+          since: consent.createdAt ? new Date(consent.createdAt).toISOString() : null,
+        };
+      }),
+    );
+    return c.json(agents);
+  });
+  api.post('/agents/:clientId/revoke', async (c) =>
+    c.json(await rt.identity.revokeAgent(c.get('actor'), c.req.param('clientId'))),
+  );
+
   // D-32: gate templates by scope (base, client, client + country); a director or above changes them.
   api.get('/gate-templates', async (c) => c.json(await rt.kernel.read(gateTemplates, c.get('actor'), {})));
   api.post('/gate-templates', async (c) =>

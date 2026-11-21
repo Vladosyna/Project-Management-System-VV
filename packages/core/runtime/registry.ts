@@ -28,6 +28,12 @@ const MODULES: Record<string, Record<string, unknown>> = {
 
 export type Operation = Command | Query;
 
+/**
+ * Operations that are one step of a service flow, not an action on their own — offered to no AI agent.
+ * identity.agent.revoke only records the audit; IdentityService.revokeAgent revokes the tokens first.
+ */
+const NOT_FOR_AGENTS = new Set(['identity.agent.revoke']);
+
 export interface OperationInfo {
   readonly name: string;
   readonly kind: 'command' | 'query';
@@ -81,5 +87,7 @@ export function offeredOperations(): readonly OperationInfo[] {
  * operations (sync, alert jobs) are never offered. The kernel checks again on every call.
  */
 export function operationsFor(actor: Pick<Actor, 'roles'>): readonly OperationInfo[] {
-  return operations().filter((o) => o.roles.some((r) => r !== 'system' && actor.roles.includes(r)));
+  return operations().filter(
+    (o) => !NOT_FOR_AGENTS.has(o.name) && o.roles.some((r) => r !== 'system' && actor.roles.includes(r)),
+  );
 }

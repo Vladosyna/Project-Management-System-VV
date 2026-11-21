@@ -4,6 +4,7 @@ import { AcceptInvitationRequest, type Actor } from '@ocs/contracts';
 import { systemActor, ValidationFailed, type Kernel } from '../kernel/index.ts';
 import { invitationScope, type Auth } from './auth.ts';
 import { acceptInvitation } from './commands/accept-invitation.ts';
+import { revokeAgent } from './commands/revoke-agent.ts';
 import { invitationByToken } from './queries/invitation-by-token.ts';
 import { loadActor } from './repository.ts';
 
@@ -14,6 +15,11 @@ export interface IdentityService {
   acceptInvitation(input: unknown, headers: Headers): Promise<{ userId: string; headers: Headers }>;
   /** The actor for a signed-in user, or undefined when archived or unknown. */
   loadActor(userId: string): Promise<Actor | undefined>;
+  /**
+   * D-33: disconnect an AI agent the person connected — its access and refresh tokens are revoked at once (the
+   * OAuth provider checks `revoked` on every use) and the consent is removed, so a new connection asks again.
+   */
+  revokeAgent(person: Actor, clientId: string): Promise<{ clientId: string }>;
 }
 
 export function createIdentityService(deps: { kernel: Kernel; auth: Auth; db: Db }): IdentityService {
@@ -38,6 +44,26 @@ export function createIdentityService(deps: { kernel: Kernel; auth: Auth; db: Db
       return account;
     },
     loadActor: (userId) => loadActor(deps.db, userId),
+    async revokeAgent(person, clientId) {
+      const { adapter } = await deps.auth.$context;
+      const mine = [
+        { field: 'userId', value: person.id },
+        { field: 'clientId', value: clientId },
+      ];
+      const now = new Date();
+      const refreshTokens = await adapter.updateMany({
+        model: 'oauthRefreshToken',
+        where: mine,
+        update: { revoked: now },
+      });
+      const accessTokens = await adapter.updateMany({
+        model: 'oauthAccessToken',
+        where: mine,
+        update: { revoked: now },
+      });
+      await adapter.deleteMany({ model: 'oauthConsent', where: mine });
+      return deps.kernel.execute(revokeAgent, person, { clientId, accessTokens, refreshTokens }, 'web');
+    },
   };
 }
 
