@@ -9,8 +9,8 @@ import { createOcsMcpServer } from './server.ts';
 
 export interface McpHttpDeps {
   readonly kernel: Pick<Kernel, 'execute' | 'read'>;
-  /** The person behind an access token, or null when the token is not active (expired, revoked, unknown). */
-  readonly personOf: (accessToken: string) => Promise<string | null>;
+  /** The person behind an access token and the audit label of the agent, or null when the token is not active. */
+  readonly personOf: (accessToken: string) => Promise<{ userId: string; via: string } | null>;
   /** The person as an actor (roles, archived users refused), or null. */
   readonly loadActor: (userId: string) => Promise<Actor | undefined>;
   /** Absolute URL of /.well-known/oauth-protected-resource for this deployment. */
@@ -31,11 +31,11 @@ export function createMcpHttpHandler(deps: McpHttpDeps) {
     const header = request.headers.get('authorization') ?? '';
     const token = /^Bearer\s+(.+)$/i.exec(header)?.[1]?.trim();
     if (!token) return unauthorized(deps.resourceMetadataUrl);
-    const userId = await deps.personOf(token);
-    const person = userId ? await deps.loadActor(userId) : null;
-    if (!person) return unauthorized(deps.resourceMetadataUrl, 'invalid_token');
-    // Stateless (no session id): each request carries its token. Audit shows "<person> via mcp" (D-07). The client's name comes with token introspection (next step).
-    const actor: Actor = { ...person, via: 'mcp' };
+    const agent = await deps.personOf(token);
+    const person = agent ? await deps.loadActor(agent.userId) : undefined;
+    if (!agent || !person) return unauthorized(deps.resourceMetadataUrl, 'invalid_token');
+    // Stateless (no session id): each request carries its token. Audit shows "<person> via mcp:<agent>" (D-07).
+    const actor: Actor = { ...person, via: agent.via };
     const server = createOcsMcpServer(deps.kernel, actor);
     const transport = new WebStandardStreamableHTTPServerTransport({ enableJsonResponse: true });
     await server.connect(transport);

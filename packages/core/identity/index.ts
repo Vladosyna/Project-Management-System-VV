@@ -11,3 +11,4 @@ export { invitationByToken } from './queries/invitation-by-token.ts';
 export { me } from './queries/me.ts';
 export type { AuthPool } from './repository.ts';
 export { revokeAgent } from './commands/revoke-agent.ts';
+export { setupAgentResource } from './commands/setup-agent-resource.ts';
