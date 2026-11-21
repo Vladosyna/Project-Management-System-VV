@@ -35,7 +35,7 @@ External roles (`client`, `partner`) are switched off in the checker until the V
 | `lifecycle.siteLifecycle.read` | See a project's steps, gates, installation plan and readiness (E3) | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |  |  |  |
 | `lifecycle.step.record` | Record a step reached on a project — base step or gate — with date and evidence (E3 AC1) | ✓ | ✓ | ✓ |  |  |  |  |  |  |  |  |
 | `org.client.create` | Create a client (top of the SOP-DEL-02 hierarchy) | ✓ |  |  |  |  |  |  | ✓ |  |  |  |
-| `org.client.list` | See the client list | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |  |  |  |
+| `org.client.list` | See the clients the signed-in person may see: short code and name (E1) | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |  |  |  |
 | `org.partner.assign` | Assign a partner to a client under the next Partner letter | ✓ | ✓ |  |  |  |  |  | ✓ |  |  |  |
 | `org.partner.create` | Register a partner company (real name, staff only) | ✓ |  |  |  |  |  |  | ✓ |  |  |  |
 | `org.partner.labels` | See a client's partners as Partner A/B/C (no real names) | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |  |  |
@@ -43,7 +43,7 @@ External roles (`client`, `partner`) are switched off in the checker until the V
 | `org.programme.create` | Create a programme under a client (optional level, SOP-DEL-02 §3) | ✓ |  |  |  |  |  |  | ✓ |  |  |  |
 | `org.site.changeStandard` | Change a site's standard L ↔ S (D-25) | ✓ | ✓ |  |  |  |  |  | ✓ |  |  |  |
 | `org.site.create` | Create a project/site; generates its Project ID | ✓ |  |  |  |  |  |  | ✓ |  |  |  |
-| `org.site.list` | See projects/sites | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |  |  |  |
+| `org.site.list` | See the projects/sites the signed-in person may see, with Project ID, city and standard (E1) | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |  |  |  |
 | `org.site.setDeviceAlerts` | Link a project to its mall on the device platform and switch its offline alerts on or off (E4) | ✓ | ✓ |  |  |  |  |  |  |  |  |  |
 | `work.action.complete` | Mark an action done (its owner, or a director or PM) | ✓ | ✓ | ✓ | ✓ |  |  | ✓ |  |  |  |  |
 | `work.action.create` | Create an action with one owner and a due date (SOP-DEL-03) | ✓ | ✓ | ✓ | ✓ |  |  | ✓ |  |  |  |  |
