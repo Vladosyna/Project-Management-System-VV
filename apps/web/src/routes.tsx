@@ -14,6 +14,7 @@ import { loadSession, type Me } from './api.ts';
 import { AcceptInvitationPage } from './pages/accept-invitation.tsx';
 import { HomePage, NotYetPage } from './pages/home.tsx';
 import { LoginPage } from './pages/login.tsx';
+import { OAuthConsentPage } from './pages/oauth-consent.tsx';
 import { SetupMfaPage } from './pages/setup-mfa.tsx';
 import { PortfolioPage } from './pages/portfolio.tsx';
 import { ActionsPage } from './pages/actions.tsx';
@@ -131,6 +132,8 @@ const notYetRoutes = NAV.filter((n) => n.href !== '/' && !(n.href in SCREENS)).m
 const routeTree = rootRoute.addChildren([
   shellRoute.addChildren([homeRoute, siteRoute, siteTabRoute, ...screenRoutes, ...notYetRoutes]),
   createRoute({ getParentRoute: () => rootRoute, path: '/login', component: LoginPage }),
+  // D-33: an AI client asks to act for the signed-in person (OAuth consent, apps/mcp).
+  createRoute({ getParentRoute: () => rootRoute, path: '/oauth/consent', component: OAuthConsentPage }),
   createRoute({
     getParentRoute: () => rootRoute,
     path: '/accept-invitation',

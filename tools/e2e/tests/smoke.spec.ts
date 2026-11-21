@@ -1,12 +1,14 @@
 // F0.9 / F0.11 e2e smoke: an invited admin gets in with password + TOTP, sees the shell from the Main
 // mockup in EN and 中文, navigates, adds a passkey and signs in with it (ADR-002 passkey gap).
 import { expect, test, type Browser, type Page } from '@playwright/test';
+import { createHash, randomBytes } from 'node:crypto';
 import { Secret, TOTP } from 'otpauth';
 
 const PASSWORD = 'correct horse battery staple';
 let totp: TOTP;
 
 const code = () => totp.generate();
+const code_ = code;
 
 async function expectShell(page: Page) {
   await expect(page.getByRole('navigation', { name: 'Main' })).toBeVisible();
@@ -375,6 +377,66 @@ test('the Delivery Director decides on the submitted card: a blocking item is re
     director.getByRole('row', { name: /^CLIENTA-ES-MAD-001 1 .* Accepted with conditions/ }),
   ).toBeVisible();
   await director.screenshot({ path: 'test-results/intake-register-en.png', fullPage: true });
+});
+
+test('an AI client signs in as the person with OAuth: login with TOTP, consent, code, token (D-33)', async ({
+  browser,
+}) => {
+  const page = await (await browser.newContext()).newPage();
+  const callback = 'http://127.0.0.1:33418/callback';
+  const reg = await page.request.post('/api/auth/oauth2/register', {
+    data: { client_name: 'Test agent', redirect_uris: [callback], token_endpoint_auth_method: 'none' },
+  });
+  expect(reg.status()).toBe(201);
+  const { client_id: clientId } = (await reg.json()) as { client_id: string };
+  const verifier = randomBytes(32).toString('base64url');
+  const challenge = createHash('sha256').update(verifier).digest('base64url');
+  let code = '';
+  await page.route(`${callback}**`, async (route) => {
+    code = new URL(route.request().url()).searchParams.get('code') ?? '';
+    await route.fulfill({ body: 'agent callback' });
+  });
+  const q = new URLSearchParams({
+    response_type: 'code',
+    client_id: clientId,
+    redirect_uri: callback,
+    scope: 'openid offline_access',
+    state: 'e2e',
+    code_challenge: challenge,
+    code_challenge_method: 'S256',
+  });
+  await page.goto(`/api/auth/oauth2/authorize?${q.toString()}`);
+  const ocs = new URL(page.url()).origin;
+  // The normal OCS sign-in, with its MFA.
+  await page.getByLabel('Email').fill(process.env.OCS_E2E_ADMIN_EMAIL ?? '');
+  await page.getByLabel('Password').fill(PASSWORD);
+  await page.getByRole('button', { name: 'Sign in', exact: true }).click();
+  await page.getByLabel('Code from your authenticator app').fill(code_());
+  await page.getByRole('button', { name: 'Verify' }).click();
+  await expect(page.getByRole('heading', { name: 'Allow Test agent to work in OCS for you?' })).toBeVisible();
+  await expect(page.getByText(/^It can never send anything to a client/)).toBeVisible();
+  await page.screenshot({ path: 'test-results/oauth-consent-en.png', fullPage: true });
+  await page.getByRole('button', { name: 'Allow' }).click();
+  await expect.poll(() => code).not.toBe('');
+  // The agent's server exchanges the code: no browser, no cookies, no Origin header.
+  const agent = (await browser.newContext({ baseURL: ocs })).request;
+  const token = await agent.post('/api/auth/oauth2/token', {
+    form: {
+      grant_type: 'authorization_code',
+      code,
+      redirect_uri: callback,
+      client_id: clientId,
+      code_verifier: verifier,
+      resource: `${ocs}/mcp`,
+    },
+  });
+  expect(token.status(), await token.text()).toBe(200);
+  const body = (await token.json()) as { access_token?: string; refresh_token?: string; token_type?: string };
+  expect([typeof body.access_token, typeof body.refresh_token, body.token_type]).toEqual([
+    'string',
+    'string',
+    'Bearer',
+  ]);
 });
 
 /** Screens built with `pnpm gen:screen` — each must open for a signed-in user and show its title. */
