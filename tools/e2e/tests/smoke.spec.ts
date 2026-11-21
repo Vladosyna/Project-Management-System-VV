@@ -437,6 +437,39 @@ test('an AI client signs in as the person with OAuth: login with TOTP, consent, 
     'string',
     'Bearer',
   ]);
+
+  // MCP over HTTP: no token → 401 pointing at the protected-resource metadata (how clients find the sign-in).
+  const rpc = (method: string, params: Record<string, unknown>, auth?: string) =>
+    agent.post('/mcp', {
+      headers: {
+        accept: 'application/json, text/event-stream',
+        'content-type': 'application/json',
+        ...(auth ? { authorization: `Bearer ${auth}` } : {}),
+      },
+      data: { jsonrpc: '2.0', id: 1, method, params },
+    });
+  const anonymous = await rpc('tools/list', {});
+  expect(anonymous.status()).toBe(401);
+  expect(anonymous.headers()['www-authenticate']).toContain('/.well-known/oauth-protected-resource');
+  const metadata = await agent.get('/.well-known/oauth-protected-resource');
+  expect(((await metadata.json()) as { resource: string }).resource).toBe(`${ocs}/mcp`);
+  // With the person's token: their tools, and a call that goes through the kernel as them.
+  const token_ = body.access_token ?? '';
+  const init = await rpc(
+    'initialize',
+    { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'e2e', version: '1' } },
+    token_,
+  );
+  expect(init.status(), await init.text()).toBe(200);
+  const tools = await rpc('tools/list', {}, token_);
+  const names = ((await tools.json()) as { result: { tools: { name: string }[] } }).result.tools.map(
+    (x) => x.name,
+  );
+  expect(names).toContain('org_site_list');
+  const sites = await rpc('tools/call', { name: 'org_site_list', arguments: {} }, token_);
+  const text =
+    ((await sites.json()) as { result: { content: { text: string }[] } }).result.content[0]?.text ?? '';
+  expect(text).toContain('CLIENTA-ES-MAD-001');
 });
 
 /** Screens built with `pnpm gen:screen` — each must open for a signed-in user and show its title. */

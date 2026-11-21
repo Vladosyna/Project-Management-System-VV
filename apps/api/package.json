@@ -2,7 +2,7 @@
   "name": "@ocs/api",
   "private": true,
   "type": "module",
-  "description": "HTTP API (Hono + zod-openapi). Thin: auth session → core → error mapping",
+  "description": "HTTP API (Hono + zod-openapi). Thin: auth session \u2192 core \u2192 error mapping",
   "exports": {
     ".": "./src/index.ts"
   },
@@ -15,9 +15,11 @@
     "bootstrap-admin": "tsx src/bootstrap-admin.ts"
   },
   "dependencies": {
+    "@better-auth/oauth-provider": "1.7.23",
     "@hono/node-server": "2.1.5",
     "@ocs/contracts": "workspace:*",
     "@ocs/core": "workspace:*",
+    "@ocs/mcp": "workspace:*",
     "hono": "4.13.13"
   },
   "devDependencies": {
