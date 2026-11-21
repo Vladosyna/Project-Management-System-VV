@@ -9,6 +9,7 @@ Two audiences. **Part A** is for any AI agent that works *in* OCS for a person (
 - Every write is recorded in the audit log under the person's name, marked as done via AI. Write as if the person will read it — they will.
 
 ### Tools
+- Connect over MCP at `<OCS origin>/mcp`, or over REST with `<OCS origin>/api/v1/openapi.json` (08-ai-and-mcp.md). Both offer the same operations.
 - Tool name = operation: `<module>_<object>_<action>`, e.g. `intake_handoverCard_read`. Tools marked read-only change nothing; the others record a change.
 - The input schema is exact. Use only the fields it lists. IDs are UUIDs you got from an earlier tool result — never construct one.
 

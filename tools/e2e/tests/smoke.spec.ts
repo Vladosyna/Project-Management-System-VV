@@ -471,12 +471,34 @@ test('an AI client signs in as the person with OAuth: login with TOTP, consent, 
     ((await sites.json()) as { result: { content: { text: string }[] } }).result.content[0]?.text ?? '';
   expect(text).toContain('CLIENTA-ES-MAD-001');
 
+  // The same operations over REST + OpenAPI, for AI platforms without MCP.
+  const spec = (await (await agent.get('/api/v1/openapi.json')).json()) as {
+    paths: Record<string, unknown>;
+    components: { securitySchemes: { ocs: { flows: { authorizationCode: { tokenUrl: string } } } } };
+  };
+  expect(Object.keys(spec.paths)).toContain('/org.site.list');
+  expect(spec.components.securitySchemes.ocs.flows.authorizationCode.tokenUrl).toBe(
+    `${ocs}/api/auth/oauth2/token`,
+  );
+  expect((await agent.post('/api/v1/org.site.list', { data: {} })).status()).toBe(401);
+  const viaRest = await agent.post('/api/v1/org.site.list', {
+    data: {},
+    headers: { authorization: `Bearer ${token_}` },
+  });
+  expect(viaRest.status()).toBe(200);
+  expect(await viaRest.text()).toContain('CLIENTA-ES-MAD-001');
+
   // The person disconnects the agent: listed under AI agents, Disconnect, and its token stops working at once.
   await page.goto('/agents');
   await expect(page.getByRole('row', { name: /^Test agent/ })).toBeVisible();
   await page.getByRole('button', { name: 'Disconnect: Test agent' }).click();
   await expect(page.getByText('No AI agent is connected.')).toBeVisible();
   expect((await rpc('tools/list', {}, token_)).status()).toBe(401);
+  const restAfter = await agent.post('/api/v1/org.site.list', {
+    data: {},
+    headers: { authorization: `Bearer ${token_}` },
+  });
+  expect(restAfter.status()).toBe(401);
 });
 
 /** Screens built with `pnpm gen:screen` — each must open for a signed-in user and show its title. */

@@ -6,7 +6,7 @@ import { createAuthPool, createDatabase, migrateUp } from '@ocs/db';
 export { startScheduledJobs } from '@ocs/db';
 export type { JobScheduler, ScheduledJob } from '@ocs/db';
 /** D-33: every command and query, for the MCP server and the OpenAPI document. */
-export { operations, operationsFor } from './registry.ts';
+export { offeredOperations, operations, operationsFor } from './registry.ts';
 export type { Operation, OperationInfo } from './registry.ts';
 import { createKernel, type Kernel } from '../kernel/index.ts';
 import { createRoleChecker } from '../permissions/index.ts';

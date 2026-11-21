@@ -28,10 +28,11 @@ import {
   recordVisit,
   staffList,
 } from '@ocs/core/work';
-import type { Runtime } from '@ocs/core/runtime';
+import { offeredOperations, operationsFor, type Runtime } from '@ocs/core/runtime';
 import { oauthProviderAuthServerMetadata } from '@better-auth/oauth-provider';
 import { createMcpHttpHandler } from '@ocs/mcp';
 import { errorResponse } from './errors.ts';
+import { openApiDocument } from './openapi.ts';
 
 interface Env {
   Variables: { actor: Actor };
@@ -58,23 +59,47 @@ export function createApp(rt: Runtime): Hono {
   const authServerMetadata = oauthProviderAuthServerMetadata(rt.auth);
   app.get('/.well-known/oauth-authorization-server', (c) => authServerMetadata(c.req.raw));
   app.get('/.well-known/oauth-authorization-server/api/auth', (c) => authServerMetadata(c.req.raw));
+  /** The person behind an active OAuth access token (not expired, not revoked); the OAuth provider decides. */
+  const personOf = async (token: string) => {
+    try {
+      const info = (await rt.auth.api.oauth2UserInfo({
+        headers: new Headers({ authorization: `Bearer ${token}` }),
+      })) as { sub?: string } | null;
+      return info?.sub ?? null;
+    } catch {
+      return null;
+    }
+  };
   const mcp = createMcpHttpHandler({
     kernel: rt.kernel,
     // The person behind an active access token (not expired, not revoked); the OAuth provider decides.
-    personOf: async (token) => {
-      try {
-        const info = (await rt.auth.api.oauth2UserInfo({
-          headers: new Headers({ authorization: `Bearer ${token}` }),
-        })) as { sub?: string } | null;
-        return info?.sub ?? null;
-      } catch {
-        return null;
-      }
-    },
+    personOf,
     loadActor: (userId) => rt.identity.loadActor(userId),
     resourceMetadataUrl,
   });
   app.on(['GET', 'POST', 'DELETE'], '/mcp', (c) => mcp(c.req.raw));
+
+  // D-33: REST + OpenAPI from the same registry, for AI platforms without MCP. The catalogue is public; every
+  // call needs the person's OAuth token and runs through the kernel as them (source 'api', via 'api').
+  app.get('/api/v1/openapi.json', (c) => c.json(openApiDocument(origin, offeredOperations())));
+  app.post('/api/v1/:operation', async (c) => {
+    const token = /^Bearer\s+(.+)$/i.exec(c.req.header('authorization') ?? '')?.[1]?.trim();
+    const userId = token ? await personOf(token) : null;
+    const person = userId ? await rt.identity.loadActor(userId) : undefined;
+    if (!person) {
+      c.header('www-authenticate', `Bearer resource_metadata="${resourceMetadataUrl}"`);
+      return c.json({ error: 'unauthorized' }, 401);
+    }
+    const actor = { ...person, via: 'api' };
+    const op = operationsFor(actor).find((o) => o.name === c.req.param('operation'));
+    if (!op) return c.json({ error: 'not_found', message: 'No such operation for this person' }, 404);
+    const input = await c.req.json<unknown>().catch(() => ({}));
+    const result =
+      op.operation.kind === 'query'
+        ? await rt.kernel.read(op.operation, actor, input)
+        : await rt.kernel.execute(op.operation, actor, input, 'api');
+    return c.json(result ?? null);
+  });
 
   app.post('/api/invitations/accept', async (c) => {
     const { userId, headers } = await rt.identity.acceptInvitation(await c.req.json(), c.req.raw.headers);
