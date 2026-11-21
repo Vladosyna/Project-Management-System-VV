@@ -97,7 +97,8 @@ export function commandPlan(module: string, verbNoun: string, options: AccessOpt
   const object = camel(noun);
   const key = options.key ?? `${module}.${object}.${verb}`;
   assertPermissionKey(key, module);
-  const description = options.description ?? sentence(ws);
+  // D-33: the description is what AI platforms see — a sentence naming the module, until --description says more.
+  const description = options.description ?? `${sentence(ws)} in the ${module} module`;
   const roles = options.roles ?? [];
   return {
     permissionsChanged: true,
@@ -191,7 +192,7 @@ export function queryPlan(module: string, noun: string, options: AccessOptions =
   const id = camel(ws);
   const key = options.key ?? `${module}.${id}.read`;
   assertPermissionKey(key, module);
-  const description = options.description ?? `Read ${ws.join(' ')}`;
+  const description = options.description ?? `Read ${ws.join(' ')} in the ${module} module`;
   const roles = options.roles ?? [];
   return {
     permissionsChanged: true,
