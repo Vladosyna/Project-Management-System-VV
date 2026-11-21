@@ -3,6 +3,7 @@
 // removes and reorders them, saves or archives. Saving replaces the scope's active template; the API refuses
 // other roles. Every string is an i18n key (ocs-ui-screen).
 import { useEffect, useState } from 'react';
+import { AgentResourceSetup } from './agent-resource.tsx';
 import { Button, Card, Form, FormMessage, PageHeader, SelectField, TextField, useI18n } from '@ocs/ui';
 import {
   archiveGateTemplateOf,
@@ -287,6 +288,7 @@ export function AdminPage() {
           </>
         ) : null}
       </Card>
+      <AgentResourceSetup />
     </>
   );
 }

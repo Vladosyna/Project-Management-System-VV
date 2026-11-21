@@ -325,6 +325,13 @@ export const zh = {
   'agents.col.do': '操作',
   'agents.disconnect': '断开',
   'nav.agents': 'AI 助手',
+  'admin.agents.title': 'AI 连接',
+  'admin.agents.intro':
+    '只需设置一次：之后 OCS 通过令牌内省检查每个 AI 助手的令牌——令牌必须为 OCS MCP 签发，审计记录会写明助手名称。',
+  'admin.agents.create': '创建令牌检查客户端',
+  'admin.agents.once': '仅显示这一次。请将两个值放入密钥库并重启 API。',
+  'admin.agents.forbidden': '只有管理员可以设置。',
+  'admin.agents.failed': '无法创建客户端，请重试。',
   'site.tab.overview': '概览',
   'site.tab.devices': '设备',
   'site.tab.actions': '待办',
