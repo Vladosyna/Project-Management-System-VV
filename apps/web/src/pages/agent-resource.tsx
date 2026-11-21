@@ -5,8 +5,8 @@ import { useState } from 'react';
 import { Button, Card, FormMessage, useI18n } from '@ocs/ui';
 
 /** Environment variable names (identifiers, not UI text): the API reads them at start. */
-const ID_VAR = 'OCS_MCP_INTROSPECTION_CLIENT_ID';
-const SECRET_VAR = 'OCS_MCP_INTROSPECTION_CLIENT_SECRET';
+const ENV_PREFIX = 'OCS_MCP_INTROSPECTION_CLIENT_';
+const ENV_NAMES = [`${ENV_PREFIX}ID`, `${ENV_PREFIX}SECRET`] as const;
 
 interface Created {
   readonly clientId: string;
@@ -35,11 +35,11 @@ export function AgentResourceSetup() {
         <div className="ocs-stack">
           <FormMessage tone="ok">{t('admin.agents.once')}</FormMessage>
           <p>
-            {`${ID_VAR} = `}
+            {`${ENV_NAMES[0]} = `}
             <code data-testid="agent-client-id">{created.clientId}</code>
           </p>
           <p>
-            {`${SECRET_VAR} = `}
+            {`${ENV_NAMES[1]} = `}
             <code>{created.clientSecret ?? '—'}</code>
           </p>
         </div>
