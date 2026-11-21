@@ -43,7 +43,7 @@ Tiles with the key numbers; click a tile to open its tab: **Stage** (last step, 
 - **Delivery Director** (submitted card): **Decision** (Accepted / Accepted with conditions / Returned), folder standard, gaps or reasons; for conditions **Add condition** (item, what is missing, deadline within 5 working days) → **Record decision**. Items A1, A4, A6, C2, D1, F1 can never be conditions — OCS refuses and says why. Expired conditions create an action for the Sales owner and the director automatically.
 
 ### Lifecycle (SOP-DEL-04)
-The base steps (card received → card complete → readiness confirmed → go/no-go → installed → accepted) and the project's gates with dates and evidence. **Record a step**: pick the **Step**, **Date**, evidence → **Record step**. **Planned installation** → **Set installation date** (only after "card complete"). A readiness warning appears when the installation is near and readiness is not confirmed.
+The base steps (card received → card complete → readiness confirmed → go/no-go → installed → accepted) and the project's gates with dates and evidence. **Record a step**: pick the **Step**, **Date**, evidence (folder path or document name) → **Record step**. Steps go in order. **Accepted** needs its acceptance evidence: the Installation Acceptance Form (standard S) or the Acceptance Certificate (standard L) — without it OCS refuses the step. **Planned installation** → **Set installation date** (only after "card complete"). A readiness warning appears when the installation is near and readiness is not confirmed.
 
 ### Devices
 Every device with serial, model, platform status, offline since, channels/gates, firmware. **Register device** by **Serial** and **Model**; tick devices → set **Firmware** / algorithm → **Save versions**. Known firmware problems are shown on the affected devices (R&D records them with **Record problem**).
@@ -103,52 +103,49 @@ When Sales disagrees with a **Returned** decision: an escalation record to the s
 ### 9.3 Handover Card — full Annex B sections — Planned — not available yet
 Stakeholders, commercial details, communication rules, open items and the change log as form sections, in addition to today's checklist. *Target: pilot.*
 
-### 9.4 Acceptance evidence — Planned — not available yet
-On **Lifecycle**: the Installation Acceptance Form (standard S) or the Acceptance Certificate (standard L) attached as a file reference when recording "accepted" (SOP-DEL-04). *Target: pilot.*
-
-### 9.5 Device import — Planned — not available yet
+### 9.4 Device import — Planned — not available yet
 Import devices from Excel/CSV with a dry-run preview of what would change, safe to run twice; source records per device (packing list, as-built, platform) for reconciliation. *Target: January.*
 
-### 9.6 Cases (menu **Cases**) — Planned — not available yet
+### 9.5 Cases (menu **Cases**) — Planned — not available yet
 One case per problem (`CS-nnnn`) from the first email to the fix: owner, priority, internal ETA and committed client date, work items per team with ETAs (a reason is required to change one), a timeline of messages and changes, a client-facing title and view, and closing with root cause and fix type. *Target: pilot / January.*
 
-### 9.7 Mail intake — Planned — not available yet
+### 9.6 Mail intake — Planned — not available yet
 The case mailbox is read automatically; emails attach to their case or wait in an inbox for a person to confirm (attach / new case / action / not a case). Client replies are prepared as **drafts in your own mailbox** — OCS never sends. *Target: January.*
 
-### 9.8 More alerts — Planned — not available yet
+### 9.7 More alerts — Planned — not available yet
 More automatic checks (domain rules R5–R23) arriving as actions with owner, level and due date, run hourly. *Target: pilot → January.*
 
-### 9.9 DingTalk notices and cards — Planned — not available yet
+### 9.8 DingTalk notices and cards — Planned — not available yet
 Work notices to the person assigned (new work item, ETA due, alert) with a link to OCS; later interactive cards (accept / ask / reassign / set ETA) for R&D. Staff only, never clients. *Target: pilot (notices), January (cards).*
 
-### 9.10 Imports of existing trackers — Planned — not available yet
+### 9.9 Imports of existing trackers — Planned — not available yet
 Existing project trackers, the quote register and device lists brought in as actions/cases with their source, after a preview and the PM's confirmation; credentials found in sources are dropped. *Target: pilot.*
 
-### 9.11 Reports — Planned — not available yet
+### 9.10 Reports — Planned — not available yet
 The Monday pack per project exported from OCS data; the Intake Register monthly report. *Target: pilot.*
 
-### 9.12 AI assistant inside OCS — Planned — not available yet
+### 9.11 AI assistant inside OCS — Planned — not available yet
 A central AI agent that reads the case mailbox and DingTalk messages and **proposes** (matches, summaries, ETAs found in text) for a person to accept, edit or reject. *Target: January.*
 
-### 9.13 Knowledge and capability matrix (menu **Knowledge**) — Planned — not available yet
+### 9.12 Knowledge and capability matrix (menu **Knowledge**) — Planned — not available yet
 What each device/algorithm can do, maintained by hand; links to documents in DingTalk Drive. *Target: January.*
 
-### 9.14 Platform & algorithms (menu **Platform & algorithms**) — Planned — not available yet
+### 9.13 Platform & algorithms (menu **Platform & algorithms**) — Planned — not available yet
 Algorithm and firmware views across projects; calibration queue and accuracy-test register. *Target: January → V1.1.*
 
-### 9.15 Commercial (menu **Commercial**) — Planned — not available yet
+### 9.14 Commercial (menu **Commercial**) — Planned — not available yet
 Quote generator from the point design; later margin per project and the accounting (Kingdee) link. *Target: V1.1 → V2.*
 
-### 9.16 Client portal (menu **Client portal**) — Planned — not available yet
+### 9.15 Client portal (menu **Client portal**) — Planned — not available yet
 Clients see their own projects and cases (client-visible items only, partners anonymous), with their own accounts and MFA, after an independent security review; site information forms (CIP-S/CIP-L) by link. *Target: V1.1.*
 
-### 9.17 Partner app (menu **Partner app**) — Planned — not available yet
+### 9.16 Partner app (menu **Partner app**) — Planned — not available yet
 A phone app for installation partners (their assigned work only). *Target: V1.1.*
 
-### 9.18 Change calendar — Planned — not available yet
+### 9.17 Change calendar — Planned — not available yet
 Planned changes with a client-notice gate (rule R22) before anything client-affecting happens. *Target: V1.1.*
 
-### 9.19 Service monitoring and client reports — Planned — not available yet
+### 9.18 Service monitoring and client reports — Planned — not available yet
 Hypercare monitors (data gaps, spikes, time shifts), a monthly client service report, decommissioning with a data-deletion record. *Target: V2.*
 
 ---
