@@ -29,6 +29,8 @@ import {
   staffList,
 } from '@ocs/core/work';
 import type { Runtime } from '@ocs/core/runtime';
+import { oauthProviderAuthServerMetadata } from '@better-auth/oauth-provider';
+import { createMcpHttpHandler } from '@ocs/mcp';
 import { errorResponse } from './errors.ts';
 
 interface Env {
@@ -41,6 +43,38 @@ export function createApp(rt: Runtime): Hono {
 
   // better-auth: sign-in, sign-out, session, TOTP, passkeys. Direct sign-up is refused (invitation only).
   app.on(['GET', 'POST'], '/api/auth/*', (c) => rt.auth.handler(c.req.raw));
+
+  // D-33: MCP for AI clients, OAuth as the person. Discovery first (RFC 9728 / RFC 8414), then the endpoint.
+  const origin = new URL(rt.baseURL).origin;
+  const resourceMetadataUrl = `${origin}/.well-known/oauth-protected-resource`;
+  app.get('/.well-known/oauth-protected-resource', (c) =>
+    c.json({
+      resource: `${origin}/mcp`,
+      authorization_servers: [`${origin}/api/auth`],
+      bearer_methods_supported: ['header'],
+      resource_name: 'OCS',
+    }),
+  );
+  const authServerMetadata = oauthProviderAuthServerMetadata(rt.auth);
+  app.get('/.well-known/oauth-authorization-server', (c) => authServerMetadata(c.req.raw));
+  app.get('/.well-known/oauth-authorization-server/api/auth', (c) => authServerMetadata(c.req.raw));
+  const mcp = createMcpHttpHandler({
+    kernel: rt.kernel,
+    // The person behind an active access token (not expired, not revoked); the OAuth provider decides.
+    personOf: async (token) => {
+      try {
+        const info = (await rt.auth.api.oauth2UserInfo({
+          headers: new Headers({ authorization: `Bearer ${token}` }),
+        })) as { sub?: string } | null;
+        return info?.sub ?? null;
+      } catch {
+        return null;
+      }
+    },
+    loadActor: (userId) => rt.identity.loadActor(userId),
+    resourceMetadataUrl,
+  });
+  app.on(['GET', 'POST', 'DELETE'], '/mcp', (c) => mcp(c.req.raw));
 
   app.post('/api/invitations/accept', async (c) => {
     const { userId, headers } = await rt.identity.acceptInvitation(await c.req.json(), c.req.raw.headers);

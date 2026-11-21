@@ -7,6 +7,14 @@ const api = process.env.OCS_API_URL ?? 'http://localhost:3000';
 
 export default defineConfig({
   plugins: [react()],
-  server: { port: Number(process.env.PORT ?? '5173'), strictPort: true, proxy: { '/api': api } },
-  preview: { port: Number(process.env.PORT ?? '5173'), strictPort: true, proxy: { '/api': api } },
+  server: {
+    port: Number(process.env.PORT ?? '5173'),
+    strictPort: true,
+    proxy: { '/api': api, '/mcp': api, '/.well-known': api },
+  },
+  preview: {
+    port: Number(process.env.PORT ?? '5173'),
+    strictPort: true,
+    proxy: { '/api': api, '/mcp': api, '/.well-known': api },
+  },
 });
