@@ -2,7 +2,7 @@
 
 ## Two channels, one API (D-07)
 1. **Central agent** (`apps/worker`, EU model endpoint, no training on our data): reads the case mailbox, DingTalk bot messages, portal requests, alerts. Matches messages to cases, summarises with sources, extracts ETAs/status from text, flags contradictions. Writes only through commands as actor `system:ai-central`.
-2. **Personal agents via MCP** (`apps/mcp`, Jan): any MCP client (Claude, Qwen-based, DeepSeek-based…) authenticates by OAuth as the user and gets that user's permissions. Audit shows "<user> via AI (<client>)". Tools: `search_cases`, `get_case`, `add_comment`, `propose_status`, `set_eta`, `link_message`, `create_case`, `draft_client_update`. Personal agents bring context only the person has (own mail folders, WhatsApp, meeting notes).
+2. **Personal agents via MCP** (`apps/mcp`, now — D-33): any MCP client (Claude, ChatGPT, Qwen-based, DeepSeek-based…) authenticates by OAuth as the user and gets that user's permissions. Audit shows "<user> via AI (<client>)". Tools are generated from the command and query registry (D-33): every query is a read tool, every command a write tool, named after it (e.g. `intake.handoverCard.read`), with the zod input as JSON Schema and the permission description as the tool description. A tool the user's roles do not hold is not listed. Platforms without MCP use the same registry as REST + OpenAPI. Case tools (`search_cases`, `create_case`, `draft_client_update`…) arrive with the case module, the same way. Personal agents bring context only the person has (own mail folders, WhatsApp, meeting notes).
 
 ## Trust levels (same for both channels)
 
