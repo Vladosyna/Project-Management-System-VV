@@ -12,10 +12,10 @@
     "test:integration": "vitest run --project integration"
   },
   "dependencies": {
-    "@better-auth/passkey": "1.7.27",
+    "@better-auth/passkey": "1.7.23",
     "@ocs/contracts": "workspace:*",
     "@ocs/db": "workspace:*",
-    "better-auth": "1.7.27",
+    "better-auth": "1.7.23",
     "uuid": "14.0.3",
     "zod": "4.6.7"
   },
