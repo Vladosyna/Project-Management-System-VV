@@ -8,6 +8,7 @@ export const en = {
   'nav.portfolio': 'Portfolio',
   'nav.projects': 'Projects',
   'nav.sites': 'Sites',
+  'nav.intakeRegister': 'Intake Register',
   'nav.platform': 'Platform & algorithms',
   'nav.actions': 'Actions & alerts',
   'nav.cases': 'Cases',

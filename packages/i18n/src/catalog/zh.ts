@@ -11,6 +11,7 @@ export const zh = {
   'nav.portfolio': '项目总览',
   'nav.projects': '项目',
   'nav.sites': '门店',
+  'nav.intakeRegister': '接收登记册',
   'nav.platform': '平台与算法',
   'nav.actions': '行动与预警',
   'nav.cases': '案例',
