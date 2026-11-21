@@ -30,6 +30,8 @@ const NAV: readonly Omit<NavItem, 'active'>[] = [
   { label: 'nav.portfolio', href: '/portfolio' },
   { label: 'nav.projects', href: '/projects' },
   { label: 'nav.sites', href: '/sites' },
+  // E2 AC6 (Vlad, 21 Nov): the Intake Register gets its own entry.
+  { label: 'nav.intakeRegister', href: '/intake-register' },
   { label: 'nav.platform', href: '/platform' },
   { label: 'nav.actions', href: '/actions' },
   { label: 'nav.cases', href: '/cases' },

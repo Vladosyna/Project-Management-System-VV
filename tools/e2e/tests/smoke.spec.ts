@@ -370,7 +370,7 @@ test('the Delivery Director decides on the submitted card: a blocking item is re
   await expect(director.getByText(`B2: Secondary contact — by ${today} (open)`)).toBeVisible();
   await director.screenshot({ path: 'test-results/intake-decided-en.png', fullPage: true });
   // SOP-DEL-01 §12: the submission is in the Intake Register.
-  await director.goto('/intake-register');
+  await director.getByRole('link', { name: 'Intake Register' }).click();
   await expect(
     director.getByRole('row', { name: /^CLIENTA-ES-MAD-001 1 .* Accepted with conditions/ }),
   ).toBeVisible();
