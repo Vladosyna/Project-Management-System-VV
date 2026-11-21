@@ -448,3 +448,20 @@ export const siteStep = pgTable('site_step', {
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   archivedAt: timestamp('archived_at', { withTimezone: true }),
 });
+
+/** Migration 0021. Client data: RLS in the migration; archive, never delete. */
+export const intakeDispute = pgTable('intake_dispute', {
+  id: uuid('id').primaryKey(),
+  clientId: uuid('client_id').notNull(),
+  decisionId: uuid('decision_id').notNull().unique(),
+  reason: text('reason').notNull(),
+  raisedBy: uuid('raised_by').notNull(),
+  raisedAt: timestamp('raised_at', { withTimezone: true }).notNull().defaultNow(),
+  dueOn: date('due_on', { mode: 'string' }).notNull(),
+  outcome: text('outcome', { enum: ['upheld', 'overturned'] }),
+  outcomeNote: text('outcome_note'),
+  decidedBy: uuid('decided_by'),
+  decidedAt: timestamp('decided_at', { withTimezone: true }),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  archivedAt: timestamp('archived_at', { withTimezone: true }),
+});

@@ -26,3 +26,4 @@ export { firmwareIssue } from './schema.ts';
 export { cronEvery, startScheduledJobs } from './queue.ts';
 export type { JobScheduler, ScheduledJob } from './queue.ts';
 export { gateTemplate, siteStep } from './schema.ts';
+export { intakeDispute } from './schema.ts';
