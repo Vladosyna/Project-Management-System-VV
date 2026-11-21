@@ -316,6 +316,15 @@ export const zh = {
   'oauth.consent.allow': '允许',
   'oauth.consent.deny': '拒绝',
   'oauth.consent.failed': '无法完成请求。请从助手重新开始。',
+  'agents.intro':
+    '您允许代表您使用 OCS 的 AI 助手。它们只能做您能做的事；每次修改都以您的名义记录。断开后立即停止工作。',
+  'agents.failed': '无法加载或修改您的 AI 助手。',
+  'agents.none': '没有已连接的 AI 助手。',
+  'agents.col.agent': '助手',
+  'agents.col.since': '连接时间',
+  'agents.col.do': '操作',
+  'agents.disconnect': '断开',
+  'nav.agents': 'AI 助手',
   'site.tab.overview': '概览',
   'site.tab.devices': '设备',
   'site.tab.actions': '待办',
@@ -441,5 +450,6 @@ export const zh = {
   'admin.gates.outcome.invalid': '请检查输入：每个关口都需要名称和唯一的键。',
   'admin.gates.outcome.failed': '无法保存，请重试。',
   'intakeRegister.title': '接收登记册',
+  'agents.title': 'AI 助手',
   // gen:screen-titles — `pnpm gen:screen` adds screen titles above this line.
 } as const satisfies Catalog;

@@ -23,6 +23,7 @@ import { SITE_TABS, type SiteTab } from './pages/site-overview.tsx';
 import { SitesPage } from './pages/sites.tsx';
 import { AdminPage } from './pages/admin.tsx';
 import { IntakeRegisterPage } from './pages/intake-register.tsx';
+import { AgentsPage } from './pages/agents.tsx';
 // gen:screen-imports
 
 /** Navigation as in the Main mockup. Screens other than Home arrive with their epics. */
@@ -40,6 +41,8 @@ const NAV: readonly Omit<NavItem, 'active'>[] = [
   { label: 'nav.clientPortal', href: '/client-portal' },
   { label: 'nav.partnerApp', href: '/partner-app' },
   { label: 'nav.knowledge', href: '/knowledge' },
+  // D-33: the person's connected AI agents (list, disconnect).
+  { label: 'nav.agents', href: '/agents' },
   { label: 'nav.admin', href: '/admin' },
 ];
 
@@ -50,6 +53,7 @@ const SCREENS: Record<string, RouteComponent> = {
   '/sites': SitesPage,
   '/admin': AdminPage,
   '/intake-register': IntakeRegisterPage,
+  '/agents': AgentsPage,
   // gen:screens
 };
 

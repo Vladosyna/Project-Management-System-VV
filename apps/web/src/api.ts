@@ -436,3 +436,19 @@ export async function loadIntakeRegister(month: string): Promise<IntakeRegisterR
   if (!res.ok) throw new Error(`GET intake-register → ${String(res.status)}`);
   return (await res.json()) as IntakeRegisterRow[];
 }
+
+export interface ConnectedAgent {
+  readonly clientId: string;
+  readonly name: string | null;
+  readonly since: string | null;
+}
+
+/** D-33: the AI agents the signed-in person connected to OCS. */
+export function loadAgents(): Promise<ConnectedAgent[]> {
+  return getJson<ConnectedAgent[]>('/api/agents');
+}
+
+/** D-33: disconnect an agent — its tokens stop working at once. */
+export function revokeAgentAccess(clientId: string): Promise<WriteOutcome> {
+  return send('POST', `/api/agents/${encodeURIComponent(clientId)}/revoke`, {});
+}

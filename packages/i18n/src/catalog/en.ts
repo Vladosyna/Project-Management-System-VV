@@ -319,6 +319,15 @@ export const en = {
   'oauth.consent.allow': 'Allow',
   'oauth.consent.deny': 'Deny',
   'oauth.consent.failed': 'Could not complete the request. Start again from the assistant.',
+  'agents.intro':
+    'AI assistants you allowed to work in OCS for you. They can do only what you can do; every change is recorded under your name. Disconnect one and it stops working at once.',
+  'agents.failed': 'Could not load or change your AI agents.',
+  'agents.none': 'No AI agent is connected.',
+  'agents.col.agent': 'Agent',
+  'agents.col.since': 'Connected since',
+  'agents.col.do': 'Change',
+  'agents.disconnect': 'Disconnect',
+  'nav.agents': 'AI agents',
   'site.tab.overview': 'Overview',
   'site.tab.devices': 'Devices',
   'site.tab.actions': 'Actions',
@@ -444,5 +453,6 @@ export const en = {
   'admin.gates.outcome.invalid': 'Check the entries: every gate needs a name and a unique key.',
   'admin.gates.outcome.failed': 'Could not save. Try again.',
   'intakeRegister.title': 'Intake Register',
+  'agents.title': 'AI agents',
   // gen:screen-titles — `pnpm gen:screen` adds screen titles above this line.
 } as const;

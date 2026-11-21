@@ -42,6 +42,8 @@ describe('operation registry (D-33)', () => {
     expect(sales).toContain('intake.handoverCard.save');
     expect(sales).not.toContain('intake.review.decide');
     expect(sales).not.toContain('devices.platform.syncDevices');
+    // A step of a service flow (audit after the real revocation) is never an agent tool.
+    expect(sales).not.toContain('identity.agent.revoke');
     const all = operationsFor({
       roles: ['director', 'sponsor', 'pm', 'sales', 'management', 'admin', 'system'],
     });

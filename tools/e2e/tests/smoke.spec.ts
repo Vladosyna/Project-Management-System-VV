@@ -470,6 +470,13 @@ test('an AI client signs in as the person with OAuth: login with TOTP, consent, 
   const text =
     ((await sites.json()) as { result: { content: { text: string }[] } }).result.content[0]?.text ?? '';
   expect(text).toContain('CLIENTA-ES-MAD-001');
+
+  // The person disconnects the agent: listed under AI agents, Disconnect, and its token stops working at once.
+  await page.goto('/agents');
+  await expect(page.getByRole('row', { name: /^Test agent/ })).toBeVisible();
+  await page.getByRole('button', { name: 'Disconnect: Test agent' }).click();
+  await expect(page.getByText('No AI agent is connected.')).toBeVisible();
+  expect((await rpc('tools/list', {}, token_)).status()).toBe(401);
 });
 
 /** Screens built with `pnpm gen:screen` — each must open for a signed-in user and show its title. */
@@ -479,6 +486,7 @@ const SCREENS: { path: string; heading: string }[] = [
   { path: '/sites', heading: 'Sites' },
   { path: '/admin', heading: 'Admin' },
   { path: '/intake-register', heading: 'Intake Register' },
+  { path: '/agents', heading: 'AI agents' },
   // gen:screens
 ];
 

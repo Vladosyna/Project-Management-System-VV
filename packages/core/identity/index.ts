@@ -10,3 +10,4 @@ export { acceptInvitation } from './commands/accept-invitation.ts';
 export { invitationByToken } from './queries/invitation-by-token.ts';
 export { me } from './queries/me.ts';
 export type { AuthPool } from './repository.ts';
+export { revokeAgent } from './commands/revoke-agent.ts';
