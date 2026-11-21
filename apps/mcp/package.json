@@ -2,12 +2,21 @@
   "name": "@ocs/mcp",
   "private": true,
   "type": "module",
-  "description": "MCP server for personal AI agents, OAuth as the user — January 2027",
+  "description": "MCP server for personal AI agents (D-07, D-33): tools generated from the command/query registry, OAuth as the user",
   "exports": {
     ".": "./src/index.ts"
   },
   "scripts": {
     "typecheck": "tsc -p tsconfig.json",
-    "test": "vitest run --passWithNoTests"
+    "test": "vitest run --project unit --passWithNoTests",
+    "test:integration": "vitest run --project integration"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.32.2",
+    "@ocs/contracts": "workspace:*",
+    "@ocs/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@ocs/testing": "workspace:*"
   }
 }

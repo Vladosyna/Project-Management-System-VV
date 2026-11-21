@@ -41,6 +41,7 @@ One internal platform for every Vionvision delivery project: clients, projects a
 | SOP full text | `docs/ocs/domain/sop/` |
 | Integrations (DingTalk, Aliyun mail, device platform, Kingdee) | `docs/ocs/07-integrations.md` |
 | AI agents, MCP, trust levels | `docs/ocs/08-ai-and-mcp.md` |
+| Instructions for AI: using OCS, keeping it current, never invent | `docs/ocs/12-ai-agents.md` |
 | How you review and control results | `docs/ocs/09-review-protocol.md` |
 | Third-party skills and plugins (vetted list) | `docs/ocs/10-skills.md` |
 | Session kickoff and Phase 0 plan | `docs/ocs/11-kickoff.md` |
