@@ -9,6 +9,7 @@ import { CallToolRequestSchema, ListToolsRequestSchema } from '@modelcontextprot
 import type { Actor } from '@ocs/contracts';
 import { DomainError, type Kernel } from '@ocs/core/kernel';
 import { operationsFor, type OperationInfo } from '@ocs/core/runtime';
+import { AGENT_INSTRUCTIONS } from './instructions.ts';
 
 export const toolName = (operation: string) => operation.replaceAll('.', '_');
 
@@ -20,10 +21,7 @@ export function createOcsMcpServer(kernel: Pick<Kernel, 'execute' | 'read'>, act
     { name: 'ocs', version: '1.0.0', title: 'OCS — Vionvision delivery platform' },
     {
       capabilities: { tools: {} },
-      instructions:
-        'OCS tools act as the signed-in person, with their permissions only. Read tools (…_read, …_list) change ' +
-        "nothing. Write tools record changes under the person's name, marked as done via AI. Nothing is ever sent " +
-        'to a client. Errors explain the SOP rule that refused a change; tell the person rather than retrying.',
+      instructions: AGENT_INSTRUCTIONS,
     },
   );
   // Tools come from the registry with ready JSON Schemas, so they are served by the protocol-level handlers.

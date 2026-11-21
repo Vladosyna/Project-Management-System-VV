@@ -41,6 +41,11 @@ afterAll(async () => {
 });
 
 describe('OCS MCP server', () => {
+  it('tells every client the truth rules on connect (12-ai-agents.md)', () => {
+    expect(client.getInstructions()).toMatch(/Never invent IDs, dates/);
+    expect(client.getInstructions()).toMatch(/Never send anything to a client/);
+  });
+
   it("lists only its person's operations, with JSON Schemas and read-only hints; never system-only ones", async () => {
     const { tools } = await client.listTools();
     const names = tools.map((x) => x.name);
