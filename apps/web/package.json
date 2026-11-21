@@ -11,6 +11,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@better-auth/oauth-provider": "1.7.23",
     "@better-auth/passkey": "1.7.23",
     "@ocs/contracts": "workspace:*",
     "@ocs/i18n": "workspace:*",

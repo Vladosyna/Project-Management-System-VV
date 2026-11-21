@@ -79,6 +79,8 @@ export function createAuth(config: AuthConfig) {
         // Desktop agents (Claude Desktop/Code, Cursor) call back on loopback http (RFC 8252): native when inferred.
         clientRegistrationDefaultApplicationType: 'infer',
         resources: [{ identifier: mcpResource(config.baseURL), name: 'OCS MCP' }],
+        // Every self-registered agent is linked to the MCP endpoint (RFC 8707 per-client resources stay enforced).
+        clientRegistrationDefaultResources: [mcpResource(config.baseURL)],
         accessTokenExpiresIn: AGENT_ACCESS_TOKEN_SECONDS,
         refreshTokenExpiresIn: AGENT_REFRESH_TOKEN_SECONDS,
       }),

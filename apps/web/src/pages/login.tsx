@@ -12,7 +12,15 @@ export function LoginPage() {
   const [password, setPassword] = useState('');
   const [code, setCode] = useState('');
   const [error, setError] = useState<string | null>(null);
-  const home = () => navigate({ to: '/' });
+  /**
+   * D-33: when an AI client sent the person here to sign in (OAuth authorize), the auth client carries the signed
+   * OAuth query and the server answers with where to continue (the consent page or the client); otherwise home.
+   */
+  const home = async (data?: unknown) => {
+    const next = data as { redirect?: boolean; url?: string } | null | undefined;
+    if (next?.redirect && typeof next.url === 'string') window.location.assign(next.url);
+    else await navigate({ to: '/' });
+  };
 
   async function signIn() {
     setError(null);
@@ -22,21 +30,21 @@ export function LoginPage() {
       return;
     }
     if ('twoFactorRedirect' in data && data.twoFactorRedirect) setStep('totp');
-    else await home();
+    else await home(data);
   }
 
   async function verify() {
     setError(null);
-    const { error: failed } = await authClient.twoFactor.verifyTotp({ code });
+    const { data, error: failed } = await authClient.twoFactor.verifyTotp({ code });
     if (failed) setError(t('auth.totp.failed'));
-    else await home();
+    else await home(data);
   }
 
   async function passkey() {
     setError(null);
     const result = await authClient.signIn.passkey();
     if (result.error) setError(t('auth.error.generic'));
-    else await home();
+    else await home(result.data);
   }
 
   if (step === 'totp') {
