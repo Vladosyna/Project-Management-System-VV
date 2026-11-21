@@ -8,7 +8,7 @@ export const orgPermissions = {
     roles: ['director', 'admin'],
   }),
   clientList: permission('org.client.list', {
-    description: 'See the client list',
+    description: 'See the clients the signed-in person may see: short code and name (E1)',
     roles: ['director', 'pm', 'sales', 'rnd', 'finance', 'management', 'sponsor', 'admin'],
   }),
   createSite: permission('org.site.create', {
@@ -16,7 +16,8 @@ export const orgPermissions = {
     roles: ['director', 'admin'],
   }),
   siteList: permission('org.site.list', {
-    description: 'See projects/sites',
+    description:
+      'See the projects/sites the signed-in person may see, with Project ID, city and standard (E1)',
     roles: ['director', 'pm', 'sales', 'rnd', 'finance', 'management', 'sponsor', 'admin'],
   }),
   changeStandard: permission('org.site.changeStandard', {

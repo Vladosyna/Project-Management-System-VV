@@ -17,6 +17,8 @@ export interface AccessOptions {
 }
 
 const dir = (module: string): string => `packages/core/${module}`;
+/** D-33 operation registry; `gen:module` registers each new module there. */
+const REGISTRY = 'packages/core/runtime/registry.ts';
 
 export function modulePlan(module: string, purpose: string): Plan {
   assertModule(module);
@@ -43,9 +45,17 @@ export const ${module}Permissions = {
 `,
       },
       { kind: 'append', file: 'packages/core/permissions/all.ts', text: `import '../${module}/index.ts';` },
+      // D-33: the module's commands and queries are offered to AI platforms through the registry.
+      {
+        kind: 'insert',
+        file: REGISTRY,
+        marker: '// gen:registry-imports',
+        text: `import * as ${module} from '../${module}/index.ts';`,
+      },
+      { kind: 'insert', file: REGISTRY, marker: '// gen:registry-modules', text: `  ${module},` },
     ],
     next: [
-      `packages/core/permissions/all.ts changed: protected zone, so this needs an arch/ branch and architect review.`,
+      `packages/core/permissions/all.ts and packages/core/runtime/registry.ts changed: protected zone, so this needs an arch/ branch and architect review.`,
       `Add the first command: pnpm gen:command ${module} <verb-noun>`,
     ],
   };
@@ -87,7 +97,8 @@ export function commandPlan(module: string, verbNoun: string, options: AccessOpt
   const object = camel(noun);
   const key = options.key ?? `${module}.${object}.${verb}`;
   assertPermissionKey(key, module);
-  const description = options.description ?? sentence(ws);
+  // D-33: the description is what AI platforms see — a sentence naming the module, until --description says more.
+  const description = options.description ?? `${sentence(ws)} in the ${module} module`;
   const roles = options.roles ?? [];
   return {
     permissionsChanged: true,
@@ -181,7 +192,7 @@ export function queryPlan(module: string, noun: string, options: AccessOptions =
   const id = camel(ws);
   const key = options.key ?? `${module}.${id}.read`;
   assertPermissionKey(key, module);
-  const description = options.description ?? `Read ${ws.join(' ')}`;
+  const description = options.description ?? `Read ${ws.join(' ')} in the ${module} module`;
   const roles = options.roles ?? [];
   return {
     permissionsChanged: true,

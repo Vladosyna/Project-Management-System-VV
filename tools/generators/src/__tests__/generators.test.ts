@@ -15,6 +15,11 @@ beforeEach(() => {
   root = mkdtempSync(path.join(tmpdir(), 'ocs-gen-'));
   mkdirSync(path.join(root, 'packages/core/permissions'), { recursive: true });
   writeFileSync(path.join(root, 'packages/core/permissions/all.ts'), "import '../calendar/index.ts';\n");
+  mkdirSync(path.join(root, 'packages/core/runtime'), { recursive: true });
+  writeFileSync(
+    path.join(root, 'packages/core/runtime/registry.ts'),
+    "import * as calendar from '../calendar/index.ts';\n// gen:registry-imports\nconst MODULES = {\n  calendar,\n  // gen:registry-modules\n};\n",
+  );
 });
 
 describe('gen:module', () => {
@@ -27,6 +32,10 @@ describe('gen:module', () => {
     expect(read('packages/core/permissions/all.ts')).toBe(
       "import '../calendar/index.ts';\nimport '../intake/index.ts';\n",
     );
+    // D-33: the new module's operations reach AI platforms through the registry.
+    const registry = read('packages/core/runtime/registry.ts');
+    expect(registry).toContain("import * as intake from '../intake/index.ts';\n// gen:registry-imports");
+    expect(registry).toContain('  intake,\n  // gen:registry-modules');
   });
 
   it('refuses reserved and malformed names, and never overwrites', () => {
