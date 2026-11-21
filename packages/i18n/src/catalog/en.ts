@@ -328,6 +328,13 @@ export const en = {
   'agents.col.do': 'Change',
   'agents.disconnect': 'Disconnect',
   'nav.agents': 'AI agents',
+  'admin.agents.title': 'AI connections',
+  'admin.agents.intro':
+    'Set up once: OCS then checks every AI agent token by introspection — it must be issued for OCS MCP, and the audit names the agent.',
+  'admin.agents.create': 'Create the token-check client',
+  'admin.agents.once': 'Shown only now. Put both values in the secret store and restart the API.',
+  'admin.agents.forbidden': 'Only an admin can set this up.',
+  'admin.agents.failed': 'Could not create the client. Try again.',
   'site.tab.overview': 'Overview',
   'site.tab.devices': 'Devices',
   'site.tab.actions': 'Actions',

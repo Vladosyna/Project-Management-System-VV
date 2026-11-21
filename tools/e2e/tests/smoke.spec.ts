@@ -274,6 +274,10 @@ test('a director sets the gates of a client and a country; an admin may not see 
   await signInWithPassword(page);
   await page.goto('/admin');
   await expect(page.getByText('Only a director or sponsor can see gate templates.')).toBeVisible();
+  // D-33: the admin sets up the token-check client once; the secret is shown once for the secret store.
+  await page.getByRole('button', { name: 'Create the token-check client' }).click();
+  await expect(page.getByTestId('agent-client-id')).not.toBeEmpty();
+  await expect(page.getByText(/^Shown only now/)).toBeVisible();
 
   const director = await join(browser, page, 'director.e2e@example.com', 'Person 03', ['director']);
   await director.getByRole('link', { name: 'Admin' }).click();
