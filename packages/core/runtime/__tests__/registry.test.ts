@@ -3,7 +3,7 @@
 import { describe, expect, it } from 'vitest';
 import '../../permissions/index.ts';
 import { registeredPermissions } from '../../kernel/index.ts';
-import { operations, operationsFor } from '../registry.ts';
+import { offeredOperations, operations, operationsFor } from '../registry.ts';
 
 /** Permissions held by no command or query yet (reserved keys); keep this list short and explained. */
 const WITHOUT_OPERATION = new Set<string>([
@@ -46,5 +46,11 @@ describe('operation registry (D-33)', () => {
       roles: ['director', 'sponsor', 'pm', 'sales', 'management', 'admin', 'system'],
     });
     expect(all.filter((o) => o.roles.every((r) => r === 'system'))).toEqual([]);
+  });
+
+  it('the public catalogue (OpenAPI) offers no system-only or flow-step operation', () => {
+    const names = offeredOperations().map((o) => o.name);
+    expect(names).toContain('intake.handoverCard.save');
+    expect(names).not.toContain('devices.platform.syncDevices');
   });
 });

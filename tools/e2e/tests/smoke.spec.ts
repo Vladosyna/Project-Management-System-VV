@@ -470,6 +470,23 @@ test('an AI client signs in as the person with OAuth: login with TOTP, consent, 
   const text =
     ((await sites.json()) as { result: { content: { text: string }[] } }).result.content[0]?.text ?? '';
   expect(text).toContain('CLIENTA-ES-MAD-001');
+
+  // The same operations over REST + OpenAPI, for AI platforms without MCP.
+  const spec = (await (await agent.get('/api/v1/openapi.json')).json()) as {
+    paths: Record<string, unknown>;
+    components: { securitySchemes: { ocs: { flows: { authorizationCode: { tokenUrl: string } } } } };
+  };
+  expect(Object.keys(spec.paths)).toContain('/org.site.list');
+  expect(spec.components.securitySchemes.ocs.flows.authorizationCode.tokenUrl).toBe(
+    `${ocs}/api/auth/oauth2/token`,
+  );
+  expect((await agent.post('/api/v1/org.site.list', { data: {} })).status()).toBe(401);
+  const viaRest = await agent.post('/api/v1/org.site.list', {
+    data: {},
+    headers: { authorization: `Bearer ${token_}` },
+  });
+  expect(viaRest.status()).toBe(200);
+  expect(await viaRest.text()).toContain('CLIENTA-ES-MAD-001');
 });
 
 /** Screens built with `pnpm gen:screen` — each must open for a signed-in user and show its title. */

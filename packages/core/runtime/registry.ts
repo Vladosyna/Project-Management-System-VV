@@ -3,7 +3,7 @@
 // read tool, each command a write tool; the zod input is the JSON Schema, the permission description is the tool
 // description. Calls still go through the kernel: the caller's permissions, RLS, rules, audit (D-07).
 import { z } from 'zod';
-import type { Actor, Role } from '@ocs/contracts';
+import { RoleSchema, type Actor, type Role } from '@ocs/contracts';
 import * as calendar from '../calendar/index.ts';
 import * as devices from '../devices/index.ts';
 import * as identity from '../identity/index.ts';
@@ -69,6 +69,11 @@ export function operations(): readonly OperationInfo[] {
     )
     .sort((a, b) => a.name.localeCompare(b.name));
   return cache;
+}
+
+/** Every operation some person's agent may call: the public catalogue (OpenAPI). Never system-only ones. */
+export function offeredOperations(): readonly OperationInfo[] {
+  return operationsFor({ roles: RoleSchema.options.filter((r) => r !== 'system') });
 }
 
 /**
