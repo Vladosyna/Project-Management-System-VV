@@ -11,12 +11,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@better-auth/passkey": "1.7.12",
+    "@better-auth/passkey": "1.7.27",
     "@ocs/contracts": "workspace:*",
     "@ocs/i18n": "workspace:*",
     "@ocs/ui": "workspace:*",
     "@tanstack/react-router": "1.170.46",
-    "better-auth": "1.7.12",
+    "better-auth": "1.7.27",
     "qrcode": "1.5.4",
     "react": "19.3.1",
     "react-dom": "19.3.1"
