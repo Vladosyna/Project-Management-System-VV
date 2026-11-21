@@ -1,2 +1,2 @@
-// @ocs/mcp — MCP server for personal AI agents, OAuth as the user — January 2027.
-export {};
+// @ocs/mcp — MCP server for personal AI agents (D-07, D-33): tools from the operation registry, as the user.
+export { createOcsMcpServer, toolName } from './server.ts';
