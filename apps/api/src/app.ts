@@ -1,7 +1,7 @@
 // HTTP API (ADR-001 P-03). Thin: session → actor → core command/query → JSON. No business logic here.
 import { Hono } from 'hono';
 import type { Actor } from '@ocs/contracts';
-import { inviteUser, me } from '@ocs/core/identity';
+import { inviteUser, me, setupAgentResource } from '@ocs/core/identity';
 import {
   authoriseConditionalStart,
   decideIntake,
@@ -33,12 +33,18 @@ import { oauthProviderAuthServerMetadata } from '@better-auth/oauth-provider';
 import { createMcpHttpHandler } from '@ocs/mcp';
 import { errorResponse } from './errors.ts';
 import { openApiDocument } from './openapi.ts';
+import { createAgentTokenCheck, type IntrospectionClient } from './agent-tokens.ts';
 
 interface Env {
   Variables: { actor: Actor };
 }
 
-export function createApp(rt: Runtime): Hono {
+export interface AppOptions {
+  /** D-33: the MCP resource client for token introspection (secret store); without it, userinfo is used. */
+  readonly introspection?: IntrospectionClient;
+}
+
+export function createApp(rt: Runtime, options: AppOptions = {}): Hono {
   const app = new Hono();
   app.onError((err, c) => errorResponse(err, c));
 
@@ -59,21 +65,11 @@ export function createApp(rt: Runtime): Hono {
   const authServerMetadata = oauthProviderAuthServerMetadata(rt.auth);
   app.get('/.well-known/oauth-authorization-server', (c) => authServerMetadata(c.req.raw));
   app.get('/.well-known/oauth-authorization-server/api/auth', (c) => authServerMetadata(c.req.raw));
-  /** The person behind an active OAuth access token (not expired, not revoked); the OAuth provider decides. */
-  const personOf = async (token: string) => {
-    try {
-      const info = (await rt.auth.api.oauth2UserInfo({
-        headers: new Headers({ authorization: `Bearer ${token}` }),
-      })) as { sub?: string } | null;
-      return info?.sub ?? null;
-    } catch {
-      return null;
-    }
-  };
+  const agentToken = createAgentTokenCheck(rt, options.introspection);
   const mcp = createMcpHttpHandler({
     kernel: rt.kernel,
-    // The person behind an active access token (not expired, not revoked); the OAuth provider decides.
-    personOf,
+    // Active, not revoked, and (with introspection) issued for /mcp; the OAuth provider decides.
+    personOf: (token) => agentToken(token, 'mcp', `${origin}/mcp`),
     loadActor: (userId) => rt.identity.loadActor(userId),
     resourceMetadataUrl,
   });
@@ -84,13 +80,13 @@ export function createApp(rt: Runtime): Hono {
   app.get('/api/v1/openapi.json', (c) => c.json(openApiDocument(origin, offeredOperations())));
   app.post('/api/v1/:operation', async (c) => {
     const token = /^Bearer\s+(.+)$/i.exec(c.req.header('authorization') ?? '')?.[1]?.trim();
-    const userId = token ? await personOf(token) : null;
-    const person = userId ? await rt.identity.loadActor(userId) : undefined;
-    if (!person) {
+    const agent = token ? await agentToken(token, 'api') : null;
+    const person = agent ? await rt.identity.loadActor(agent.userId) : undefined;
+    if (!agent || !person) {
       c.header('www-authenticate', `Bearer resource_metadata="${resourceMetadataUrl}"`);
       return c.json({ error: 'unauthorized' }, 401);
     }
-    const actor = { ...person, via: 'api' };
+    const actor = { ...person, via: agent.via };
     const op = operationsFor(actor).find((o) => o.name === c.req.param('operation'));
     if (!op) return c.json({ error: 'not_found', message: 'No such operation for this person' }, 404);
     const input = await c.req.json<unknown>().catch(() => ({}));
@@ -274,6 +270,23 @@ export function createApp(rt: Runtime): Hono {
   api.post('/agents/:clientId/revoke', async (c) =>
     c.json(await rt.identity.revokeAgent(c.get('actor'), c.req.param('clientId'))),
   );
+
+  // D-33: an admin creates the MCP resource client once; the secret is shown once, for the secret store
+  // (OCS_MCP_INTROSPECTION_CLIENT_ID / _SECRET), then agent tokens are checked by introspection.
+  api.post('/admin/agent-resource-client', async (c) => {
+    await rt.kernel.execute(setupAgentResource, c.get('actor'), {}, 'web');
+    const created = (await rt.auth.api.adminCreateOAuthClient({
+      headers: c.req.raw.headers,
+      body: {
+        client_name: 'OCS MCP resource (token introspection)',
+        // Never used for sign-in: this client only introspects tokens.
+        redirect_uris: ['https://ocs.example.invalid/unused'],
+        token_endpoint_auth_method: 'client_secret_post',
+        grant_types: ['authorization_code'],
+      },
+    })) as { client_id: string; client_secret?: string };
+    return c.json({ clientId: created.client_id, clientSecret: created.client_secret ?? null }, 201);
+  });
 
   // D-32: gate templates by scope (base, client, client + country); a director or above changes them.
   api.get('/gate-templates', async (c) => c.json(await rt.kernel.read(gateTemplates, c.get('actor'), {})));

@@ -30,9 +30,9 @@ export type Operation = Command | Query;
 
 /**
  * Operations that are one step of a service flow, not an action on their own — offered to no AI agent.
- * identity.agent.revoke only records the audit; IdentityService.revokeAgent revokes the tokens first.
+ * identity.agent.revoke and identity.agentResource.setup only record the audit of a flow done around them.
  */
-const NOT_FOR_AGENTS = new Set(['identity.agent.revoke']);
+const NOT_FOR_AGENTS = new Set(['identity.agent.revoke', 'identity.agentResource.setup']);
 
 export interface OperationInfo {
   readonly name: string;

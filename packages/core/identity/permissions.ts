@@ -50,4 +50,9 @@ export const identityPermissions = {
       'Disconnect an AI agent the person connected to OCS: revoke its tokens and the consent at once (D-33)',
     roles: ['director', 'pm', 'sales', 'rnd', 'finance', 'management', 'sponsor', 'admin'],
   }),
+  setupAgentResource: permission('identity.agentResource.setup', {
+    description:
+      'Create the MCP resource client OCS uses to check AI agent tokens (introspection); its secret is shown once (D-33)',
+    roles: ['admin'],
+  }),
 };
