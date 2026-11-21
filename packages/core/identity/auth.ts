@@ -5,6 +5,7 @@ import { betterAuth } from 'better-auth';
 import { APIError, createAuthMiddleware } from 'better-auth/api';
 import { twoFactor } from 'better-auth/plugins';
 import { passkey } from '@better-auth/passkey';
+import { oauthProvider } from '@better-auth/oauth-provider';
 import { v7 as uuidv7 } from 'uuid';
 import type { AuthPool } from './repository.ts';
 
@@ -25,6 +26,12 @@ export interface InvitationScope {
 export const invitationScope = new AsyncLocalStorage<InvitationScope>();
 
 const SESSION_HOURS = 12;
+/** D-33: an AI agent's access token is short-lived; its refresh token rotates and is revocable. */
+const AGENT_ACCESS_TOKEN_SECONDS = 3600;
+const AGENT_REFRESH_TOKEN_SECONDS = 30 * 24 * 3600;
+
+/** The OCS MCP endpoint, the one protected resource agents get tokens for (apps/mcp, D-33). */
+export const mcpResource = (baseURL: string) => `${new URL(baseURL).origin}/mcp`;
 
 export function createAuth(config: AuthConfig) {
   if (config.secret.length < 32) throw new Error('Auth secret must be at least 32 characters');
@@ -55,6 +62,26 @@ export function createAuth(config: AuthConfig) {
     plugins: [
       twoFactor({ issuer: 'OCS' }),
       passkey({ rpID: url.hostname, rpName: 'OCS', origin: url.origin }),
+      // D-33 / D-07: OCS as an OAuth 2.1 provider, so AI clients (ChatGPT, Claude, any MCP client) sign in AS the
+      // person — through the normal OCS sign-in with MFA — and get only that person's permissions. Migration 0020.
+      oauthProvider({
+        loginPage: '/login',
+        consentPage: '/oauth/consent',
+        // Opaque tokens, stored hashed, checked on every call, revoked at once; client secrets stored encrypted.
+        disableJwtPlugin: true,
+        // An agent always acts for a person: no client_credentials (a token without a person).
+        grantTypes: ['authorization_code', 'refresh_token'],
+        scopes: ['openid', 'profile', 'email', 'offline_access'],
+        // MCP clients register themselves (RFC 7591); the person's consent and PKCE are what guard access.
+        allowDynamicClientRegistration: true,
+        allowUnauthenticatedClientRegistration: true,
+        clientRegistrationRequirePKCE: true,
+        // Desktop agents (Claude Desktop/Code, Cursor) call back on loopback http (RFC 8252): native when inferred.
+        clientRegistrationDefaultApplicationType: 'infer',
+        resources: [{ identifier: mcpResource(config.baseURL), name: 'OCS MCP' }],
+        accessTokenExpiresIn: AGENT_ACCESS_TOKEN_SECONDS,
+        refreshTokenExpiresIn: AGENT_REFRESH_TOKEN_SECONDS,
+      }),
     ],
     hooks: {
       before: createAuthMiddleware(async (ctx) => {

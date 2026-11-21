@@ -112,6 +112,34 @@ describe('catalogue guarantees (apply to every table, present and future)', () =
     ]);
   });
 
+  it('OAuth tokens, client secrets and consents (0020) are credentials: only ocs_auth, RLS on', async () => {
+    const tables = [
+      'oauthClient',
+      'oauthResource',
+      'oauthClientResource',
+      'oauthRefreshToken',
+      'oauthAccessToken',
+      'oauthConsent',
+      'oauthClientAssertion',
+    ];
+    const rls = await database.pool.query<{ relname: string; relrowsecurity: boolean }>(
+      `SELECT relname, relrowsecurity FROM pg_class WHERE relnamespace = 'auth'::regnamespace AND relname = ANY($1)`,
+      [tables],
+    );
+    expect(
+      rls.rows
+        .filter((r) => r.relrowsecurity)
+        .map((r) => r.relname)
+        .sort(),
+    ).toEqual([...tables].sort());
+    const grantees = await database.pool.query<{ grantee: string }>(
+      `SELECT DISTINCT grantee FROM information_schema.role_table_grants
+       WHERE table_schema = 'auth' AND table_name = ANY($1) AND grantee IN ('ocs_app', 'ocs_auth')`,
+      [tables],
+    );
+    expect(grantees.rows.map((r) => r.grantee)).toEqual(['ocs_auth']);
+  });
+
   it('ocs_app has no DELETE or TRUNCATE privilege on any table (archive, never delete)', async () => {
     const res = await database.pool.query<{ table_name: string; privilege_type: string }>(
       `SELECT table_name, privilege_type FROM information_schema.role_table_grants
@@ -119,7 +147,8 @@ describe('catalogue guarantees (apply to every table, present and future)', () =
        UNION ALL
        SELECT table_name, privilege_type FROM information_schema.role_table_grants
        WHERE grantee = 'ocs_auth' AND privilege_type IN ('DELETE', 'TRUNCATE')
-         AND table_name NOT IN ('session', 'verification', 'twoFactor', 'passkey')`,
+         AND table_name NOT IN ('session', 'verification', 'twoFactor', 'passkey',
+           'oauthAccessToken', 'oauthRefreshToken', 'oauthConsent')`,
     );
     expect(res.rows).toEqual([]);
   });
