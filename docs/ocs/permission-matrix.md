@@ -25,6 +25,8 @@ External roles (`client`, `partner`) are switched off in the checker until the V
 | `identity.user.read` | See the user list with roles and MFA status | ✓ |  |  |  |  |  |  | ✓ |  |  |  |
 | `intake.conditionalStart.authorise` | Authorise Delivery to start before acceptance, naming the missing items and a deadline (SOP-DEL-01 §9) |  |  |  |  |  |  | ✓ |  |  |  |  |
 | `intake.conditions.expire` | Mark intake conditions past their deadline as expired, for the alert to Sales owner and Delivery Director (E2 AC3) |  |  |  |  |  |  |  |  |  |  | ✓ |
+| `intake.dispute.decide` | Decide an intake dispute: uphold the return, or overturn it so the Delivery Director reviews the card again (SOP-DEL-01 §9) |  |  |  |  |  |  | ✓ |  |  |  |  |
+| `intake.dispute.raise` | Dispute a Returned intake decision: the sponsor decides within 2 working days; work does not start meanwhile (SOP-DEL-01 §9) |  |  | ✓ |  |  |  |  |  |  |  |  |
 | `intake.handoverCard.read` | See a project's current Handover Card: status, package, items, gaps, decision and conditions (E2) | ✓ | ✓ | ✓ |  |  | ✓ | ✓ |  |  |  |  |
 | `intake.handoverCard.save` | Save the Handover Card draft of a project: Annex B content and the §6 items it covers (SOP-DEL-01 §5 step 2) | ✓ |  | ✓ |  |  |  |  |  |  |  |  |
 | `intake.handoverCard.submit` | Submit the Handover Card for intake review; refused while a §6 item is missing (SOP-DEL-01 §5 step 3) | ✓ |  | ✓ |  |  |  |  |  |  |  |  |

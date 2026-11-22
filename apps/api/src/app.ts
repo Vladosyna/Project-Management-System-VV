@@ -4,7 +4,9 @@ import type { Actor } from '@ocs/contracts';
 import { inviteUser, me, setupAgentResource } from '@ocs/core/identity';
 import {
   authoriseConditionalStart,
+  decideDispute,
   decideIntake,
+  raiseDispute,
   handoverCardView,
   intakeRegister,
   saveHandoverCard,
@@ -239,6 +241,15 @@ export function createApp(rt: Runtime, options: AppOptions = {}): Hono {
   api.post('/sites/:siteId/conditional-start', async (c) => {
     const input = { ...(await c.req.json<Record<string, unknown>>()), siteId: c.req.param('siteId') };
     return c.json(await rt.kernel.execute(authoriseConditionalStart, c.get('actor'), input, 'web'), 201);
+  });
+  // SOP-DEL-01 §9: disputes of a Returned decision (Sales raises, the sponsor decides).
+  api.post('/sites/:siteId/intake-dispute', async (c) => {
+    const input = { ...(await c.req.json<Record<string, unknown>>()), siteId: c.req.param('siteId') };
+    return c.json(await rt.kernel.execute(raiseDispute, c.get('actor'), input, 'web'), 201);
+  });
+  api.post('/sites/:siteId/intake-dispute/decide', async (c) => {
+    const input = { ...(await c.req.json<Record<string, unknown>>()), siteId: c.req.param('siteId') };
+    return c.json(await rt.kernel.execute(decideDispute, c.get('actor'), input, 'web'));
   });
   api.get('/intake-register', async (c) => {
     const month = c.req.query('month');

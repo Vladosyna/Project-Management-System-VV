@@ -8,3 +8,5 @@ export { decideIntake } from './commands/decide-intake.ts';
 export { intakeRegister } from './queries/intake-register.ts';
 export { expireConditions } from './commands/expire-conditions.ts';
 export { handoverCardView } from './queries/handover-card.ts';
+export { raiseDispute } from './commands/raise-dispute.ts';
+export { decideDispute } from './commands/decide-dispute.ts';

@@ -8,6 +8,7 @@ import {
   handoverItem,
   intakeCondition,
   intakeDecision,
+  intakeDispute,
   inArray,
   isNotNull,
   isNull,
@@ -235,4 +236,54 @@ export async function conditionalStartOf(tx: Tx, cardId: string) {
       .from(conditionalStart)
       .where(and(eq(conditionalStart.cardId, cardId), isNull(conditionalStart.archivedAt)))
   )[0];
+}
+
+/** SOP-DEL-01 §9: the dispute on a decision, if any. */
+export async function disputeOf(tx: Tx, decisionId: string) {
+  return (
+    await tx
+      .select()
+      .from(intakeDispute)
+      .where(and(eq(intakeDispute.decisionId, decisionId), isNull(intakeDispute.archivedAt)))
+  )[0];
+}
+
+export async function insertDispute(tx: Tx, row: typeof intakeDispute.$inferInsert) {
+  await tx.insert(intakeDispute).values(row);
+}
+
+export async function recordDisputeOutcome(
+  tx: Tx,
+  id: string,
+  set: Partial<typeof intakeDispute.$inferInsert>,
+) {
+  await tx.update(intakeDispute).set(set).where(eq(intakeDispute.id, id));
+}
+
+/** The project's latest dispute, on any card version (Sales may already be redrafting while it is open). */
+export async function latestDisputeOnSite(tx: Tx, siteId: string) {
+  return (
+    await tx
+      .select({ dispute: intakeDispute })
+      .from(intakeDispute)
+      .innerJoin(intakeDecision, eq(intakeDecision.id, intakeDispute.decisionId))
+      .innerJoin(handoverCard, eq(handoverCard.id, intakeDecision.cardId))
+      .where(and(eq(handoverCard.siteId, siteId), isNull(intakeDispute.archivedAt)))
+      .orderBy(desc(intakeDispute.raisedAt))
+      .limit(1)
+  )[0]?.dispute;
+}
+
+/** "Work does not start while the dispute is open" (§9): an undecided dispute on any card of the project. */
+export async function openDisputeOnSite(tx: Tx, siteId: string) {
+  const rows = await tx
+    .select({ id: intakeDispute.id })
+    .from(intakeDispute)
+    .innerJoin(intakeDecision, eq(intakeDecision.id, intakeDispute.decisionId))
+    .innerJoin(handoverCard, eq(handoverCard.id, intakeDecision.cardId))
+    .where(
+      and(eq(handoverCard.siteId, siteId), isNull(intakeDispute.outcome), isNull(intakeDispute.archivedAt)),
+    )
+    .limit(1);
+  return rows.length > 0;
 }
