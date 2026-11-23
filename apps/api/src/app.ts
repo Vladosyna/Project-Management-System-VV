@@ -25,6 +25,8 @@ import { clientList, setDeviceAlerts, siteList } from '@ocs/core/org';
 import {
   addComment,
   commentToAction,
+  completeAction,
+  createAction,
   openActions,
   projectFeed,
   recordVisit,
@@ -162,6 +164,18 @@ export function createApp(rt: Runtime, options: AppOptions = {}): Hono {
     const input = { ...body, siteId: c.req.param('siteId') };
     return c.json(await rt.kernel.execute(addComment, c.get('actor'), input, 'web'), 201);
   });
+
+  // D-36: a task in a project for a specific person (owner, due); the owner or a director/PM marks it done.
+  api.post('/sites/:siteId/actions', async (c) => {
+    const body = await c.req.json<Record<string, unknown>>();
+    const input = { ...body, siteId: c.req.param('siteId'), source: { kind: 'manual' } };
+    return c.json(await rt.kernel.execute(createAction, c.get('actor'), input, 'web'), 201);
+  });
+  api.post('/actions/:actionId/complete', async (c) =>
+    c.json(
+      await rt.kernel.execute(completeAction, c.get('actor'), { actionId: c.req.param('actionId') }, 'web'),
+    ),
+  );
 
   // E5 AC2 "turn into action": an action with an owner and a due date, linked to the comment.
   api.post('/comments/:commentId/action', async (c) => {

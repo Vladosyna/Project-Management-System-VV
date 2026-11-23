@@ -156,27 +156,3 @@ export function SiteOverview(props: { site: SiteSummary; feed: FeedItem[]; now?:
     </div>
   );
 }
-
-export function SiteActions(props: { siteId: string }) {
-  const { t } = useI18n();
-  const [actions, setActions] = useState<OpenAction[] | null>(null);
-  useEffect(() => {
-    loadSiteActions(props.siteId).then(setActions, () => {
-      setActions([]);
-    });
-  }, [props.siteId]);
-  if (actions === null) return <p>{t('common.loading')}</p>;
-  if (actions.length === 0) return <p>{t('site.noActions')}</p>;
-  return (
-    <ul className="ocs-board__list">
-      {actions.map((a) => (
-        <li key={a.id} className="ocs-board__card">
-          <div className="ocs-board__title">{a.title}</div>
-          <div className="ocs-board__meta">
-            {a.owner.name ?? ''} · {a.due} {a.overdue ? <StatusChip tone="escalated" /> : null}
-          </div>
-        </li>
-      ))}
-    </ul>
-  );
-}

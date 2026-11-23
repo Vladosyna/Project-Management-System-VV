@@ -383,6 +383,28 @@ test('the Delivery Director decides on the submitted card: a blocking item is re
   await director.screenshot({ path: 'test-results/intake-register-en.png', fullPage: true });
 });
 
+test('a director leaves a task in a project for a PM; the PM sees it in Mine and marks it done (D-36)', async ({
+  page,
+  browser,
+}) => {
+  await signInWithPassword(page);
+  const pm = await join(browser, page, 'pm.tasks.e2e@example.com', 'Person 10', ['pm']);
+  const director = await join(browser, page, 'director.tasks.e2e@example.com', 'Person 11', ['director']);
+  await director.getByRole('link', { name: 'Sites' }).click();
+  await director.getByRole('link', { name: 'CLIENTA-ES-MAD-001' }).click();
+  await director.getByRole('link', { name: 'Actions', exact: true }).click();
+  await director.getByLabel('Task', { exact: true }).fill('Enter the client PO and DPIA status');
+  await director.getByLabel('For whom').selectOption({ label: 'Person 10' });
+  await director.getByLabel('Due date').fill(new Date().toISOString().slice(0, 10));
+  await director.getByRole('button', { name: 'Create task' }).click();
+  await expect(director.getByText('Enter the client PO and DPIA status')).toBeVisible();
+  await pm.getByRole('link', { name: 'Actions & alerts' }).click();
+  await pm.getByRole('button', { name: 'Mine' }).click();
+  await expect(pm.getByText('Enter the client PO and DPIA status')).toBeVisible();
+  await pm.getByRole('button', { name: 'Done: Enter the client PO and DPIA status' }).click();
+  await expect(pm.getByText('Enter the client PO and DPIA status')).toBeHidden();
+});
+
 test('an AI client signs in as the person with OAuth: login with TOTP, consent, code, token (D-33)', async ({
   browser,
 }) => {

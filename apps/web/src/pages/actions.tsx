@@ -3,7 +3,7 @@
 // keys; data comes from work.action.list (overdue is computed there, not here).
 import { useEffect, useState } from 'react';
 import { Button, Card, FormMessage, PageHeader, StatusChip, useI18n } from '@ocs/ui';
-import { loadActions, type OpenAction } from '../api.ts';
+import { completeActionOf, loadActions, type OpenAction } from '../api.ts';
 import { sourceLabel } from '../source.ts';
 
 type State = { kind: 'loading' } | { kind: 'failed' } | { kind: 'loaded'; actions: OpenAction[] };
@@ -21,6 +21,8 @@ export function ActionsPage() {
   const { t } = useI18n();
   const [mine, setMine] = useState(false);
   const [state, setState] = useState<State>({ kind: 'loading' });
+  const [version, setVersion] = useState(0);
+  const [refused, setRefused] = useState(false);
 
   useEffect(() => {
     setState({ kind: 'loading' });
@@ -32,7 +34,13 @@ export function ActionsPage() {
         setState({ kind: 'failed' });
       },
     );
-  }, [mine]);
+  }, [mine, version]);
+  const done = async (id: string) => {
+    setRefused(false);
+    const r = await completeActionOf(id).catch(() => 'failed' as const);
+    if (r === 'ok') setVersion((v) => v + 1);
+    else setRefused(true);
+  };
 
   const filter = (
     <div role="group" aria-label={t('actions.owner')}>
@@ -63,6 +71,7 @@ export function ActionsPage() {
       <p>{t('actions.intro')}</p>
       {state.kind === 'loading' ? <p>{t('common.loading')}</p> : null}
       {state.kind === 'failed' ? <FormMessage tone="error">{t('actions.failed')}</FormMessage> : null}
+      {refused ? <FormMessage tone="error">{t('task.outcome.forbidden')}</FormMessage> : null}
       {state.kind === 'loaded' ? (
         <div className="ocs-board">
           {COLUMNS.map((col) => {
@@ -85,6 +94,13 @@ export function ActionsPage() {
                         {t('actions.ownerDue', { owner: a.owner.name ?? '—', due: a.due })}
                       </div>
                       <div className="ocs-board__meta">{sourceLabel(t, a.source)}</div>
+                      <Button
+                        variant="secondary"
+                        aria-label={`${t('task.done')}: ${a.title}`}
+                        onClick={() => void done(a.id)}
+                      >
+                        {t('task.done')}
+                      </Button>
                     </li>
                   ))}
                 </ul>
