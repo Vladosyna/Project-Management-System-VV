@@ -5,7 +5,13 @@
 import { z } from 'zod';
 import { defineQuery } from '../../kernel/index.ts';
 import { intakePermissions } from '../permissions.ts';
-import { activeItems, conditionalStartOf, decisionOf, latestCard } from '../repository.ts';
+import {
+  activeItems,
+  conditionalStartOf,
+  decisionOf,
+  latestCard,
+  latestDisputeOnSite,
+} from '../repository.ts';
 import { handoverGaps } from '../rules/handover-checklist.ts';
 
 export const handoverCardView = defineQuery({
@@ -26,6 +32,7 @@ export const handoverCardView = defineQuery({
       .sort((a, b) => a.code.localeCompare(b.code));
     const decision = await decisionOf(ctx.tx, card.id);
     const start = await conditionalStartOf(ctx.tx, card.id);
+    const dispute = await latestDisputeOnSite(ctx.tx, i.siteId);
     return {
       id: card.id,
       version: card.version,
@@ -43,6 +50,15 @@ export const handoverCardView = defineQuery({
         conditions: decision.conditions,
       },
       conditionalStart: start ?? null,
+      /** SOP-DEL-01 §9: the latest dispute of a return on this project, open or decided. */
+      dispute: dispute
+        ? {
+            reason: dispute.reason,
+            dueOn: dispute.dueOn,
+            outcome: dispute.outcome,
+            note: dispute.outcomeNote,
+          }
+        : null,
     };
   },
 });

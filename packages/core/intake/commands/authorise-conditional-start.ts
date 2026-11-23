@@ -4,9 +4,15 @@
 // Assumption: working days follow the project's country calendar (GB where none exists yet), as in E3.
 import { z } from 'zod';
 import { addWorkingDays, calendarIds, localDateIn, type CalendarId } from '../../calendar/index.ts';
-import { Conflict, defineCommand, NotFound } from '../../kernel/index.ts';
+import { Conflict, defineCommand, NotFound, RuleViolation } from '../../kernel/index.ts';
 import { intakePermissions } from '../permissions.ts';
-import { activeConditionalStart, insertConditionalStart, lockActiveSite, openCard } from '../repository.ts';
+import {
+  activeConditionalStart,
+  insertConditionalStart,
+  lockActiveSite,
+  openCard,
+  openDisputeOnSite,
+} from '../repository.ts';
 import { conditionalStartRule } from '../rules/conditional-start.config.ts';
 import { checkConditionalStart } from '../rules/conditional-start.ts';
 import { itemCodes } from '../rules/handover-checklist.ts';
@@ -34,6 +40,10 @@ export const authoriseConditionalStart = defineCommand({
     if (!project) throw new NotFound('site', i.siteId);
     const card = await openCard(ctx.tx, project.id);
     if (!card) throw new NotFound('handover_card before acceptance', i.siteId);
+    // SOP-DEL-01 §9: "Work does not start while the dispute is open."
+    if (await openDisputeOnSite(ctx.tx, project.id)) {
+      throw new RuleViolation('SOP-DEL-01 §9', 'work does not start while an intake dispute is open');
+    }
     if (await activeConditionalStart(ctx.tx, card.id))
       throw new Conflict('this card already has a Conditional Start');
     const today = localDateIn(ctx.now, 'UTC');

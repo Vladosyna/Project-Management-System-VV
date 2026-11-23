@@ -38,5 +38,15 @@ export const intakePermissions = {
       "See a project's current Handover Card: status, package, items, gaps, decision and conditions (E2)",
     roles: ['sales', 'director', 'pm', 'sponsor', 'management'],
   }),
+  raiseDispute: permission('intake.dispute.raise', {
+    description:
+      'Dispute a Returned intake decision: the sponsor decides within 2 working days; work does not start meanwhile (SOP-DEL-01 §9)',
+    roles: ['sales'],
+  }),
+  decideDispute: permission('intake.dispute.decide', {
+    description:
+      'Decide an intake dispute: uphold the return, or overturn it so the Delivery Director reviews the card again (SOP-DEL-01 §9)',
+    roles: ['sponsor'],
+  }),
   // gen:permissions — `pnpm gen:command` and `pnpm gen:query` add entries above this line.
 };
