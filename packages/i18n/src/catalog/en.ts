@@ -299,8 +299,7 @@ export const en = {
   'intake.dispute.open':
     'Disputed: "{reason}". The sponsor decides by {dueOn}. Work does not start while the dispute is open.',
   'intake.dispute.upheld': 'Dispute decided: the return is upheld. {note}',
-  'intake.dispute.overturned':
-    'Dispute decided: the return is overturned. Resubmit the card for review. {note}',
+  'intake.dispute.overturned': 'Dispute decided: the return is overturned and the card is accepted. {note}',
   'intake.dispute.note': 'Note on the decision (optional)',
   'intake.dispute.uphold': 'Uphold the return',
   'intake.dispute.overturn': 'Overturn the return',

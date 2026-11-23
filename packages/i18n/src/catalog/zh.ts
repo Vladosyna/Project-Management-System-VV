@@ -295,7 +295,7 @@ export const zh = {
   'intake.dispute.raise': '对此退回提出异议',
   'intake.dispute.open': '已提出异议：“{reason}”。发起人须在 {dueOn} 前决定。异议未决期间不得开工。',
   'intake.dispute.upheld': '异议已决定：维持退回。{note}',
-  'intake.dispute.overturned': '异议已决定：撤销退回。请重新提交交接卡审核。{note}',
+  'intake.dispute.overturned': '异议已决定：撤销退回，交接卡已接受。{note}',
   'intake.dispute.note': '决定说明（可选）',
   'intake.dispute.uphold': '维持退回',
   'intake.dispute.overturn': '撤销退回',

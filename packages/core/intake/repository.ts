@@ -146,10 +146,16 @@ export async function submissions(tx: Tx) {
       submittedAt: handoverCard.submittedAt,
       decision: intakeDecision.decision,
       decidedAt: intakeDecision.decidedAt,
+      disputeOutcome: intakeDispute.outcome,
+      disputeDecidedAt: intakeDispute.decidedAt,
     })
     .from(handoverCard)
     .innerJoin(site, eq(site.id, handoverCard.siteId))
     .leftJoin(intakeDecision, eq(intakeDecision.cardId, handoverCard.id))
+    .leftJoin(
+      intakeDispute,
+      and(eq(intakeDispute.decisionId, intakeDecision.id), isNull(intakeDispute.archivedAt)),
+    )
     .where(and(isNotNull(handoverCard.submittedAt), isNull(handoverCard.archivedAt)))
     .orderBy(site.projectId, handoverCard.version);
 }
@@ -272,6 +278,32 @@ export async function latestDisputeOnSite(tx: Tx, siteId: string) {
       .orderBy(desc(intakeDispute.raisedAt))
       .limit(1)
   )[0]?.dispute;
+}
+
+/** D-35: the card version a decision belongs to. */
+export async function cardOfDecision(tx: Tx, decisionId: string) {
+  return (
+    await tx
+      .select({ card: handoverCard })
+      .from(intakeDecision)
+      .innerJoin(handoverCard, eq(handoverCard.id, intakeDecision.cardId))
+      .where(eq(intakeDecision.id, decisionId))
+  )[0]?.card;
+}
+
+/** D-35: archive the newer card versions Sales started after an overturned return. */
+export async function archiveCardsAfter(tx: Tx, siteId: string, version: number, at: Date) {
+  return tx
+    .update(handoverCard)
+    .set({ archivedAt: at })
+    .where(
+      and(
+        eq(handoverCard.siteId, siteId),
+        sql`${handoverCard.version} > ${version}`,
+        isNull(handoverCard.archivedAt),
+      ),
+    )
+    .returning({ id: handoverCard.id, version: handoverCard.version });
 }
 
 /** "Work does not start while the dispute is open" (§9): an undecided dispute on any card of the project. */
