@@ -1,11 +1,18 @@
 // intake.dispute.decide — E2 AC5, SOP-DEL-01 §9: the sponsor decides the open dispute on the project's latest
-// return. upheld: the return stands, Sales completes the card as usual. overturned: recorded for the audit and the
-// Intake Register; Sales resubmits at once and the Delivery Director re-reviews (§5 step 4, re-review: 1 working
-// day). A decision is final.
+// return. upheld: the return stands, Sales completes the card as usual. overturned (D-35, Vlad 23 Nov): the disputed
+// card version is Accepted at once — no resubmission, no second review; a newer version Sales started meanwhile is
+// archived. A decision is final.
 import { z } from 'zod';
 import { Conflict, defineCommand, NotFound } from '../../kernel/index.ts';
 import { intakePermissions } from '../permissions.ts';
-import { latestDisputeOnSite, lockActiveSite, recordDisputeOutcome } from '../repository.ts';
+import {
+  archiveCardsAfter,
+  cardOfDecision,
+  latestDisputeOnSite,
+  lockActiveSite,
+  recordDisputeOutcome,
+  updateCard,
+} from '../repository.ts';
 
 export const decideDispute = defineCommand({
   name: 'intake.dispute.decide',
@@ -30,6 +37,15 @@ export const decideDispute = defineCommand({
       decidedAt: ctx.now,
     };
     await recordDisputeOutcome(ctx.tx, dispute.id, set);
+    let accepted: { cardId: string; version: number; archived: { id: string; version: number }[] } | null =
+      null;
+    if (i.outcome === 'overturned') {
+      const card = await cardOfDecision(ctx.tx, dispute.decisionId);
+      if (!card) throw new NotFound('handover_card of the disputed decision', dispute.decisionId);
+      await updateCard(ctx.tx, card.id, { status: 'accepted' });
+      const archived = await archiveCardsAfter(ctx.tx, project.id, card.version, ctx.now);
+      accepted = { cardId: card.id, version: card.version, archived };
+    }
     ctx.emit(
       'intake.dispute.decided',
       { siteId: project.id, disputeId: dispute.id, outcome: i.outcome },
@@ -42,7 +58,7 @@ export const decideDispute = defineCommand({
         objectId: dispute.id,
         clientId: project.clientId,
         before: { outcome: null },
-        after: set,
+        after: { ...set, accepted },
       },
     };
   },

@@ -383,6 +383,50 @@ test('the Delivery Director decides on the submitted card: a blocking item is re
   await director.screenshot({ path: 'test-results/intake-register-en.png', fullPage: true });
 });
 
+test('Sales disputes a returned card and the sponsor upholds the return (SOP-DEL-01 §9)', async ({
+  page,
+  browser,
+}) => {
+  await signInWithPassword(page);
+  const open = async (p: Page) => {
+    await p.getByRole('link', { name: 'Sites' }).click();
+    await p.getByRole('link', { name: 'CLIENTA-ES-MAD-002' }).click();
+    await p.getByRole('link', { name: 'Intake', exact: true }).click();
+  };
+  const sales = await join(browser, page, 'sales2.e2e@example.com', 'Person 07', ['sales']);
+  await open(sales);
+  await sales.getByLabel('Project name').fill('Mall A second site');
+  await sales.getByLabel('Project type').selectOption('new');
+  for (const select of await sales.getByLabel(/^State [A-G][1-9]$/).all())
+    await select.selectOption('provided');
+  await sales.getByRole('button', { name: 'Save draft' }).click();
+  await expect(sales.getByText('Nothing missing: the card can be submitted.')).toBeVisible();
+  await sales.getByRole('button', { name: 'Submit for intake review' }).click();
+  const director = await join(browser, page, 'director3.e2e@example.com', 'Person 08', ['director']);
+  await open(director);
+  await director.getByLabel('Decision').selectOption('returned');
+  await director.getByLabel(/^Gaps or reasons/).fill('Floor plans are outdated');
+  await director.getByRole('button', { name: 'Record decision' }).click();
+  await expect(director.getByText(/^Status: Returned/)).toBeVisible();
+  // Sales disputes the return once; the sponsor has 2 working days.
+  await sales.reload();
+  await sales.getByLabel('Why the return is wrong').fill('Plans were updated last week');
+  await sales.getByRole('button', { name: 'Dispute this return' }).click();
+  await expect(
+    sales.getByText(/^Disputed: "Plans were updated last week"\. The sponsor decides by/),
+  ).toBeVisible();
+  await sales.getByRole('button', { name: 'Uphold the return' }).click();
+  await expect(sales.getByText(/^Sales raises a dispute; only the sponsor decides it/)).toBeVisible();
+  const sponsor = await join(browser, page, 'sponsor2.e2e@example.com', 'Person 09', ['sponsor']);
+  await open(sponsor);
+  await sponsor.getByLabel('Note on the decision (optional)').fill('Plans still show the old layout');
+  await sponsor.getByRole('button', { name: 'Uphold the return' }).click();
+  await expect(
+    sponsor.getByText('Dispute decided: the return is upheld. Plans still show the old layout'),
+  ).toBeVisible();
+  await sponsor.screenshot({ path: 'test-results/intake-dispute-en.png', fullPage: true });
+});
+
 test('an AI client signs in as the person with OAuth: login with TOTP, consent, code, token (D-33)', async ({
   browser,
 }) => {

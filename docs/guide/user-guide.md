@@ -2,7 +2,7 @@
 
 How to use OCS today: what is there, where to click, who may do what. Button and menu names are exactly as on screen (English UI; switch to 中文 with the language button top right).
 
-> Kept current with every new feature — see "Keeping this guide current" at the end. Last updated: 21 Nov 2026.
+> Kept current with every new feature — see "Keeping this guide current" at the end. Last updated: 23 Nov 2026.
 
 ---
 
@@ -41,6 +41,7 @@ Tiles with the key numbers; click a tile to open its tab: **Stage** (last step, 
 - The screen shows **Still missing before submission: …** until nothing is missing. **Save draft** any time; **Submit for intake review** when complete. A submitted card is read-only.
 - **Sponsor** (before acceptance): **Conditional Start** — tick the missing items, set a deadline (within 5 working days), give the DingTalk reference → **Authorise Conditional Start**.
 - **Delivery Director** (submitted card): **Decision** (Accepted / Accepted with conditions / Returned), folder standard, gaps or reasons; for conditions **Add condition** (item, what is missing, deadline within 5 working days) → **Record decision**. Items A1, A4, A6, C2, D1, F1 can never be conditions — OCS refuses and says why. Expired conditions create an action for the Sales owner and the director automatically.
+- **Dispute of a return** (SOP-DEL-01 §9): when the card is **Returned**, Sales can disagree once: **Why the return is wrong** → **Dispute this return**. The sponsor decides within 2 working days (the date is shown): optional **Note on the decision** → **Uphold the return** or **Overturn the return**. While the dispute is open, a Conditional Start is refused. After an overturn the card is accepted at once (a newer draft is archived).
 
 ### Lifecycle (SOP-DEL-04)
 The base steps (card received → card complete → readiness confirmed → go/no-go → installed → accepted) and the project's gates with dates and evidence. **Record a step**: pick the **Step**, **Date**, evidence (folder path or document name) → **Record step**. Steps go in order. **Accepted** needs its acceptance evidence: the Installation Acceptance Form (standard S) or the Acceptance Certificate (standard L) — without it OCS refuses the step. **Planned installation** → **Set installation date** (only after "card complete"). A readiness warning appears when the installation is near and readiness is not confirmed.
@@ -79,10 +80,10 @@ An AI assistant can read and change OCS **as you** — with exactly your permiss
 ## 8. Who may do what (short)
 | Role | Typically |
 |---|---|
-| Sales | Fill and submit Handover Cards; record lifecycle steps; comment |
+| Sales | Fill and submit Handover Cards; dispute a return; record lifecycle steps; comment |
 | PM | Register devices and versions, record steps, set installation dates, comments, visits, turn comments into actions, device settings |
 | Director | Intake decisions, gate templates, everything a PM does, invite people |
-| Sponsor | Conditional Start, gate templates, Intake Register |
+| Sponsor | Conditional Start, decide intake disputes, gate templates, Intake Register |
 | R&D | Register devices and versions, record firmware problems, visits, comments |
 | Admin | Invite people, AI connections — no project work |
 
@@ -96,9 +97,6 @@ Each section below is a placeholder for a feature on the roadmap (`docs/ocs/05-r
 
 ### 9.1 Projects (menu **Projects**) — Planned — not available yet
 Client → programme → country → city → project hierarchy (SOP-DEL-02), Project IDs `CLIENT-CC-CITY-NNN`, folder standard L/S per site and changing it; partners with their client-facing label (Partner A/B/C). *Target: pilot / January.*
-
-### 9.2 Intake disputes — Planned — not available yet
-When Sales disagrees with a **Returned** decision: an escalation record to the sponsor with a 2-working-day timer (SOP-DEL-01 §9). *Target: pilot.*
 
 ### 9.3 Handover Card — full Annex B sections — Planned — not available yet
 Stakeholders, commercial details, communication rules, open items and the change log as form sections, in addition to today's checklist. *Target: pilot.*

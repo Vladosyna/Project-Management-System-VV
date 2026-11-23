@@ -29,19 +29,23 @@ export const intakeRegister = defineQuery({
       .flatMap((s) => {
         const submitted = s.submittedAt;
         if (!submitted) return [];
-        const accepted = s.decision === 'accepted' || s.decision === 'accepted_with_conditions';
+        // D-35: a return the sponsor overturned counts as accepted on the day of the sponsor's decision.
+        const overturned = s.decision === 'returned' && s.disputeOutcome === 'overturned';
+        const decision = overturned ? 'accepted' : s.decision;
+        const decidedAt = overturned ? s.disputeDecidedAt : s.decidedAt;
+        const accepted = decision === 'accepted' || decision === 'accepted_with_conditions';
         const first = firstOf.get(s.siteId) ?? submitted;
         const row = {
           projectId: s.projectId,
           version: s.version,
           submittedOn: day(submitted),
-          decision: s.decision ?? 'pending',
-          decidedOn: s.decidedAt ? day(s.decidedAt) : null,
+          decision: decision ?? 'pending',
+          decidedOn: decidedAt ? day(decidedAt) : null,
           /** Returns before this submission: every earlier version came back. */
           returns: s.version - 1,
           daysToAcceptance:
-            accepted && s.decidedAt
-              ? workingDaysBetween(day(first), day(s.decidedAt), calendarOf(s.countryCode))
+            accepted && decidedAt
+              ? workingDaysBetween(day(first), day(decidedAt), calendarOf(s.countryCode))
               : null,
         };
         return [row];
