@@ -7,6 +7,7 @@ import { Button, CheckboxGroup, Form, FormMessage, SelectField, TextField, useI1
 import { intakeWrite, loadHandoverCard, type HandoverCardView } from '../api.ts';
 import { ConditionalStart } from './conditional-start.tsx';
 import { IntakeDecision } from './intake-decision.tsx';
+import { IntakeDispute } from './intake-dispute.tsx';
 
 const CODES = [
   'A1',
@@ -251,6 +252,15 @@ export function SiteIntake(props: { siteId: string }) {
           siteId={props.siteId}
           card={card}
           codes={CODES}
+          onDone={() => {
+            setVersion((v) => v + 1);
+          }}
+        />
+      ) : null}
+      {card ? (
+        <IntakeDispute
+          siteId={props.siteId}
+          card={card}
           onDone={() => {
             setVersion((v) => v + 1);
           }}

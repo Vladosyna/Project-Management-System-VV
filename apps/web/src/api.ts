@@ -398,6 +398,13 @@ export interface HandoverCardView {
     readonly conditions: readonly { itemCode: string; text: string; deadline: string; status: string }[];
   } | null;
   readonly conditionalStart: { missingItems: string[]; deadline: string; writtenRef: string } | null;
+  /** SOP-DEL-01 §9: the latest dispute of a return on this project; outcome null while open. */
+  readonly dispute: {
+    readonly reason: string;
+    readonly dueOn: string;
+    readonly outcome: 'upheld' | 'overturned' | null;
+    readonly note: string | null;
+  } | null;
 }
 
 /** E2: the project's latest Handover Card; null before one exists; undefined when the role may not see it. */
@@ -413,7 +420,13 @@ export async function loadHandoverCard(siteId: string): Promise<HandoverCardView
 /** E2 writes on a project: 'rule' = refused by the SOP (422), 'conflict' = under review (409). */
 export async function intakeWrite(
   siteId: string,
-  path: 'handover-card' | 'handover-card/submit' | 'intake-decision' | 'conditional-start',
+  path:
+    | 'handover-card'
+    | 'handover-card/submit'
+    | 'intake-decision'
+    | 'conditional-start'
+    | 'intake-dispute'
+    | 'intake-dispute/decide',
   body: Record<string, unknown>,
 ): Promise<'ok' | 'forbidden' | 'invalid' | 'rule' | 'conflict'> {
   const res = await fetch(`/api/sites/${encodeURIComponent(siteId)}/${path}`, {

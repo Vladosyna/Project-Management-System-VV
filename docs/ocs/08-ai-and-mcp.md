@@ -17,6 +17,20 @@
 | Proposal | New case from inbox; status change; ETA extracted from text; new work item; contradiction flag; owner for a minutes action item | `AiProposal` queue for the case/object owner; accept / edit / reject |
 | Human only | Anything client-visible; committed client date; close with root cause; priority to P0; any change to live devices | AI may draft only |
 
+### Delivery data entry (D-34 N5)
+For N1–N3 agents enter the data, PMs confirm; hand entry is the fallback. Until the central agent runs (January) each PM's own agent does this via MCP.
+
+| Data | Source | Agent action | Level |
+|---|---|---|---|
+| Price proposals (per site / trip / country) | Installer mails, PDF/XLSX quotes, WhatsApp | Extract each quote, match to SOW and site, normalise to unit + hour + travel, flag lines above time standard, client price (P-03) or supplier rules | Proposal; approval human (CEO, P-11) |
+| Quote comparison | Price proposals of the same SOW | Like-for-like table, cheapest compliant quote, draft CEO approval request | Proposal |
+| Client PO, DPIA, invoice | Client mails, PO notifications, DPIA status lists, portals | Extract PO number, amount, store, DPIA status per market; link to site | Proposal |
+| Supplier invoice | Supplier mails | Match to quote and visit outcome, check supplier rules (P-07), draft payment request text | Proposal; payment request human (OA) |
+| Shipment | Carrier mails, tracking pages/APIs | Update status and ETA; alert on customs hold | Automatic (status); proposal (new shipment) |
+| Readiness checklist | Market mail/WhatsApp with photos | Tick items with the photo as evidence, list what is missing | Proposal; go/no-go human |
+
+Money data (PO, quotes, invoices, payments) is never applied without a PM's confirmation, also when an adapter replaces the agent (07-integrations.md).
+
 Start: everything except exact-match attach is a proposal. Promote a proposal type to automatic only when its accept-without-edit rate stays above ~90% for 4 weeks, by decision-log entry.
 
 ## Data handling

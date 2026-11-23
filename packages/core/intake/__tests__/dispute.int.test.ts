@@ -15,6 +15,7 @@ import { createClient, createSite } from '../../org/index.ts';
 import { authoriseConditionalStart } from '../commands/authorise-conditional-start.ts';
 import { decideDispute } from '../commands/decide-dispute.ts';
 import { decideIntake } from '../commands/decide-intake.ts';
+import { intakeRegister } from '../queries/intake-register.ts';
 import { raiseDispute } from '../commands/raise-dispute.ts';
 import { saveHandoverCard } from '../commands/save-handover-card.ts';
 import { submitHandoverCard } from '../commands/submit-handover-card.ts';
@@ -35,7 +36,13 @@ const decide = (outcome: string, actor = sponsor) =>
 beforeAll(async () => {
   testDb = await createTestDatabase(inject('postgresUrl'));
   t = await openTestKernel(testDb.url, { clock: clock.now });
-  t.grant(director, createClient.permission, createSite.permission, decideIntake.permission);
+  t.grant(
+    director,
+    createClient.permission,
+    createSite.permission,
+    decideIntake.permission,
+    intakeRegister.permission,
+  );
   t.grant(sales, saveHandoverCard.permission, submitHandoverCard.permission, raiseDispute.permission);
   t.grant(sponsor, decideDispute.permission, authoriseConditionalStart.permission);
   const a = await t.kernel.execute(
@@ -117,6 +124,22 @@ describe('intake disputes (SOP-DEL-01 §9)', () => {
         sponsor.id,
       ]),
     ).toBe(1);
+  });
+
+  it('overturned: the disputed card is accepted at once, the newer draft archived (D-35)', async () => {
+    expect(
+      await countRows(
+        testDb.url,
+        `handover_card WHERE version = 1 AND status = 'accepted' AND archived_at IS NULL`,
+      ),
+    ).toBe(1);
+    expect(await countRows(testDb.url, `handover_card WHERE version = 2 AND archived_at IS NOT NULL`)).toBe(
+      1,
+    );
+    const rows = await t.kernel.read(intakeRegister, director, {});
+    expect(rows).toEqual([
+      expect.objectContaining({ version: 1, decision: 'accepted', decidedOn: '2026-11-20' }),
+    ]);
   });
 
   it('nothing to decide on a project without a dispute', async () => {
