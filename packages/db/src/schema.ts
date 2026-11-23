@@ -6,6 +6,7 @@ import {
   inet,
   integer,
   jsonb,
+  numeric,
   pgSchema,
   pgTable,
   primaryKey,
@@ -462,6 +463,31 @@ export const intakeDispute = pgTable('intake_dispute', {
   outcomeNote: text('outcome_note'),
   decidedBy: uuid('decided_by'),
   decidedAt: timestamp('decided_at', { withTimezone: true }),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  archivedAt: timestamp('archived_at', { withTimezone: true }),
+});
+
+/** D-34 N2: commercial status per site (0022). Money in the original currency and in EUR with the rate used. */
+export const COMMERCIAL_KINDS = ['client_po', 'dpia', 'client_invoice', 'price_list'] as const;
+export const commercialRecord = pgTable('commercial_record', {
+  id: uuid('id').primaryKey(),
+  clientId: uuid('client_id').notNull(),
+  siteId: uuid('site_id').notNull(),
+  kind: text('kind', { enum: COMMERCIAL_KINDS }).notNull(),
+  reference: text('reference'),
+  status: text('status').notNull(),
+  recordDate: date('record_date', { mode: 'string' }).notNull(),
+  amount: numeric('amount', { precision: 14, scale: 2 }),
+  currency: text('currency'),
+  eurAmount: numeric('eur_amount', { precision: 14, scale: 2 }),
+  fxRate: numeric('fx_rate', { precision: 14, scale: 6 }),
+  fxDate: date('fx_date', { mode: 'string' }),
+  fxSource: text('fx_source', { enum: ['manual', 'agent', 'ecb'] }),
+  sourceRef: text('source_ref'),
+  proposedBy: uuid('proposed_by').notNull(),
+  proposedVia: text('proposed_via', { enum: ['web', 'ai'] }).notNull(),
+  confirmedBy: uuid('confirmed_by'),
+  confirmedAt: timestamp('confirmed_at', { withTimezone: true }),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   archivedAt: timestamp('archived_at', { withTimezone: true }),
 });
