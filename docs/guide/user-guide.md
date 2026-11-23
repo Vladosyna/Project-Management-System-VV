@@ -53,7 +53,7 @@ Every device with serial, model, platform status, offline since, channels/gates,
 Devices grouped by switch and port, with offline counts per switch. Shown when switches are recorded.
 
 ### Actions
-Open actions of this project with owner and due date.
+Open actions of this project with owner, due date and an overdue mark. **New task**: **Task**, **For whom** (any staff member), **Due date** → **Create task** — the person sees it under **Actions & alerts → Mine**. **Done** closes a task: its owner, a director or a PM may do it.
 
 ### Timeline
 Everything that happened, newest first, each with its source. **Comment** → **Add comment** (tick people to @mention them). **Make it an action** on a comment → owner, **Due date** → **Create action**. **Record a visit** → attendees, summary, decisions, coverage, action items → **Save visit record** (a shortfall needs a reason).
@@ -62,7 +62,7 @@ Everything that happened, newest first, each with its source. **Comment** → **
 **Mall on the device platform** and **Offline alerts** (only with a linked mall) → **Save**.
 
 ## 4. Actions & alerts
-All open actions in columns, with owner, due date and source (comment, visit, alert). **Mine** filters to yours. Alerts (device offline > 24 h, device lists not matching the platform, expired intake conditions) arrive here as actions automatically.
+All open actions in columns, with owner, due date and source (comment, visit, alert). **Mine** filters to yours; **Done** on a card closes it (owner, director or PM). Alerts (device offline > 24 h, device lists not matching the platform, expired intake conditions) arrive here as actions automatically.
 
 ## 5. Intake Register
 One row per submitted card version: Project ID, submitted, decision, decided, returns, working days to acceptance. **Month of submission** filters; **Export CSV** downloads what is shown — for the monthly review with the Sales Lead.

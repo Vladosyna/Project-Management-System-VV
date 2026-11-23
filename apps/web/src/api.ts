@@ -244,6 +244,19 @@ async function send(method: string, path: string, body: unknown): Promise<WriteO
   return 'ok';
 }
 
+/** D-36: a task in a project for one staff member, with a due date. */
+export function createSiteAction(
+  siteId: string,
+  input: { title: string; owner: { userId: string }; due: string },
+): Promise<WriteOutcome> {
+  return send('POST', `/api/sites/${encodeURIComponent(siteId)}/actions`, input);
+}
+
+/** D-36: mark an action done — its owner, or a director or PM. */
+export function completeActionOf(actionId: string): Promise<WriteOutcome> {
+  return send('POST', `/api/actions/${encodeURIComponent(actionId)}/complete`, {});
+}
+
 /** D-31: firmware and/or algorithm version on devices of a project. */
 export function saveVersions(
   siteId: string,

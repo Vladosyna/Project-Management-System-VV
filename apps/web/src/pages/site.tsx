@@ -29,7 +29,8 @@ import { SiteDevices } from './site-devices.tsx';
 import { SiteIntake } from './site-intake.tsx';
 import { SiteLifecycle } from './site-lifecycle.tsx';
 import { SiteNetwork } from './site-network.tsx';
-import { SITE_TABS, SiteActions, SiteOverview, type SiteTab } from './site-overview.tsx';
+import { SiteActions } from './site-actions.tsx';
+import { SITE_TABS, SiteOverview, type SiteTab } from './site-overview.tsx';
 import { Link } from '@tanstack/react-router';
 import { VisitForm } from './visit-form.tsx';
 
