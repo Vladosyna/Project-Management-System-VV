@@ -41,6 +41,8 @@ Dates from D-17. Each epic lists acceptance criteria (AC). An epic is done when 
 - AC2 Installation date cannot be set before "card complete" (rule cites SOP-DEL-04 §1).
 - AC3 Gate templates attachable to a client/programme (seed: PMI G1–G5 incl. D−2 check); evaluated per site.
 - AC4 Acceptance evidence: S = Installation Acceptance Form, L = Acceptance Certificate (file reference).
+- AC5 Gates **PO received** (before installation booking where the market requires it) and **DPIA approved** (before configuration), set per country in the gate templates (D-32, D-34 C2).
+- AC6 Readiness = **New Store Readiness checklist** (VV-SOW-STORE v1.0): every item with photo or written evidence, sent by the market 2 working days before; go/no-go D−1 recorded; installer booking refused until readiness passed (D-34 C3).
 
 ### E4 Devices registry
 - AC1 Device: SN, MAC, model, firmware, site, switch/port/IP, status; SN unique among active records (R6 blocks at save); MAC is the last value seen, not unique (D-29).
@@ -54,6 +56,7 @@ Dates from D-17. Each epic lists acceptance criteria (AC). An epic is done when 
 - AC4 Feed per project/site with source on every item.
 
 ### E6 Cases and work items (SOP-DEL-05 draft — see domain/case-rules.md)
+- Case type **security** (D-34 N4): client security findings (pen-test findings, secret rotation, credential hygiene) are cases with owner, ETA and client-visible committed date; no separate module.
 - AC1 Case: number `CS-nnnn`, client, site/devices, type, priority, accountable owner, status, internal ETA, committed client date, client-facing title, visibility.
 - AC2 Work item: one team, one owner, ETA with mandatory reason on change, history kept; case ETA = latest blocking work item ETA.
 - AC3 Timeline merges messages, comments, ETA changes, status changes, system events; filters all / mail / internal / client-visible.
@@ -66,31 +69,53 @@ Dates from D-17. Each epic lists acceptance criteria (AC). An epic is done when 
 - AC2 Auto-attach when subject has `[CS-nnnn]` or the thread is known; otherwise create an inbox item with suggested match.
 - AC3 Staff confirms: attach / new case / action / not a case.
 - AC4 Draft client update placed in the user's own Drafts folder (or .eml download) with tag and CC; OCS never sends.
+- AC5 **Awaiting-our-reply clock** on every client thread, case or not: owner and due date by the 2-working-day reply rule (25 Oct); overdue → R30 (D-34 C6).
 
 ### E8 Alerts (subset)
 - AC1 Engine runs hourly; each hit has owner, level, due, handling log.
-- AC2 V1 rules: R5, R6 (save-block), R7, R8, R9, R12, R13, R14, R17, R18, R19, R20, R23 (domain/rules.md).
+- AC2 V1 rules: R2, R5, R6 (save-block), R7, R8, R9, R12, R13, R14, R17, R18, R19, R20, R23, R24–R31, R32 (save-block), R33 (domain/rules.md; R2 and R24–R33 added by D-34).
 
 ### E9 DingTalk notifications (one-way)
 - AC1 Work notice to the assignee for new work item, ETA due, alert; deep link to OCS.
 - AC2 Respect communication norms: no client-facing sends; staff notices only.
 
 ### E10 Imports
-- AC1 PMI trackers, quote register, NEINVER/Heinemann device lists, KB open items → actions/cases with source; dry-run diff report; PM confirmation step.
+- AC1 PMI trackers (baseline: the programme tracker of 9 Nov), Quotes Register v2, NEINVER/Heinemann device lists, KB open items and KB ledgers (per-project and supplier payments) → actions/cases/records with source; dry-run diff report; PM confirmation step (D-34 C7).
 - AC2 Credentials in sources are detected and dropped (D-20).
 
 ### E11 Reports
-- AC1 Monday pack export (per project) from OCS data.
+- AC1 **Friday weekly report per project** first (management rule, 5 Nov), then the Monday pack, both from OCS data (D-34 C5).
 - AC2 Intake Register monthly report.
+- AC3 Programme tracker export (stores, dates, status, gates) replacing the hand-kept PMI tracker.
+
+### E12 Installer jobs and price proposals (D-34 N1, V1)
+Data enters through AI agents (commands via MCP/REST, D-33) as proposals; the PM confirms; hand entry for every field as fallback.
+- AC1 Installer job per site or trip: installer (real name staff-only, Partner label to clients — E1 AC4), scope partial/full, sensors, SOW sent, schedule, status.
+- AC2 SOW generated from site data: Standard Installation SOW (VV-SOW-INST) + site page (devices, ceiling height, cabling mode, readiness gate).
+- AC3 **Price proposals tab** per site / trip / country: installer, line items (per unit, per hour, travel, extras), currency, validity, SOW version, source link. An agent proposal normalises each quote to unit + hour + travel and flags lines above the internal time standard (partial N + 2 h, full 2N + 2 h), above the client price (P-03) or outside the supplier's rules.
+- AC4 **Quote comparison**: like-for-like table of quotes on the same SOW; ≥ 2 comparable quotes required (P-12), a single urgent quote only with a reason; cheapest compliant quote marked; approval request for the CEO prepared — approval recorded by a person with its reference (P-11), never by AI.
+- AC5 Schedule changes only through the Delivery Director; the market receives one final schedule (P-10).
+- AC6 Visit outcome: done / attended-not-ready (abortive charge per supplier rules) / cancelled before arrival.
+- AC7 Supplier invoice checked against quote, visit outcome and supplier rules (P-07) before the payment request; payment request reference (DingTalk OA, P-05) recorded by a person; credit/payment terms per supplier.
+
+### E13 Commercial status per site (D-34 N2, V1)
+- AC1 Per site: client PO (number, amount, currency, date), DPIA status, client invoice (number, status), price-list price. Agent proposals from client mails/portals; PM confirms all money data.
+- AC2 Alerts R14, R24–R27 (domain/rules.md).
+- AC3 Owner transfer (D-34 C8): one command moves all open items, sites, cases and threads of a person to a new owner with a handover note and a leaver flag; R33 flags anything still on a departed owner.
+
+### E14 Shipments (D-34 N3, V1 minimal)
+- AC1 Shipment per site or batch: carrier, AWB, declared value (actual sales price), consignee (no departed staff), devices by SN, status, customs issue.
+- AC2 Status and ETA updated automatically from carrier mails/tracking (trust: automatic); new shipments are proposals.
+- AC3 Alerts R2 (no arrival confirmation N days after ETA) and R28 (held in customs).
 
 ## Pilot (7–22 Dec)
 Go/no-go 7 Dec: pilot data confirmed by PMs; three pilot users working daily; restore from backup tested; no P0 defects. Review 22 Dec: ≥ 80% of updates on pilot projects made in OCS; Monday pack from OCS matches Excel; top-10 feedback fixed or planned.
 
 ## January 2027 (behind feature flags)
-Interactive DingTalk cards (accept / ask / reassign / ETA) · central AI agent, proposals only · device-platform read sync + registry reconciliation report · DingTalk Drive index (links, no extraction) · capability matrix (manual content) · MCP read-only for 3 users · onboarding all active projects · go-live 20 Jan.
+Interactive DingTalk cards (accept / ask / reassign / ETA) · central AI agent, proposals only · device-platform read sync + registry reconciliation report · DingTalk Drive index (links, no extraction) · capability matrix (manual content; first content: device × firmware × feature answers already given, D-34 C9) · MCP read-only for 3 users · onboarding all active projects · go-live 20 Jan.
 
 ## V1.1 (mid-Feb → Mar 2027)
-Client portal (own accounts + MFA, after independent security review) · CIP-S/CIP-L forms by link · partner phone app · calibration queue and accuracy test register · quote generator from design · file field extraction (floor plan, packing list, CIP card, test pack) · MCP write for R&D · change calendar with client-notice gate (R22).
+Client portal (own accounts + MFA, after independent security review; includes a programme tracker view — stores, dates, status, gates, D-34 C10) · CIP-S/CIP-L forms by link · partner phone app · calibration queue and accuracy test register · quote generator from design · file field extraction (floor plan, packing list, CIP card, test pack) · MCP write for R&D · change calendar with client-notice gate (R22).
 
 ## V2 (Q2 2027)
 Hypercare monitors (data gaps, spikes, DST shifts, dashboard vs API) · monthly client service report · decommissioning with data-deletion record · margin per project · Kingdee read link · DingTalk OA approval events · more client portals.

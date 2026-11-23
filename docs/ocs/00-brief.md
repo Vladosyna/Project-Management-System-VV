@@ -25,8 +25,8 @@ OCS fixes this by making every problem a **case** with an owner, ETA and source 
 | Project managers | Projects, sites, devices, actions, cases, client updates | Web; MCP from their own AI later |
 | Sales | Handover Card, project ID, client pack | Web (forms) |
 | Platform / algorithm / firmware teams | Accept work items, set ETA, comment | **DingTalk cards** (no second login), web read |
-| Finance | PO / invoice readiness (data mostly in Kingdee) | Web read, exports |
-| Partners / installers | Jobs, checklists, photos | Phone web app (V1.1) |
+| Finance | Client PO, DPIA and invoice status per site, installer quotes and invoices — **delivery data in V1** (D-34, N2), entered by agents and confirmed by the PM; Kingdee link stays V2 | Web, exports |
+| Partners / installers | Installer jobs, SOW, quotes, schedule, visit outcome, invoices are **V1 delivery data** kept by staff (D-34, N1); installers use the phone app from V1.1 | Staff web (V1); phone web app (V1.1) |
 | Clients | Client-visible case status, committed dates, CIP forms, approvals | Client portal (V1.1), own OCS account + MFA |
 | Management | Portfolio, health, metrics | Web read |
 
@@ -42,7 +42,7 @@ OCS fixes this by making every problem a **case** with an owner, ETA and source 
 ## Product principles
 
 1. SOP first, tool second — OCS executes SOP-DEL-01…04, the change-management SOP and the communication norms.
-2. Zero extra effort for contributors — mail in CC, DingTalk card, link-based forms. If it costs a person more than the old way, it will not be used.
+2. Zero extra effort for contributors — mail in CC, DingTalk card, link-based forms. **AI agents enter the data** (quotes, PO/DPIA, invoices, shipments, readiness evidence) through the command registry and the PM confirms; hand entry is the fallback (D-33, D-34). If it costs a person more than the old way, it will not be used.
 3. Internal by default — the delivery owner opens items to the client one by one.
 4. AI proposes, people approve — three trust levels (08-ai-and-mcp.md).
 5. One source of truth per data type, with a named owner.

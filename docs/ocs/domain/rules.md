@@ -7,7 +7,7 @@ Working calendars (`packages/core/calendar`): **CN** from the State Council noti
 | # | Rule | Fires when | Level | Phase |
 |---|---|---|---|---|
 | R1 | Shipment without SN / MAC | Block at save | P0 | V1.1 |
-| R2 | Not received 3 days after ETA | In transit and today > ETA + 3 | P1 | V1.1 |
+| R2 | Not received 3 days after ETA | In transit and today > ETA + 3, no arrival confirmation (D-34 N3 moves shipments to V1) | P1 | V1 |
 | R3 | Installed, not calibrated after 7 days | Installed, no calibration record | P1 | V1.1 |
 | R4 | Site late against plan | Actual completion > planned | P2 | V1.1 |
 | R5 | Invoice-ready, no invoice | No invoice 5 working days after acceptance gate | P1 | V1 |
@@ -29,6 +29,16 @@ Working calendars (`packages/core/calendar`): **CN** from the State Council noti
 | R21 | Conflicting answers | Two different answers to the same question (AI check) | P1 | Jan |
 | R22 | Change to live devices without client notice | Firmware / configuration push with no client-notice record — block (Change-management SOP) | P0 | V1.1 |
 | R23 | Message not linked | Inbox message untouched for 1 working day | P2 | V1 |
+| R24 | Installed without DPIA | Installation recorded, DPIA not approved (D-34 N2) | P0 | V1 |
+| R25 | Installer invoice without client PO | Supplier invoice recorded for a site with no client PO (D-34 N2) | P0 | V1 |
+| R26 | Site without owner | Active site with no owner, or owner flagged as leaver (D-34 N2, C8) | P1 | V1 |
+| R27 | Negative margin | Approved installer cost > client price for the site (P-03, D-34 N2) | P0 | V1 |
+| R28 | Shipment held in customs | Carrier status shows customs hold (D-34 N3) | P1 | V1 |
+| R29 | Quote not compliant | Quote line above the internal time standard or supplier rules; fewer than 2 comparable quotes without a reason (P-12, D-34 N1) | P1 | V1 |
+| R30 | Reply owed | Client thread awaiting our reply > 2 working days (rule of 25 Oct, D-34 C6) | P1 | V1 |
+| R31 | Readiness evidence missing | Readiness checklist item without photo/written evidence 2 working days before installation (D-34 C3) | P0 | V1 |
+| R32 | Installer booked before readiness | Block at save: installer booking while readiness not passed (D-34 C3) | P0 | V1 |
+| R33 | Item on a departed owner | Open item, site, case or thread owned by a person flagged as leaver (D-34 C8) | P1 | V1 |
 
 Intake (SOP-DEL-01) rules — implemented as validations, not alerts:
 

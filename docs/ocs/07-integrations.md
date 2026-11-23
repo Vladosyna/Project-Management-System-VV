@@ -31,7 +31,17 @@ Adapter: `apps/worker/src/adapters/device-platform` (client, zod schemas, fake).
 No writes to the platform from OCS until the change calendar (V1.1) with client-notice gate exists.
 
 ## Kingdee ERP — V2 read-only
-Stock, shipments, invoices (Q8). Until then: manual references (PO number, invoice number) on sites.
+Stock, shipments, invoices (Q8). Until then: PO, DPIA and invoice data per site entered by agents with PM confirmation (D-34 N2).
+
+## Future adapters (D-34)
+Added in `apps/worker/adapters/<system>/` as soon as the system offers an open API; each replaces agent extraction for its data, **never the PM confirmation of money data**. Until then the same data comes in through AI agents via MCP/REST (08-ai-and-mcp.md, N5 table).
+
+| System | Data | Replaces |
+|---|---|---|
+| Kingdee | Client PO, invoices, stock | Agent extraction from client mails/portals |
+| DingTalk OA | Payment requests, CEO quote approvals (P-05, P-11) | Reference typed by a person |
+| Carriers (DHL, UPS…) | Shipment status, ETA, customs holds | Agent extraction from carrier mails/tracking pages |
+| Installer portals | Quotes, schedules, invoices | Agent extraction from installer mails, PDF/XLSX, WhatsApp |
 
 ## Old ticket system — one-time import (Jan)
 Export open tickets (Q10) → AI pre-match to cases → human review → import as cases/work items with source → old system read-only.
