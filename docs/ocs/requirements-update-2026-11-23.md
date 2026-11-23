@@ -68,3 +68,4 @@ Business-trip expenses and per-diem; HR monthly performance scores; credentials 
 
 ## 6. Open question for Vlad
 1. Who owns the PO/DPIA data entry for PMI — Ethan (Leon's assignment, 11 Nov) for all markets?
+   **Answered by Vlad, 23 Nov (D-36):** not important — any PM of the project enters it. What matters is leaving a task in a project for a specific PM and tracking it to done.

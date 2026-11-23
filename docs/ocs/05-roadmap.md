@@ -32,7 +32,7 @@ Dates from D-17. Each epic lists acceptance criteria (AC). An epic is done when 
 - AC2 Intake review decision: Accepted / Accepted with conditions / Returned; blocking items A1, A4, A6, C2, D1, F1 can never be conditions.
 - AC3 Conditions get deadlines ≤ 5 working days; expiry fires an alert to Sales owner and Delivery Director.
 - AC4 Conditional Start only by a user with permission `intake.conditionalStart` (Hai Tao), with missing items and deadline recorded.
-- AC5 Disputes: escalation record with 2-working-day timer.
+- AC5 Disputes: escalation record with 2-working-day timer. An overturned return makes the card Accepted at once (D-35).
 - AC6 Intake Register: Project ID, submitted, decision, days to acceptance, number of returns; monthly report export.
 - AC7 Restricted items (group F) stored in restricted notes, never in the open card.
 
@@ -51,6 +51,7 @@ Dates from D-17. Each epic lists acceptance criteria (AC). An epic is done when 
 
 ### E5 Actions, feed, comments, visits (SOP-DEL-03)
 - AC1 Action: owner, due, status, source (mail / DingTalk / meeting / visit / alert / comment), linked object.
+- AC5 A director or PM creates a task in a project directly for a specific person (owner, due), the owner marks it done; open and overdue tasks per person are visible (D-36).
 - AC2 Comment with @mention; "turn into action".
 - AC3 Visit record: type (5 types of SOP-DEL-03 §2), coverage X of Y, agreed vs discussed, attendees marked VV/client/third party, link to DingTalk Action Record minutes.
 - AC4 Feed per project/site with source on every item.
