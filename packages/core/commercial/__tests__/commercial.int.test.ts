@@ -1,5 +1,5 @@
 // commercial records (E13, D-34 N2): money in original currency and EUR; a person's entry is confirmed at once, an
-// AI agent's stays a proposal until a person confirms; never deleted; staff roles only.
+// AI agent's stays a proposal until a person confirms; staff roles only.
 import { afterAll, beforeAll, describe, expect, inject, it } from 'vitest';
 import { aStaffActor, countRows, createTestDatabase, type TestDatabase } from '@ocs/testing';
 import {
@@ -10,7 +10,6 @@ import {
   type TestKernel,
 } from '../../kernel/index.ts';
 import { createClient, createSite } from '../../org/index.ts';
-import { archiveRecord } from '../commands/archive-record.ts';
 import { confirmRecord } from '../commands/confirm-record.ts';
 import { proposeRecord } from '../commands/propose-record.ts';
 import { siteCommercial } from '../queries/site-commercial.ts';
@@ -39,7 +38,6 @@ beforeAll(async () => {
     createSite.permission,
     proposeRecord.permission,
     confirmRecord.permission,
-    archiveRecord.permission,
     siteCommercial.permission,
   );
   const a = await t.kernel.execute(createClient, pm, { shortCode: 'CLIENTA', name: 'Client A' }, 'test');
@@ -97,15 +95,5 @@ describe('commercial records', () => {
     await expect(t.kernel.execute(confirmRecord, pm, { recordId: id }, 'test')).rejects.toBeInstanceOf(
       Conflict,
     );
-  });
-
-  it('archived, not deleted', async () => {
-    const { id } = await propose({ ...po, reference: 'PO-0004' });
-    await t.kernel.execute(archiveRecord, pm, { recordId: id, reason: 'Replaced by PO-0005' }, 'test');
-    expect(
-      await countRows(testDb.url, 'commercial_record WHERE id = $1 AND archived_at IS NOT NULL', [id]),
-    ).toBe(1);
-    const refs = (await t.kernel.read(siteCommercial, pm, { siteId: siteA })).map((r) => r.reference);
-    expect(refs).not.toContain('PO-0004');
   });
 });

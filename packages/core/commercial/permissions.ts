@@ -13,10 +13,6 @@ export const commercialPermissions = {
       'Confirm a commercial record an AI agent proposed (a person only, never an agent): money data is applied only when confirmed.',
     roles: ['director', 'pm', 'finance'],
   }),
-  archiveRecord: permission('commercial.record.archive', {
-    description: 'Archive a wrong or replaced commercial record of a site, with a reason; never deleted.',
-    roles: ['director', 'pm', 'finance'],
-  }),
   siteCommercial: permission('commercial.site.read', {
     description:
       'The commercial records of one site (PO, DPIA, invoice, price list): confirmed and proposed, with amounts in original currency and EUR.',

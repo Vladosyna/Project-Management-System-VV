@@ -3,5 +3,4 @@
 export { commercialPermissions } from './permissions.ts';
 export { proposeRecord } from './commands/propose-record.ts';
 export { confirmRecord } from './commands/confirm-record.ts';
-export { archiveRecord } from './commands/archive-record.ts';
 export { siteCommercial } from './queries/site-commercial.ts';
