@@ -27,3 +27,4 @@ export { cronEvery, startScheduledJobs } from './queue.ts';
 export type { JobScheduler, ScheduledJob } from './queue.ts';
 export { gateTemplate, siteStep } from './schema.ts';
 export { intakeDispute } from './schema.ts';
+export { COMMERCIAL_KINDS, commercialRecord } from './schema.ts';
