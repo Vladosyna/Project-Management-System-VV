@@ -57,6 +57,12 @@ Audience: you (Claude) and the PM-developers you coach. Rules marked **[enforced
 - Output encoding by the framework; no `dangerouslySetInnerHTML` **[enforced: lint]**.
 - File uploads: type and size allow-list, virus scan hook (V1.1), stored outside web root.
 - Before any external user (client, partner) gets access: an independent security review of identity, permissions and RLS (human, not only AI).
+- **Scoped external token** (Market Input country link, D-37) — the first external access, allowed before the client portal only after a security review scoped to this capability:
+  - Scope: one client × one country; writes only answers, files and market comments of the form requests of its batch; reads only those answers and the Vionvision comments addressed to the market. Nothing else in OCS, no other client, no internal data, no staff names beyond the market's PM contact.
+  - Named contributors: name + e-mail, verified by a one-time code to that e-mail before the first write; every answer is audited under the contributor, never under the link.
+  - Token stored only as a hash; high-entropy; expiry (end of rollout + 30 days); revocable and re-issuable by the PM; rate-limited per token and per IP; one-time codes short-lived and rate-limited.
+  - Enforced in RLS as its own actor kind with the token's client and country, through the one write path (commands), like every other actor.
+  - Uploads under the file rules above (allow-list, size, virus scan, EU storage only); no personal data in logs.
 
 ## 8. Internationalisation and accessibility
 

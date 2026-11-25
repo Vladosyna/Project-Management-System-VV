@@ -74,7 +74,7 @@ Dates from D-17. Each epic lists acceptance criteria (AC). An epic is done when 
 
 ### E8 Alerts (subset)
 - AC1 Engine runs hourly; each hit has owner, level, due, handling log.
-- AC2 V1 rules: R2, R5, R6 (save-block), R7, R8, R9, R12, R13, R14, R17, R18, R19, R20, R23, R24–R31, R32 (save-block), R33 (domain/rules.md; R2 and R24–R33 added by D-34).
+- AC2 V1 rules: R2, R5, R6 (save-block), R7, R8, R9, R12, R13, R14, R17, R18, R19, R20, R23, R24–R31, R32 (save-block), R33, R34–R39 (domain/rules.md; R2 and R24–R33 added by D-34, R34–R39 by D-37).
 
 ### E9 DingTalk notifications (one-way)
 - AC1 Work notice to the assignee for new work item, ETA due, alert; deep link to OCS.
@@ -108,6 +108,16 @@ Data enters through AI agents (commands via MCP/REST, D-33) as proposals; the PM
 - AC1 Shipment per site or batch: carrier, AWB, declared value (actual sales price), consignee (no departed staff), devices by SN, status, customs issue.
 - AC2 Status and ETA updated automatically from carrier mails/tracking (trust: automatic); new shipments are proposals.
 - AC3 Alerts R2 (no arrival confirmation N days after ETA) and R28 (held in customs).
+
+### MI Market Input (D-37, V1) — design: `market-input-in-ocs.md`
+| Slice | Acceptance |
+|---|---|
+| MI-1 | `forms` module: template (scope as gate templates, D-32; director/sponsor only; new version never rewrites answers), request, answer with source and history, per-field comments; **Vionvision Market Input template v1** seeded from PMI MIF v2 plus the added fields (contact phones, store access contact, opening hours and installation-allowed hours, mall registration lead time, landlord contact); staff form view: missing first, autosave, conditional fields, progress "x of y required" |
+| MI-2 | Attachments in EU object storage: slots, type/size allow-list, virus-scan hook, versions, hash; site Files tab |
+| MI-3 | AI agent intake from mail/WhatsApp: proposed answers and classified attachments linked to the source message; PM confirms (trust level: proposal) |
+| MI-4 | Derivations: site record, proposed installation date (still blocked before card complete, SOP-DEL-04 §1), readiness and DPIA gates (D-34 C2/C3), installer SOW site page (E12); alerts R34–R39 |
+| MI-5 | Country link per client × country: one tab per store, batch grid, **fill for all open stores** (never overwrites a different value; submitted stores only when ticked), add-store → site proposal; country-scoped token with named contributors (e-mail one-time code), expiry, revoke, rate limit — only after the scoped security review (03 §7) |
+| MI-6 | Submit freezes a snapshot (PDF/XLSX); submitted forms stay editable: revision R1, R2… with snapshot, change log (old → new, who, when, channel, reason — required for staff), status "Changed — review needed", PM notice, re-check flags on lifecycle, readiness gate and SOW; from D−2 a readiness change reopens go/no-go; Excel export and fallback import (E10) |
 
 ## Pilot (7–22 Dec)
 Go/no-go 7 Dec: pilot data confirmed by PMs; three pilot users working daily; restore from backup tested; no P0 defects. Review 22 Dec: ≥ 80% of updates on pilot projects made in OCS; Monday pack from OCS matches Excel; top-10 feedback fixed or planned.
