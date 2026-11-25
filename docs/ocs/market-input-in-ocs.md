@@ -25,6 +25,13 @@ Goal: the questionnaire lives in OCS as a **form per store**, filled by the mark
 | No opening hours | **Store opening hours** (Mon–Sun, from–to, local time) and **Installation allowed** (outside hours only / during hours / night window from–to) | Yes | Per store |
 | Mall / landlord rules only as free text | **Mall or landlord registration lead time** (days) and **landlord contact** (name, e-mail, phone) | If the store is in a mall | Per store |
 
+**Project-level field configuration (Vlad, 25 Nov).** Staff adapt the template for one project (or one store) without changing the template for everyone: **disable** a field, **enable** it again, **add** a project-only field, **change** a field (label, guidance, type options, required/optional, per-store/common, due offset). Rules:
+- Stored as **form_field_override** on the request scope (project = all stores of a client × country batch, or one store); the template stays untouched; a new template version keeps the project's overrides where the field still exists and lists the ones that no longer apply.
+- Who: the project's PM, the Delivery Director and the sponsor. A field that feeds a gate or derivation (§4: installation date, readiness items, DPIA, on-site contact) can be disabled or made optional only by the Delivery Director or the sponsor, with a reason.
+- Nothing is lost: disabling hides the field from the market and from "x of y required", but keeps its answers and history; enabling shows them again. Changing a field's type or options after answers exist creates a new field version; old answers stay with their version.
+- Every change is audited (who, when, reason) and shown in the request's change log; open requests get the change at once, submitted ones only when the PM re-opens them (a submitted form is never changed silently).
+- The market sees the result only (the fields that apply), never the configuration.
+
 Store identity: a request is opened for an OCS site (Project ID). A market row without a site yet creates a **site proposal** (client, country, city, store ID, name) that the PM accepts — the store ID from PMI is kept as the client's external ID.
 
 ## 2. Collecting the answers — three channels, one record
@@ -98,4 +105,5 @@ Personal data (names, e-mails) is client data in EU storage, under RLS per clien
 1. **Access per country:** one link per client × country; the market team fills all its stores through it. Contributors are named by e-mail one-time code; the link is scoped, expiring and revocable; scoped security review before the first link.
 2. **Template:** the PMI Excel (MIF v2) is the model, not the master. OCS holds the **Vionvision Market Input template** for all future rollouts; instructions, guidance, data and attachments arrive only through our link. Excel is export/fallback.
 3. **Per-store tabs plus "fill for all open stores"** for common answers, explained in the market instructions; added fields: contact phones, store access contact, opening hours and installation-allowed hours, mall registration lead time and landlord contact.
-4. **Submitted forms stay editable** by the market and staff; every change after submission creates a revision with its snapshot, is logged in the archive (old → new, who, when, channel, reason), sets "Changed — review needed" and re-checks the derived site, gate and SOW records.
+4. **Project-level field configuration**: staff disable, enable, add and change fields per project (or store) as overrides, without touching the template; gate-feeding fields only by the Delivery Director or sponsor; answers are never lost.
+5. **Submitted forms stay editable** by the market and staff; every change after submission creates a revision with its snapshot, is logged in the archive (old → new, who, when, channel, reason), sets "Changed — review needed" and re-checks the derived site, gate and SOW records.
