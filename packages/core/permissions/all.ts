@@ -7,3 +7,4 @@ import '../devices/index.ts';
 import '../intake/index.ts';
 import '../work/index.ts';
 import '../lifecycle/index.ts';
+import '../commercial/index.ts';
