@@ -88,6 +88,14 @@ describe('quote approval and job status', () => {
     expect(approved?.status).toBe('approved');
   });
 
+  it('quotes on different SOW versions are not comparable (P-12)', async () => {
+    const job = await newJob();
+    const { id } = await run(proposeQuote, quote(job.id, x));
+    await run(proposeQuote, { ...quote(job.id, y), sowVersion: 'v2' });
+    const approval = { jobId: job.id, quoteId: id, approvalRef: 'OA-3', approvedOn: '2026-11-26' };
+    await expect(run(recordApproval, approval)).rejects.toBeInstanceOf(RuleViolation);
+  });
+
   it('a single urgent quote with a reason; then scheduled, then the visit outcome', async () => {
     const job = await newJob();
     const { id } = await run(proposeQuote, quote(job.id, x));
