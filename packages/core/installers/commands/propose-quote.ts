@@ -1,6 +1,5 @@
-// installers.quote.propose — E12 AC3 (D-34 N1, N5): an installer's price proposal for a job, line by line (per unit,
-// per hour, travel, extras), in its currency and in EUR with the rate used. A person's entry is confirmed at once; an
-// AI agent's (actor.via) stays a proposal until a PM confirms it — money data is never applied unconfirmed.
+// installers.quote.propose — E12 AC3 (D-34 N1, N5): an installer's quote for a job, line by line, in its currency and
+// in EUR. A person's entry is confirmed at once; an AI agent's (actor.via) waits for a person to confirm it.
 import { z } from 'zod';
 import { isAmount, isRate, toEur } from '../../commercial/index.ts';
 import { defineCommand, NotFound, ValidationFailed } from '../../kernel/index.ts';
