@@ -13,10 +13,6 @@ export const installersPermissions = {
       "Record an installer's price proposal for a job: line items per unit, hour, travel and extras, currency and EUR, validity and source (mail, PDF, Excel, WhatsApp). From an AI agent it stays a proposal until a PM confirms it.",
     roles: ['director', 'pm', 'finance'],
   }),
-  confirmQuote: permission('installers.quote.confirm', {
-    description: 'Confirm an installer quote an AI agent proposed (a person only, never an agent).',
-    roles: ['director', 'pm', 'finance'],
-  }),
   siteJobs: permission('installers.site.read', {
     description:
       'Installer jobs of one site with their quotes (lines, original currency and EUR, confirmed or proposed) side by side for comparison.',

@@ -3,10 +3,9 @@
 // first in EUR.
 import { randomUUID } from 'node:crypto';
 import { afterAll, beforeAll, describe, expect, inject, it } from 'vitest';
-import { aStaffActor, countRows, createTestDatabase, runAsOwner, type TestDatabase } from '@ocs/testing';
-import { Conflict, Forbidden, NotFound, openTestKernel, type TestKernel } from '../../kernel/index.ts';
+import { aStaffActor, createTestDatabase, runAsOwner, type TestDatabase } from '@ocs/testing';
+import { Forbidden, NotFound, openTestKernel, type TestKernel } from '../../kernel/index.ts';
 import { createClient, createSite } from '../../org/index.ts';
-import { confirmQuote } from '../commands/confirm-quote.ts';
 import { createJob } from '../commands/create-job.ts';
 import { proposeQuote, quoteTotal } from '../commands/propose-quote.ts';
 import { siteJobs } from '../queries/site-jobs.ts';
@@ -43,7 +42,6 @@ beforeAll(async () => {
     createSite.permission,
     createJob.permission,
     proposeQuote.permission,
-    confirmQuote.permission,
     siteJobs.permission,
   );
   const a = await t.kernel.execute(createClient, pm, { shortCode: 'CLIENTA', name: 'Client A' }, 'test');
@@ -93,25 +91,19 @@ describe('installer jobs and quotes', () => {
     });
   });
 
-  it("an AI agent's quote waits; the agent may not confirm; a person confirms once", async () => {
+  it("an AI agent's quote waits for a person", async () => {
     const lines = [{ kind: 'unit', description: 'Full install per sensor', quantity: 4, unitPrice: '100' }];
-    const { id } = await t.kernel.execute(proposeQuote, agent, quote(installerY, { lines }), 'test');
-    await expect(t.kernel.execute(confirmQuote, agent, { quoteId: id }, 'test')).rejects.toBeInstanceOf(
-      Forbidden,
-    );
-    await t.kernel.execute(confirmQuote, pm, { quoteId: id }, 'test');
-    await expect(t.kernel.execute(confirmQuote, pm, { quoteId: id }, 'test')).rejects.toBeInstanceOf(
-      Conflict,
-    );
-    expect(await countRows(testDb.url, 'price_proposal WHERE confirmed_by = $1', [pm.id])).toBe(2);
+    expect(await t.kernel.execute(proposeQuote, agent, quote(installerY, { lines }), 'test')).toMatchObject({
+      confirmed: false,
+    });
   });
 
   it('the site view lists the job with its quotes cheapest first in EUR', async () => {
     const [job] = await t.kernel.read(siteJobs, pm, { siteId: siteA });
     expect(job).toMatchObject({ scope: 'partial', sensorCount: 4, status: 'planned' });
-    expect(job?.quotes.map((q) => [q.installer, q.eur])).toEqual([
-      ['Partner Y', '92.00'],
-      ['Partner X', '108.10'],
+    expect(job?.quotes.map((q) => [q.installer, q.eur, q.confirmed])).toEqual([
+      ['Partner Y', '92.00', false],
+      ['Partner X', '108.10', true],
     ]);
   });
 });

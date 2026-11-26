@@ -3,5 +3,4 @@
 export { installersPermissions } from './permissions.ts';
 export { createJob } from './commands/create-job.ts';
 export { proposeQuote } from './commands/propose-quote.ts';
-export { confirmQuote } from './commands/confirm-quote.ts';
 export { siteJobs } from './queries/site-jobs.ts';
