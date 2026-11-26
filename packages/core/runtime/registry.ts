@@ -12,6 +12,7 @@ import { grantOf, type Command, type Query } from '../kernel/index.ts';
 import * as lifecycle from '../lifecycle/index.ts';
 import * as org from '../org/index.ts';
 import * as work from '../work/index.ts';
+import * as commercial from '../commercial/index.ts';
 // gen:registry-imports — `pnpm gen:module` adds a module's import above this line.
 
 /** Every module's public API (02-architecture §2); `pnpm gen:module` adds a line here too (registry test). */
@@ -23,6 +24,7 @@ const MODULES: Record<string, Record<string, unknown>> = {
   lifecycle,
   org,
   work,
+  commercial,
   // gen:registry-modules — `pnpm gen:module` adds the module above this line.
 };
 

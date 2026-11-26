@@ -5,6 +5,9 @@ External roles (`client`, `partner`) are switched off in the checker until the V
 
 | Permission | What it allows | director | pm | sales | rnd | finance | management | sponsor | admin | client | partner | system |
 |---|---|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| `commercial.record.confirm` | Confirm a commercial record an AI agent proposed (a person only, never an agent): money data is applied only when confirmed. | ✓ | ✓ |  |  | ✓ |  |  |  |  |  |  |
+| `commercial.record.propose` | Record a client PO, DPIA status, client invoice or price-list price on a site; amounts in the original currency and EUR. From an AI agent it stays a proposal until a PM confirms it. | ✓ | ✓ |  |  | ✓ |  | ✓ |  |  |  |  |
+| `commercial.site.read` | The commercial records of one site (PO, DPIA, invoice, price list): confirmed and proposed, with amounts in original currency and EUR. | ✓ | ✓ |  |  | ✓ | ✓ | ✓ |  |  |  |  |
 | `devices.device.register` | Register a device on a project: SN, MAC, model, firmware, network, status (E4 AC1) | ✓ | ✓ |  | ✓ |  |  |  |  |  |  |  |
 | `devices.device.setVersions` | Set firmware and algorithm version on devices of a project (D-31) | ✓ | ✓ |  | ✓ |  |  |  |  |  |  |  |
 | `devices.firmwareIssue.record` | Record a known problem of a firmware version of a model (D-31, R&D reference) | ✓ |  |  | ✓ |  |  |  |  |  |  |  |
