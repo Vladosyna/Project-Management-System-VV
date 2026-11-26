@@ -491,3 +491,69 @@ export const commercialRecord = pgTable('commercial_record', {
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   archivedAt: timestamp('archived_at', { withTimezone: true }),
 });
+
+/** D-34 N1 (0023): an installer job per site or trip. Internal only. */
+export const INSTALLER_JOB_STATUSES = [
+  'planned',
+  'quoting',
+  'approved',
+  'scheduled',
+  'done',
+  'attended_not_ready',
+  'cancelled',
+] as const;
+export const installerJob = pgTable('installer_job', {
+  id: uuid('id').primaryKey(),
+  clientId: uuid('client_id').notNull(),
+  siteId: uuid('site_id').notNull(),
+  partnerId: uuid('partner_id'),
+  scope: text('scope', { enum: ['partial', 'full'] }).notNull(),
+  sensorCount: integer('sensor_count').notNull(),
+  sowVersion: text('sow_version'),
+  sowSentOn: date('sow_sent_on', { mode: 'string' }),
+  scheduledOn: date('scheduled_on', { mode: 'string' }),
+  status: text('status', { enum: INSTALLER_JOB_STATUSES }).notNull().default('planned'),
+  outcomeNote: text('outcome_note'),
+  createdBy: uuid('created_by').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  archivedAt: timestamp('archived_at', { withTimezone: true }),
+});
+
+/** D-34 N1 (0023): an installer's quote for a job; original currency + EUR; AI proposals wait for confirmation. */
+export const priceProposal = pgTable('price_proposal', {
+  id: uuid('id').primaryKey(),
+  clientId: uuid('client_id').notNull(),
+  jobId: uuid('job_id').notNull(),
+  partnerId: uuid('partner_id').notNull(),
+  sowVersion: text('sow_version'),
+  lines: jsonb('lines').notNull(),
+  amount: numeric('amount', { precision: 14, scale: 2 }).notNull(),
+  currency: text('currency').notNull(),
+  eurAmount: numeric('eur_amount', { precision: 14, scale: 2 }).notNull(),
+  fxRate: numeric('fx_rate', { precision: 14, scale: 6 }).notNull(),
+  fxDate: date('fx_date', { mode: 'string' }).notNull(),
+  fxSource: text('fx_source', { enum: ['manual', 'agent', 'ecb'] }).notNull(),
+  validUntil: date('valid_until', { mode: 'string' }),
+  sourceKind: text('source_kind', { enum: ['mail', 'pdf', 'xlsx', 'whatsapp', 'manual'] }).notNull(),
+  sourceRef: text('source_ref'),
+  proposedBy: uuid('proposed_by').notNull(),
+  proposedVia: text('proposed_via', { enum: ['web', 'ai'] }).notNull(),
+  confirmedBy: uuid('confirmed_by'),
+  confirmedAt: timestamp('confirmed_at', { withTimezone: true }),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  archivedAt: timestamp('archived_at', { withTimezone: true }),
+});
+
+/** D-34 N1 (0023): the CEO's approval of a job's chosen quote (P-11), recorded by a person; one active per job. */
+export const quoteApproval = pgTable('quote_approval', {
+  id: uuid('id').primaryKey(),
+  clientId: uuid('client_id').notNull(),
+  jobId: uuid('job_id').notNull(),
+  proposalId: uuid('proposal_id').notNull(),
+  approvalRef: text('approval_ref').notNull(),
+  approvedOn: date('approved_on', { mode: 'string' }).notNull(),
+  singleQuoteReason: text('single_quote_reason'),
+  recordedBy: uuid('recorded_by').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  archivedAt: timestamp('archived_at', { withTimezone: true }),
+});
