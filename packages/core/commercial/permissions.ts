@@ -18,5 +18,9 @@ export const commercialPermissions = {
       'The commercial records of one site (PO, DPIA, invoice, price list): confirmed and proposed, with amounts in original currency and EUR.',
     roles: ['director', 'pm', 'finance', 'sponsor', 'management'],
   }),
+  archiveRecord: permission('commercial.record.archive', {
+    description: 'Archive a wrong or replaced commercial record of a site, with a reason; never deleted.',
+    roles: ['director', 'pm', 'finance'],
+  }),
   // gen:permissions — `pnpm gen:command` and `pnpm gen:query` add entries above this line.
 };

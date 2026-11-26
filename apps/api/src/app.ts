@@ -21,6 +21,7 @@ import {
   saveGateTemplate,
   siteLifecycle,
 } from '@ocs/core/lifecycle';
+import { archiveRecord, confirmRecord, proposeRecord, siteCommercial } from '@ocs/core/commercial';
 import { clientList, setDeviceAlerts, siteList } from '@ocs/core/org';
 import {
   addComment,
@@ -163,6 +164,24 @@ export function createApp(rt: Runtime, options: AppOptions = {}): Hono {
     const body = await c.req.json<Record<string, unknown>>();
     const input = { ...body, siteId: c.req.param('siteId') };
     return c.json(await rt.kernel.execute(addComment, c.get('actor'), input, 'web'), 201);
+  });
+
+  // E13 (D-34 N2): commercial records of a site — PO, DPIA, invoice, price list; original currency + EUR.
+  api.get('/sites/:siteId/commercial', async (c) =>
+    c.json(await rt.kernel.read(siteCommercial, c.get('actor'), { siteId: c.req.param('siteId') })),
+  );
+  api.post('/sites/:siteId/commercial', async (c) => {
+    const input = { ...(await c.req.json<Record<string, unknown>>()), siteId: c.req.param('siteId') };
+    return c.json(await rt.kernel.execute(proposeRecord, c.get('actor'), input, 'web'), 201);
+  });
+  api.post('/commercial/:recordId/confirm', async (c) =>
+    c.json(
+      await rt.kernel.execute(confirmRecord, c.get('actor'), { recordId: c.req.param('recordId') }, 'web'),
+    ),
+  );
+  api.post('/commercial/:recordId/archive', async (c) => {
+    const input = { ...(await c.req.json<Record<string, unknown>>()), recordId: c.req.param('recordId') };
+    return c.json(await rt.kernel.execute(archiveRecord, c.get('actor'), input, 'web'));
   });
 
   // D-36: a task in a project for a specific person (owner, due); the owner or a director/PM marks it done.
