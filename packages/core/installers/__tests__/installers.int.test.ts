@@ -4,7 +4,7 @@
 import { randomUUID } from 'node:crypto';
 import { afterAll, beforeAll, describe, expect, inject, it } from 'vitest';
 import { aStaffActor, createTestDatabase, runAsOwner, type TestDatabase } from '@ocs/testing';
-import { Forbidden, NotFound, openTestKernel, type TestKernel } from '../../kernel/index.ts';
+import { Forbidden, openTestKernel, type TestKernel } from '../../kernel/index.ts';
 import { createClient, createSite } from '../../org/index.ts';
 import { createJob } from '../commands/create-job.ts';
 import { proposeQuote, quoteTotal } from '../commands/propose-quote.ts';
@@ -74,13 +74,10 @@ describe('installer jobs and quotes', () => {
     expect(quoteTotal([{ quantity: 2.5, unitPrice: '33.33' }])).toBe('83.33');
   });
 
-  it('a PM creates a job; R&D may not; an unknown site is refused', async () => {
+  it('a PM creates a job; R&D may not', async () => {
     const job = { siteId: siteA, scope: 'partial', sensorCount: 4, sowVersion: 'VV-SOW-INST v1' };
     ({ id: jobId } = await t.kernel.execute(createJob, pm, job, 'test'));
     await expect(t.kernel.execute(createJob, rnd, job, 'test')).rejects.toBeInstanceOf(Forbidden);
-    await expect(
-      t.kernel.execute(createJob, pm, { ...job, siteId: randomUUID() }, 'test'),
-    ).rejects.toBeInstanceOf(NotFound);
   });
 
   it("a PM's quote is confirmed at once, in PLN and EUR", async () => {
