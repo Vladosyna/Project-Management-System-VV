@@ -473,6 +473,10 @@ test('a PM records a client PO in GBP, sees it in EUR and archives it (E13, D-34
   await expect(row).toContainText('1200.00 GBP');
   await expect(row).toContainText('1392.00 EUR (rate 1.160000, 2026-11-20)');
   await pm.screenshot({ path: 'test-results/commercial-en.png', fullPage: true });
+  // E13 overview: the left-menu Commercial page lists the project and drills into its Commercial tab.
+  await pm.getByRole('navigation', { name: 'Main' }).getByRole('link', { name: 'Commercial' }).click();
+  await expect(pm.getByRole('row', { name: /^CLIENTA-ES-MAD-001 1 · 1392\.00 EUR/ })).toBeVisible();
+  await pm.getByRole('link', { name: 'CLIENTA-ES-MAD-001' }).click();
   await pm.getByRole('button', { name: 'Archive: PO-E2E-1' }).click();
   await expect(row).toBeHidden();
 });
@@ -607,6 +611,7 @@ const SCREENS: { path: string; heading: string }[] = [
   { path: '/admin', heading: 'Admin' },
   { path: '/intake-register', heading: 'Intake Register' },
   { path: '/agents', heading: 'AI agents' },
+  { path: '/commercial', heading: 'Commercial' },
   // gen:screens
 ];
 

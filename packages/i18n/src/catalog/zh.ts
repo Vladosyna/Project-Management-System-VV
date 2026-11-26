@@ -349,6 +349,16 @@ export const zh = {
   'admin.agents.failed': '无法创建客户端，请重试。',
   'site.tab.overview': '概览',
   'site.tab.devices': '设备',
+  'commercial.overview.intro': '您可查看的所有项目。合计仅含已确认记录，以欧元计。点击项目编号查看详情。',
+  'commercial.overview.failed': '无法加载，请重试。',
+  'commercial.overview.project': '项目编号',
+  'commercial.overview.po': '客户 PO',
+  'commercial.overview.invoiced': '已开票',
+  'commercial.overview.paid': '已付款',
+  'commercial.overview.proposals': '待确认的 AI 建议',
+  'commercial.overview.poLine': '{count} 份 · {eur} 欧元',
+  'commercial.overview.missing': '缺失',
+  'commercial.overview.eur': '{eur} 欧元',
   'site.tab.commercial': '商务',
   'commercial.noAccess': '您的角色无权查看此项目的商务数据。',
   'commercial.none': '尚未记录 PO、DPIA、发票或价格。',
@@ -519,5 +529,6 @@ export const zh = {
   'admin.gates.outcome.failed': '无法保存，请重试。',
   'intakeRegister.title': '接收登记册',
   'agents.title': 'AI 助手',
+  'commercial.title': '商务',
   // gen:screen-titles — `pnpm gen:screen` adds screen titles above this line.
 } as const satisfies Catalog;

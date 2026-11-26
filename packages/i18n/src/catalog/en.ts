@@ -353,6 +353,17 @@ export const en = {
   'admin.agents.failed': 'Could not create the client. Try again.',
   'site.tab.overview': 'Overview',
   'site.tab.devices': 'Devices',
+  'commercial.overview.intro':
+    'Every project you may see. Totals count confirmed records only, in EUR. Click a Project ID for its details.',
+  'commercial.overview.failed': 'Could not load. Try again.',
+  'commercial.overview.project': 'Project ID',
+  'commercial.overview.po': 'Client PO',
+  'commercial.overview.invoiced': 'Invoiced',
+  'commercial.overview.paid': 'Paid',
+  'commercial.overview.proposals': 'AI proposals to confirm',
+  'commercial.overview.poLine': '{count} · {eur} EUR',
+  'commercial.overview.missing': 'Missing',
+  'commercial.overview.eur': '{eur} EUR',
   'site.tab.commercial': 'Commercial',
   'commercial.noAccess': 'Your role may not see the commercial data of this project.',
   'commercial.none': 'No PO, DPIA, invoice or price recorded yet.',
@@ -523,5 +534,6 @@ export const en = {
   'admin.gates.outcome.failed': 'Could not save. Try again.',
   'intakeRegister.title': 'Intake Register',
   'agents.title': 'AI agents',
+  'commercial.title': 'Commercial',
   // gen:screen-titles — `pnpm gen:screen` adds screen titles above this line.
 } as const;

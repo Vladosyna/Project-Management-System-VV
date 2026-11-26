@@ -27,7 +27,8 @@ Your name and role are shown bottom left. **中文** (top right) switches the la
 | **Actions & alerts** | Every open action with owner and due date; **Mine** shows yours |
 | **AI agents** | AI assistants you connected to OCS (section 7) |
 | **Admin** | Gate templates; AI connections (section 6) |
-| Projects, Platform & algorithms, Cases, Commercial, Client portal, Partner app, Knowledge | Not built yet — they show "This screen arrives with its epic" |
+| **Commercial** | Commercial status of all projects; click a Project ID for details (section 3, Commercial) |
+| Projects, Platform & algorithms, Cases, Client portal, Partner app, Knowledge | Not built yet — they show "This screen arrives with its epic" |
 
 ## 3. A project (site) page
 
@@ -60,6 +61,8 @@ Everything that happened, newest first, each with its source. **Comment** → **
 
 ### Commercial (D-34 N2)
 Client PO, DPIA, client invoice and price-list price of the project (staff only). **Add a record**: pick the **Record**, its **Status**, **Number** (PO and invoice), **Date**; for an amount give **Amount** in the original currency, **Currency (ISO code)** and, for any currency except EUR, **Rate: EUR per 1 unit** → **Save record**. OCS keeps both the original amount and the EUR value with the rate and date. What you enter is confirmed by you at once; what an AI assistant enters shows **Proposed by AI — confirm** until a person clicks **Confirm** (an assistant can never confirm). **Archive** removes a wrong record from the list; it is kept in the history.
+
+The left-menu **Commercial** page shows every project at once: client POs (count and EUR), invoiced, paid, DPIA, price-list price and AI proposals waiting. Click a **Project ID** to open that project's Commercial tab.
 
 ### Settings
 **Mall on the device platform** and **Offline alerts** (only with a linked mall) → **Save**.
@@ -134,7 +137,7 @@ What each device/algorithm can do, maintained by hand; links to documents in Din
 ### 9.13 Platform & algorithms (menu **Platform & algorithms**) — Planned — not available yet
 Algorithm and firmware views across projects; calibration queue and accuracy-test register. *Target: January → V1.1.*
 
-### 9.14 Commercial (menu **Commercial**) — Planned — not available yet
+### 9.14 Quotes and margin (menu **Commercial**) — Planned — not available yet
 Quote generator from the point design; later margin per project and the accounting (Kingdee) link. *Target: V1.1 → V2.*
 
 ### 9.15 Client portal (menu **Client portal**) — Planned — not available yet

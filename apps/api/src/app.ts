@@ -21,7 +21,13 @@ import {
   saveGateTemplate,
   siteLifecycle,
 } from '@ocs/core/lifecycle';
-import { archiveRecord, confirmRecord, proposeRecord, siteCommercial } from '@ocs/core/commercial';
+import {
+  archiveRecord,
+  confirmRecord,
+  portfolio as commercialPortfolio,
+  proposeRecord,
+  siteCommercial,
+} from '@ocs/core/commercial';
 import { clientList, setDeviceAlerts, siteList } from '@ocs/core/org';
 import {
   addComment,
@@ -167,6 +173,7 @@ export function createApp(rt: Runtime, options: AppOptions = {}): Hono {
   });
 
   // E13 (D-34 N2): commercial records of a site — PO, DPIA, invoice, price list; original currency + EUR.
+  api.get('/commercial', async (c) => c.json(await rt.kernel.read(commercialPortfolio, c.get('actor'), {})));
   api.get('/sites/:siteId/commercial', async (c) =>
     c.json(await rt.kernel.read(siteCommercial, c.get('actor'), { siteId: c.req.param('siteId') })),
   );

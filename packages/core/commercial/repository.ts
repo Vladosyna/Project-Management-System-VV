@@ -38,3 +38,14 @@ export async function activeRecordsOfSite(tx: Tx, siteId: string): Promise<Comme
     .where(and(eq(commercialRecord.siteId, siteId), isNull(commercialRecord.archivedAt)))
     .orderBy(asc(commercialRecord.kind), asc(commercialRecord.recordDate));
 }
+
+/** Every active site the actor may see (RLS) with its active commercial records, for the overview. */
+export async function sitesWithRecords(tx: Tx) {
+  const sites = await tx
+    .select({ id: site.id, projectId: site.projectId })
+    .from(site)
+    .where(isNull(site.archivedAt))
+    .orderBy(asc(site.projectId));
+  const records = await tx.select().from(commercialRecord).where(isNull(commercialRecord.archivedAt));
+  return { sites, records };
+}

@@ -24,6 +24,7 @@ import { SitesPage } from './pages/sites.tsx';
 import { AdminPage } from './pages/admin.tsx';
 import { IntakeRegisterPage } from './pages/intake-register.tsx';
 import { AgentsPage } from './pages/agents.tsx';
+import { CommercialPage } from './pages/commercial.tsx';
 // gen:screen-imports
 
 /** Navigation as in the Main mockup. Screens other than Home arrive with their epics. */
@@ -54,6 +55,7 @@ const SCREENS: Record<string, RouteComponent> = {
   '/admin': AdminPage,
   '/intake-register': IntakeRegisterPage,
   '/agents': AgentsPage,
+  '/commercial': CommercialPage,
   // gen:screens
 };
 

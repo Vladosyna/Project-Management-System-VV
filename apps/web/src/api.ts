@@ -265,6 +265,26 @@ export async function loadCommercial(siteId: string): Promise<CommercialRecord[]
   return (await res.json()) as CommercialRecord[];
 }
 
+export interface CommercialPortfolioRow {
+  readonly siteId: string;
+  readonly projectId: string;
+  readonly poCount: number;
+  readonly poEur: string;
+  readonly invoicedEur: string;
+  readonly paidEur: string;
+  readonly dpia: string | null;
+  readonly priceEur: string | null;
+  readonly proposals: number;
+}
+
+/** E13 overview: commercial status of every site the user may see; undefined when the role may not. */
+export async function loadCommercialPortfolio(): Promise<CommercialPortfolioRow[] | undefined> {
+  const res = await fetch('/api/commercial', { credentials: 'same-origin' });
+  if (res.status === 403) return undefined;
+  if (!res.ok) throw new Error(`GET commercial → ${String(res.status)}`);
+  return (await res.json()) as CommercialPortfolioRow[];
+}
+
 export function addCommercial(siteId: string, input: Record<string, unknown>): Promise<WriteOutcome> {
   return send('POST', `/api/sites/${encodeURIComponent(siteId)}/commercial`, input);
 }
