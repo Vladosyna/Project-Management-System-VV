@@ -22,5 +22,10 @@ export const commercialPermissions = {
     description: 'Archive a wrong or replaced commercial record of a site, with a reason; never deleted.',
     roles: ['director', 'pm', 'finance'],
   }),
+  portfolio: permission('commercial.portfolio.read', {
+    description:
+      'Commercial status of every site the actor may see: client PO, DPIA, invoices, price list in EUR, and AI proposals waiting for confirmation.',
+    roles: ['director', 'pm', 'finance', 'sponsor', 'management'],
+  }),
   // gen:permissions — `pnpm gen:command` and `pnpm gen:query` add entries above this line.
 };

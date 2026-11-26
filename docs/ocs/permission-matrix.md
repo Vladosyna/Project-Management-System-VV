@@ -5,6 +5,7 @@ External roles (`client`, `partner`) are switched off in the checker until the V
 
 | Permission | What it allows | director | pm | sales | rnd | finance | management | sponsor | admin | client | partner | system |
 |---|---|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| `commercial.portfolio.read` | Commercial status of every site the actor may see: client PO, DPIA, invoices, price list in EUR, and AI proposals waiting for confirmation. | ✓ | ✓ |  |  | ✓ | ✓ | ✓ |  |  |  |  |
 | `commercial.record.archive` | Archive a wrong or replaced commercial record of a site, with a reason; never deleted. | ✓ | ✓ |  |  | ✓ |  |  |  |  |  |  |
 | `commercial.record.confirm` | Confirm a commercial record an AI agent proposed (a person only, never an agent): money data is applied only when confirmed. | ✓ | ✓ |  |  | ✓ |  |  |  |  |  |  |
 | `commercial.record.propose` | Record a client PO, DPIA status, client invoice or price-list price on a site; amounts in the original currency and EUR. From an AI agent it stays a proposal until a PM confirms it. | ✓ | ✓ |  |  | ✓ |  | ✓ |  |  |  |  |

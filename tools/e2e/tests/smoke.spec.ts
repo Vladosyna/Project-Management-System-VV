@@ -449,6 +449,38 @@ test('a director leaves a task in a project for a PM; the PM sees it in Mine and
   await expect(pm.getByText('Enter the client PO and DPIA status')).toBeHidden();
 });
 
+test('a PM records a client PO in GBP, sees it in EUR and archives it (E13, D-34 N2)', async ({
+  page,
+  browser,
+}) => {
+  await signInWithPassword(page);
+  const pm = await join(browser, page, 'pm.commercial.e2e@example.com', 'Person 12', ['pm']);
+  await pm.getByRole('link', { name: 'Sites' }).click();
+  await pm.getByRole('link', { name: 'CLIENTA-ES-MAD-001' }).click();
+  // The left menu has a "Commercial" entry too; the tab is in the project's own sections.
+  await pm
+    .getByRole('navigation', { name: 'Project sections' })
+    .getByRole('link', { name: 'Commercial' })
+    .click();
+  await expect(pm.getByText('No PO, DPIA, invoice or price recorded yet.')).toBeVisible();
+  await pm.getByLabel('Number').fill('PO-E2E-1');
+  await pm.getByLabel('Date').fill('2026-11-20');
+  await pm.getByLabel('Amount').fill('1200.00');
+  await pm.getByLabel('Currency (ISO code)').fill('GBP');
+  await pm.getByLabel('Rate: EUR per 1 unit').fill('1.16');
+  await pm.getByRole('button', { name: 'Save record' }).click();
+  const row = pm.getByRole('row', { name: /^Client PO PO-E2E-1 Received/ });
+  await expect(row).toContainText('1200.00 GBP');
+  await expect(row).toContainText('1392.00 EUR (rate 1.160000, 2026-11-20)');
+  await pm.screenshot({ path: 'test-results/commercial-en.png', fullPage: true });
+  // E13 overview: the left-menu Commercial page lists the project and drills into its Commercial tab.
+  await pm.getByRole('navigation', { name: 'Main' }).getByRole('link', { name: 'Commercial' }).click();
+  await expect(pm.getByRole('row', { name: /^CLIENTA-ES-MAD-001 1 · 1392\.00 EUR/ })).toBeVisible();
+  await pm.getByRole('link', { name: 'CLIENTA-ES-MAD-001' }).click();
+  await pm.getByRole('button', { name: 'Archive: PO-E2E-1' }).click();
+  await expect(row).toBeHidden();
+});
+
 test('an AI client signs in as the person with OAuth: login with TOTP, consent, code, token (D-33)', async ({
   browser,
 }) => {
@@ -579,6 +611,7 @@ const SCREENS: { path: string; heading: string }[] = [
   { path: '/admin', heading: 'Admin' },
   { path: '/intake-register', heading: 'Intake Register' },
   { path: '/agents', heading: 'AI agents' },
+  { path: '/commercial', heading: 'Commercial' },
   // gen:screens
 ];
 

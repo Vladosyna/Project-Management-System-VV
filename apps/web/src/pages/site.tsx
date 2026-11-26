@@ -30,6 +30,7 @@ import { SiteIntake } from './site-intake.tsx';
 import { SiteLifecycle } from './site-lifecycle.tsx';
 import { SiteNetwork } from './site-network.tsx';
 import { SiteActions } from './site-actions.tsx';
+import { SiteCommercial } from './site-commercial.tsx';
 import { SITE_TABS, SiteOverview, type SiteTab } from './site-overview.tsx';
 import { Link } from '@tanstack/react-router';
 import { VisitForm } from './visit-form.tsx';
@@ -133,6 +134,11 @@ export function SitePage(props: { siteId: string; tab?: SiteTab }) {
         {tab === 'actions' ? (
           <Card title={t('site.tab.actions')} titleId="site-actions">
             <SiteActions siteId={props.siteId} />
+          </Card>
+        ) : null}
+        {tab === 'commercial' ? (
+          <Card title={t('site.tab.commercial')} titleId="site-commercial">
+            <SiteCommercial siteId={props.siteId} />
           </Card>
         ) : null}
         {tab === 'settings' ? (
