@@ -29,6 +29,10 @@ External roles (`client`, `partner`) are switched off in the checker until the V
 | `identity.user.assignRoles` | Grant or remove roles of a user |  |  |  |  |  |  |  | ✓ |  |  |  |
 | `identity.user.invite` | Invite a new staff user by link | ✓ |  |  |  |  |  |  | ✓ |  |  |  |
 | `identity.user.read` | See the user list with roles and MFA status | ✓ |  |  |  |  |  |  | ✓ |  |  |  |
+| `installers.job.create` | Create an installer job on a site: installer, scope (partial/full on-site), number of sensors, SOW version; the installer's real name stays internal. | ✓ | ✓ |  |  |  |  |  |  |  |  |  |
+| `installers.quote.confirm` | Confirm an installer quote an AI agent proposed (a person only, never an agent). | ✓ | ✓ |  |  | ✓ |  |  |  |  |  |  |
+| `installers.quote.propose` | Record an installer's price proposal for a job: line items per unit, hour, travel and extras, currency and EUR, validity and source (mail, PDF, Excel, WhatsApp). From an AI agent it stays a proposal until a PM confirms it. | ✓ | ✓ |  |  | ✓ |  |  |  |  |  |  |
+| `installers.site.read` | Installer jobs of one site with their quotes (lines, original currency and EUR, confirmed or proposed) side by side for comparison. | ✓ | ✓ |  |  | ✓ | ✓ | ✓ |  |  |  |  |
 | `intake.conditionalStart.authorise` | Authorise Delivery to start before acceptance, naming the missing items and a deadline (SOP-DEL-01 §9) |  |  |  |  |  |  | ✓ |  |  |  |  |
 | `intake.conditions.expire` | Mark intake conditions past their deadline as expired, for the alert to Sales owner and Delivery Director (E2 AC3) |  |  |  |  |  |  |  |  |  |  | ✓ |
 | `intake.dispute.decide` | Decide an intake dispute: uphold the return, or overturn it so the Delivery Director reviews the card again (SOP-DEL-01 §9) |  |  |  |  |  |  | ✓ |  |  |  |  |
