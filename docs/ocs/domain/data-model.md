@@ -42,6 +42,17 @@ Conventions: UUID v7 `id`; `created_at/by`, `updated_at/by`; `archived_at` (no d
 - **Message**: case_id?, inbox_state (unlinked | linked | dismissed), channel (mail | dingtalk | whatsapp | portal), external_id (Message-ID / msg id — unique), thread_ref, from, subject, body_text, attachments refs, visibility, match_suggestion {case_id, confidence, reason}.
 - **CaseDevice**: case_id, device_id.
 
+## Forms — Market Input (D-37, `market-input-in-ocs.md`)
+- **FormTemplate**: name, version, scope (base | client | programme | country, as GateTemplate, D-32), sections; changed by director/sponsor only; a new version never rewrites given answers. Internal configuration.
+- **FormField** (in the template): key, label EN/中文, section, type (text | email | phone | date | date_window | number | enum | yes_no_tbc | attachment_slot | checklist_item), requirement (required | optional | conditional + rule), answered_by (market | vionvision), per_store or common (allows "fill for all open stores"), guidance, due_offset (C items: D−20, D−2, before calibration).
+- **FormFieldOverride** (per project or store, D-37): scope (client × country batch | site), field key (existing or new project-only field), action (disable | enable | add | change), changed attributes (label, guidance, type options, requirement, per_store/common, due offset), field version, reason (required for gate-feeding fields), by, at. The template is never edited by an override; the effective form = template + overrides.
+- **FormRequest**: client_id, site_id, template version, sent_to (market contacts), due date, status (not_started | in_progress | ready | submitted | reviewed | returned | changed_review_needed), current_revision, returned fields with reason.
+- **FormRevision**: request_id, number (R1, R2…), snapshot file ref (PDF/XLSX) + frozen answer set, submitted_by, at, changed fields with reason; never overwritten.
+- **FormAnswer**: request_id, field key, value, answered_by (named person or agent + the person it acts for), source (market_link | excel_import | mail_ai | whatsapp_ai | staff | applied_to_all), source_ref (message id), at, superseded_by (history kept), changed_after_submission flag until the PM acknowledges, reason.
+- **Attachment**: request_id / site_id, slot (floor_plan | ceiling_plan | photos | network_it | other), EU object-storage key, hash, version, size, type, uploader, source message, SOP-DEL-02 folder number, scan status.
+- **FormComment**: request_id, field key, side (market | vionvision), body, author; @mention → action (E5).
+- **FormAccessToken** (country link): client_id, country_code, request ids in scope (stores of the batch), token hash (never the token), expires_at (end of rollout + 30 days), revoked_at, issued_by; **FormContributor**: token_id, name, e-mail, verified_at (e-mail one-time code) — every answer through the link is audited under the contributor.
+
 ## Platform
 - **Alert**: rule (R1…R23), object ref, level, owner_id, due, status, handling log.
 - **FileRef**: storage (dingtalk | ocs-eu), space_id, dentry_id, version, hash, folder_number / slot prefix, doc_type, object ref, shared_with_client (bool).

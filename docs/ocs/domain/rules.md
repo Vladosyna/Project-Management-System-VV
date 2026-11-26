@@ -39,6 +39,12 @@ Working calendars (`packages/core/calendar`): **CN** from the State Council noti
 | R31 | Readiness evidence missing | Readiness checklist item without photo/written evidence 2 working days before installation (D-34 C3) | P0 | V1 |
 | R32 | Installer booked before readiness | Block at save: installer booking while readiness not passed (D-34 C3) | P0 | V1 |
 | R33 | Item on a departed owner | Open item, site, case or thread owned by a person flagged as leaver (D-34 C8) | P1 | V1 |
+| R34 | Market input not started | Form request not started 3 working days after sending (D-37) | P2 | V1 |
+| R35 | Market input incomplete at D−20 | Required fields missing 20 days before planned installation (D-37) | P1 | V1 |
+| R36 | Readiness missing at D−2 | Part C D−2 items missing → go/no-go "no" (D-37, D-34 C3) | P0 | V1 |
+| R37 | DPIA missing for calibration | Calibration requested, DPIA confirmation missing (D-37, D-34 C2; with R10) | P0 | V1 |
+| R38 | Promised attachment overdue | Attachment slot "To be provided" past its promised date (D-37) | P1 | V1 |
+| R39 | Returned form not corrected | Returned form request not corrected 2 working days after return (D-37) | P1 | V1 |
 
 Intake (SOP-DEL-01) rules — implemented as validations, not alerts:
 
