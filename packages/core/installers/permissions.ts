@@ -18,5 +18,19 @@ export const installersPermissions = {
       'Installer jobs of one site with their quotes (lines, original currency and EUR, confirmed or proposed) side by side for comparison.',
     roles: ['director', 'pm', 'finance', 'sponsor', 'management'],
   }),
+  confirmQuote: permission('installers.quote.confirm', {
+    description: 'Confirm an installer quote an AI agent proposed (a person only, never an agent).',
+    roles: ['director', 'pm', 'finance'],
+  }),
+  recordApproval: permission('installers.approval.record', {
+    description:
+      "Record the CEO's approval of the chosen installer quote with its reference (DingTalk OA or message). Needs two comparable confirmed quotes on the same SOW, or a reason for a single quote (P-11, P-12). A person only, never an AI agent.",
+    roles: ['director', 'pm'],
+  }),
+  setJobStatus: permission('installers.job.setStatus', {
+    description:
+      'Move an installer job on: scheduled (with date), done, attended but site not ready, or cancelled, with an outcome note.',
+    roles: ['director', 'pm'],
+  }),
   // gen:permissions — `pnpm gen:command` and `pnpm gen:query` add entries above this line.
 };
