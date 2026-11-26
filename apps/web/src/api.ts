@@ -244,6 +244,39 @@ async function send(method: string, path: string, body: unknown): Promise<WriteO
   return 'ok';
 }
 
+export interface CommercialRecord {
+  readonly id: string;
+  readonly kind: 'client_po' | 'dpia' | 'client_invoice' | 'price_list';
+  readonly reference: string | null;
+  readonly status: string;
+  readonly recordDate: string;
+  readonly money: { amount: string; currency: string; eur: string; fxRate: string; fxDate: string } | null;
+  readonly proposedVia: 'web' | 'ai';
+  readonly confirmed: boolean;
+}
+
+/** E13: a site's commercial records; undefined when the role may not see them. */
+export async function loadCommercial(siteId: string): Promise<CommercialRecord[] | undefined> {
+  const res = await fetch(`/api/sites/${encodeURIComponent(siteId)}/commercial`, {
+    credentials: 'same-origin',
+  });
+  if (res.status === 403) return undefined;
+  if (!res.ok) throw new Error(`GET commercial → ${String(res.status)}`);
+  return (await res.json()) as CommercialRecord[];
+}
+
+export function addCommercial(siteId: string, input: Record<string, unknown>): Promise<WriteOutcome> {
+  return send('POST', `/api/sites/${encodeURIComponent(siteId)}/commercial`, input);
+}
+
+export function confirmCommercial(recordId: string): Promise<WriteOutcome> {
+  return send('POST', `/api/commercial/${encodeURIComponent(recordId)}/confirm`, {});
+}
+
+export function archiveCommercial(recordId: string, reason: string): Promise<WriteOutcome> {
+  return send('POST', `/api/commercial/${encodeURIComponent(recordId)}/archive`, { reason });
+}
+
 /** D-36: a task in a project for one staff member, with a due date. */
 export function createSiteAction(
   siteId: string,

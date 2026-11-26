@@ -2,7 +2,7 @@
 
 How to use OCS today: what is there, where to click, who may do what. Button and menu names are exactly as on screen (English UI; switch to 中文 with the language button top right).
 
-> Kept current with every new feature — see "Keeping this guide current" at the end. Last updated: 23 Nov 2026.
+> Kept current with every new feature — see "Keeping this guide current" at the end. Last updated: 26 Nov 2026.
 
 ---
 
@@ -57,6 +57,9 @@ Open actions of this project with owner, due date and an overdue mark. **New tas
 
 ### Timeline
 Everything that happened, newest first, each with its source. **Comment** → **Add comment** (tick people to @mention them). **Make it an action** on a comment → owner, **Due date** → **Create action**. **Record a visit** → attendees, summary, decisions, coverage, action items → **Save visit record** (a shortfall needs a reason).
+
+### Commercial (D-34 N2)
+Client PO, DPIA, client invoice and price-list price of the project (staff only). **Add a record**: pick the **Record**, its **Status**, **Number** (PO and invoice), **Date**; for an amount give **Amount** in the original currency, **Currency (ISO code)** and, for any currency except EUR, **Rate: EUR per 1 unit** → **Save record**. OCS keeps both the original amount and the EUR value with the rate and date. What you enter is confirmed by you at once; what an AI assistant enters shows **Proposed by AI — confirm** until a person clicks **Confirm** (an assistant can never confirm). **Archive** removes a wrong record from the list; it is kept in the history.
 
 ### Settings
 **Mall on the device platform** and **Offline alerts** (only with a linked mall) → **Save**.
