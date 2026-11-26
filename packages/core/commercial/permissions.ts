@@ -22,5 +22,10 @@ export const commercialPermissions = {
     description: 'Archive a wrong or replaced commercial record of a site, with a reason; never deleted.',
     roles: ['director', 'pm', 'finance'],
   }),
+  gaps: permission('commercial.gaps.read', {
+    description:
+      'For the hourly alert run: every active site with its commercial gaps — installed without a confirmed PO (R14) or without an approved DPIA (R24), and without an owner (R26).',
+    roles: ['system'],
+  }),
   // gen:permissions — `pnpm gen:command` and `pnpm gen:query` add entries above this line.
 };
