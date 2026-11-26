@@ -4,6 +4,7 @@
 import { createRuntime, startScheduledJobs } from '@ocs/core/runtime';
 import { createDevicePlatform } from './adapters/device-platform/index.ts';
 import { runDevicePlatformJob } from './jobs/device-platform.ts';
+import { runCommercialAlertsJob } from './jobs/commercial-alerts.ts';
 import { runIntakeConditionsJob } from './jobs/intake-conditions.ts';
 
 const required = [
@@ -51,6 +52,15 @@ const queue = await startScheduledJobs(env('OCS_QUEUE_DATABASE_URL') || env('OCS
     run: async () => {
       const run = await runIntakeConditionsJob(runtime.kernel);
       console.log(JSON.stringify({ job: 'intake-conditions', ...run }));
+    },
+  },
+  {
+    // R14, R24, R26 (D-34 N2): hourly, like the other alert rules (E8 AC1).
+    name: 'commercial-alerts',
+    everyMinutes: 60,
+    run: async () => {
+      const run = await runCommercialAlertsJob(runtime.kernel);
+      console.log(JSON.stringify({ job: 'commercial-alerts', ...run }));
     },
   },
 ]);

@@ -68,7 +68,7 @@ The left-menu **Commercial** page shows every project at once: client POs (count
 **Mall on the device platform** and **Offline alerts** (only with a linked mall) → **Save**.
 
 ## 4. Actions & alerts
-All open actions in columns, with owner, due date and source (comment, visit, alert). **Mine** filters to yours; **Done** on a card closes it (owner, director or PM). Alerts (device offline > 24 h, device lists not matching the platform, expired intake conditions) arrive here as actions automatically.
+All open actions in columns, with owner, due date and source (comment, visit, alert). **Mine** filters to yours; **Done** on a card closes it (owner, director or PM). Alerts (device offline > 24 h, device lists not matching the platform, expired intake conditions; an installed project without a confirmed client PO or approved DPIA; a project without a PM — sent to the directors) arrive here as actions automatically, and go away by themselves once the gap is closed.
 
 ## 5. Intake Register
 One row per submitted card version: Project ID, submitted, decision, decided, returns, working days to acceptance. **Month of submission** filters; **Export CSV** downloads what is shown — for the monthly review with the Sales Lead.
