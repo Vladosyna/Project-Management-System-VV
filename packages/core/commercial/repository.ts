@@ -64,3 +64,14 @@ export async function directorIds(tx: Tx) {
     .where(and(eq(userRole.role, 'director'), isNull(userRole.revokedAt)));
   return [...new Set(rows.map((r) => r.userId))].sort();
 }
+
+/** Every active site the actor may see (RLS) with its active commercial records, for the overview. */
+export async function sitesWithRecords(tx: Tx) {
+  const sites = await tx
+    .select({ id: site.id, projectId: site.projectId })
+    .from(site)
+    .where(isNull(site.archivedAt))
+    .orderBy(asc(site.projectId));
+  const records = await tx.select().from(commercialRecord).where(isNull(commercialRecord.archivedAt));
+  return { sites, records };
+}

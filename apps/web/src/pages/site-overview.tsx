@@ -22,6 +22,7 @@ export const SITE_TABS = [
   'devices',
   'network',
   'actions',
+  'commercial',
   'timeline',
   'settings',
 ] as const;
