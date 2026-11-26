@@ -42,6 +42,12 @@ Conventions: UUID v7 `id`; `created_at/by`, `updated_at/by`; `archived_at` (no d
 - **Message**: case_id?, inbox_state (unlinked | linked | dismissed), channel (mail | dingtalk | whatsapp | portal), external_id (Message-ID / msg id — unique), thread_ref, from, subject, body_text, attachments refs, visibility, match_suggestion {case_id, confidence, reason}.
 - **CaseDevice**: case_id, device_id.
 
+## Commercial and installers (D-34 N1/N2; migrations 0022–0023)
+- **CommercialRecord** (0022): site_id, kind (client_po | dpia | client_invoice | price_list), reference, status, record_date, amount + currency + eur_amount + fx_rate/date/source, source_ref, proposed_by/via (web | ai), confirmed_by/at (AI entries wait for a person), archived_at.
+- **InstallerJob** (0023): site_id, partner_id (real name staff only), scope (partial | full), sensor_count, sow_version, sow_sent_on, scheduled_on, status (planned | quoting | approved | scheduled | done | attended_not_ready | cancelled), outcome_note.
+- **PriceProposal** (0023): job_id, partner_id, sow_version, lines [{kind unit | hour | travel | extra, description, quantity, unitPrice}], amount + currency + EUR with rate, valid_until, source (mail | pdf | xlsx | whatsapp | manual) + ref, proposed_by/via, confirmed_by/at.
+- **QuoteApproval** (0023, P-11/P-12): job_id, proposal_id, approval_ref (DingTalk OA or message), approved_on, single_quote_reason, recorded_by; one active per job; recorded by a person, never by AI.
+
 ## Forms — Market Input (D-37, `market-input-in-ocs.md`)
 - **FormTemplate**: name, version, scope (base | client | programme | country, as GateTemplate, D-32), sections; changed by director/sponsor only; a new version never rewrites given answers. Internal configuration.
 - **FormField** (in the template): key, label EN/中文, section, type (text | email | phone | date | date_window | number | enum | yes_no_tbc | attachment_slot | checklist_item), requirement (required | optional | conditional + rule), answered_by (market | vionvision), per_store or common (allows "fill for all open stores"), guidance, due_offset (C items: D−20, D−2, before calibration).
