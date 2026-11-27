@@ -124,3 +124,12 @@ export async function activeApproval(tx: Tx, jobId: string) {
 export async function insertApproval(tx: Tx, row: typeof quoteApproval.$inferInsert) {
   await tx.insert(quoteApproval).values(row);
 }
+
+/** Active installer companies, by name (staff only, RLS). */
+export async function activePartners(tx: Tx) {
+  return tx
+    .select({ id: partner.id, name: partner.realName, countryCode: partner.countryCode })
+    .from(partner)
+    .where(isNull(partner.archivedAt))
+    .orderBy(asc(partner.realName));
+}

@@ -32,5 +32,10 @@ export const installersPermissions = {
       'Move an installer job on: scheduled (with date), done, attended but site not ready, or cancelled, with an outcome note.',
     roles: ['director', 'pm'],
   }),
+  partners: permission('installers.partners.read', {
+    description:
+      'Installer companies (partners) with their internal names and country, for choosing an installer on a job or quote. Staff only; never shown to clients.',
+    roles: ['director', 'pm', 'finance', 'sponsor', 'management'],
+  }),
   // gen:permissions — `pnpm gen:command` and `pnpm gen:query` add entries above this line.
 };

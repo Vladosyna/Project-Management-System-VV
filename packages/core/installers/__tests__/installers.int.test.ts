@@ -8,6 +8,7 @@ import { Forbidden, openTestKernel, type TestKernel } from '../../kernel/index.t
 import { createClient, createSite } from '../../org/index.ts';
 import { createJob } from '../commands/create-job.ts';
 import { proposeQuote, quoteTotal } from '../commands/propose-quote.ts';
+import { partners } from '../queries/partners.ts';
 import { siteJobs } from '../queries/site-jobs.ts';
 
 const pm = aStaffActor({ roles: ['pm'] });
@@ -43,6 +44,7 @@ beforeAll(async () => {
     createJob.permission,
     proposeQuote.permission,
     siteJobs.permission,
+    partners.permission,
   );
   const a = await t.kernel.execute(createClient, pm, { shortCode: 'CLIENTA', name: 'Client A' }, 'test');
   const place = { countryCode: 'PL', cityCode: 'WAW', cityName: 'Warsaw', name: 'Store 1', standard: 'S' };
@@ -102,5 +104,10 @@ describe('installer jobs and quotes', () => {
       ['Partner Y', '92.00', false],
       ['Partner X', '108.10', true],
     ]);
+  });
+
+  it('lists installer companies by name for staff', async () => {
+    expect((await t.kernel.read(partners, pm, {})).map((p) => p.name)).toEqual(['Partner X', 'Partner Y']);
+    await expect(t.kernel.read(partners, rnd, {})).rejects.toBeInstanceOf(Forbidden);
   });
 });
