@@ -1,5 +1,5 @@
 -- 0024_add_client_quotation — additive and reversible (ocs-db-migration); never edit once on main.
--- D-40: client quotations drafted by OCS (PMI first). Configuration per client × country (currency, hourly rate, tax
+-- D-40: client quotations drafted by OCS (first client: see D-40). Configuration per client × country (currency, hourly rate, tax
 -- mode, seller entity, bank, terms), model prices, and the quotation itself: sensor and installation lines, hours by
 -- the time standard and as quoted (override needs a reason), tax, totals. Internal only; a person sends it.
 CREATE TABLE client_quote_config (
