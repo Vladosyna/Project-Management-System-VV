@@ -520,6 +520,36 @@ test('a PM records a client PO in GBP, sees it in EUR and archives it (E13, D-34
   await expect(row).toBeHidden();
 });
 
+test('Projects is the programme tracker: projects by country with stage, dates and gates (E11 AC3)', async ({
+  page,
+  browser,
+}) => {
+  await signInWithPassword(page);
+  const pm = await join(browser, page, 'pm.tracker.e2e@example.com', 'Person 13', ['pm']);
+  await pm.getByRole('navigation', { name: 'Main' }).getByRole('link', { name: 'Projects' }).click();
+  await expect(pm.getByRole('heading', { level: 1, name: 'Projects' })).toBeVisible();
+  await expect(pm.getByRole('heading', { level: 2, name: /^ES · \d+ projects?$/ })).toBeVisible();
+  await expect(pm.getByRole('heading', { level: 2, name: /^PT · / })).toBeVisible();
+  for (const col of ['Project ID', 'Stage', 'Planned installation', 'Gates', 'Client PO', 'DPIA'])
+    await expect(pm.getByRole('columnheader', { name: col }).first()).toBeVisible();
+  await expect(pm.getByRole('link', { name: 'CLIENTC-PT-LIS-003' })).toBeVisible();
+  // Filters: one client, then one country.
+  await pm.getByLabel('Client').selectOption({ label: 'CLIENTA — Client A' });
+  await expect(pm.getByRole('link', { name: 'CLIENTC-PT-LIS-003' })).toBeHidden();
+  await expect(pm.getByRole('link', { name: 'CLIENTA-ES-MAD-001' })).toBeVisible();
+  await pm.getByLabel('Country').fill('es');
+  await expect(pm.getByRole('heading', { level: 2, name: /^ES · / })).toBeVisible();
+  await expect(pm.getByRole('heading', { level: 2, name: /^PT · / })).toBeHidden();
+  await pm.screenshot({ path: 'test-results/projects-en.png', fullPage: true });
+  // Each Project ID opens that project's Lifecycle tab.
+  await pm.getByRole('link', { name: 'CLIENTA-ES-MAD-001' }).click();
+  await expect(pm.getByRole('heading', { level: 2, name: 'Lifecycle' })).toBeVisible();
+  await pm.goBack();
+  await pm.getByRole('button', { name: 'Switch to Chinese' }).click();
+  await expect(pm.getByRole('heading', { level: 1, name: '项目' })).toBeVisible();
+  await pm.screenshot({ path: 'test-results/projects-zh.png', fullPage: true });
+});
+
 test('an AI client signs in as the person with OAuth: login with TOTP, consent, code, token (D-33)', async ({
   browser,
 }) => {
@@ -651,6 +681,7 @@ const SCREENS: { path: string; heading: string }[] = [
   { path: '/intake-register', heading: 'Intake Register' },
   { path: '/agents', heading: 'AI agents' },
   { path: '/commercial', heading: 'Commercial' },
+  { path: '/projects', heading: 'Projects' },
   // gen:screens
 ];
 
