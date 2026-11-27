@@ -139,7 +139,7 @@ export async function listActiveStaff(tx: Tx): Promise<{ id: string; name: strin
 export async function findSitePm(tx: Tx, id: string) {
   return (
     await tx
-      .select({ id: site.id, clientId: site.clientId, pmId: site.pmId })
+      .select({ id: site.id, clientId: site.clientId, pmId: site.pmId, countryCode: site.countryCode })
       .from(site)
       .where(and(eq(site.id, id), isNull(site.archivedAt)))
   )[0];

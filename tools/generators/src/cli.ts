@@ -1,5 +1,4 @@
 // pnpm gen:<kind> … — see docs/ocs/03-engineering-rules.md §2 and the ocs-new-module / ocs-sop-rule skills.
-import { execFileSync } from 'node:child_process';
 import { readdirSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -7,6 +6,7 @@ import { parseArgs } from 'node:util';
 import { commandPlan, modulePlan, queryPlan, rulePlan } from './core.ts';
 import { migrationPlan, nextMigrationNumber } from './db.ts';
 import { applyPlan, type Plan } from './plan.ts';
+import { runPnpm } from './pnpm.ts';
 import { screenPlan } from './web.ts';
 
 export const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
@@ -68,7 +68,9 @@ export function planFor(argv: readonly string[]): Plan {
 export function generate(argv: readonly string[]): string[] {
   const plan = planFor(argv);
   const touched = applyPlan(repoRoot, plan);
-  const run = (args: string[]) => execFileSync('pnpm', args, { cwd: repoRoot, stdio: 'inherit' });
+  const run = (args: string[]) => {
+    runPnpm(args, repoRoot);
+  };
   run(['exec', 'prettier', '--write', '--ignore-unknown', '--log-level=warn', ...touched]);
   if (plan.permissionsChanged) {
     run(['gen:matrix']);

@@ -25,6 +25,7 @@ beforeAll(async () => {
     siteId: w.siteId,
     ref,
     title: `${ref} offline`,
+    level: 'P1' as const,
   }));
   await w.t.kernel.execute(raiseAlert, job, { alerts }, 'system');
   await runAsOwner(
@@ -62,7 +63,7 @@ describe('work.alert.resolve', () => {
 
   it('a summary alert is superseded: older refs with the prefix go, the current one stays', async () => {
     const recon = ['RECON:s1:aaa', 'RECON:s1:bbb', 'RECON:s2:ccc'];
-    const alerts = recon.map((ref) => ({ siteId: w.siteId, ref, title: ref }));
+    const alerts = recon.map((ref) => ({ siteId: w.siteId, ref, title: ref, level: 'P1' as const }));
     await w.t.kernel.execute(raiseAlert, job, { alerts }, 'system');
     const r = await w.t.kernel.execute(
       resolveAlert,

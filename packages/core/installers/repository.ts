@@ -1,5 +1,17 @@
 // installers repository — the only place in this module that touches tables.
-import { and, asc, eq, installerJob, isNull, partner, priceProposal, site, type Tx } from '@ocs/db';
+import {
+  and,
+  asc,
+  eq,
+  installerJob,
+  isNull,
+  partner,
+  priceProposal,
+  quoteApproval,
+  site,
+  sql,
+  type Tx,
+} from '@ocs/db';
 
 export async function findActiveSite(tx: Tx, id: string) {
   return (
@@ -66,4 +78,49 @@ export async function jobsOfSite(tx: Tx, siteId: string) {
     .where(and(eq(installerJob.siteId, siteId), isNull(priceProposal.archivedAt)))
     .orderBy(asc(priceProposal.eurAmount));
   return { jobs, quotes };
+}
+
+export async function lockActiveJob(tx: Tx, id: string) {
+  return (
+    await tx
+      .select()
+      .from(installerJob)
+      .where(and(eq(installerJob.id, id), isNull(installerJob.archivedAt)))
+      .for('update')
+  )[0];
+}
+
+export async function updateJob(tx: Tx, id: string, set: Partial<typeof installerJob.$inferInsert>) {
+  await tx.update(installerJob).set(set).where(eq(installerJob.id, id));
+}
+
+/** Confirmed active quotes of a job, for P-12 "at least two comparable quotes on the same SOW". */
+export async function confirmedQuotesOfJob(tx: Tx, jobId: string) {
+  return tx
+    .select({
+      id: priceProposal.id,
+      partnerId: priceProposal.partnerId,
+      sowVersion: priceProposal.sowVersion,
+    })
+    .from(priceProposal)
+    .where(
+      and(
+        eq(priceProposal.jobId, jobId),
+        isNull(priceProposal.archivedAt),
+        sql`${priceProposal.confirmedAt} IS NOT NULL`,
+      ),
+    );
+}
+
+export async function activeApproval(tx: Tx, jobId: string) {
+  return (
+    await tx
+      .select({ id: quoteApproval.id })
+      .from(quoteApproval)
+      .where(and(eq(quoteApproval.jobId, jobId), isNull(quoteApproval.archivedAt)))
+  )[0];
+}
+
+export async function insertApproval(tx: Tx, row: typeof quoteApproval.$inferInsert) {
+  await tx.insert(quoteApproval).values(row);
 }

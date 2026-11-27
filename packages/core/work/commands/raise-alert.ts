@@ -1,15 +1,20 @@
 // work.alert.raise — actions from automatic alerts (E5 AC1 source "alert"), e.g. R15 "sensor offline > 24 h".
-// Each action is owned by its project's PM (or the owner the alert names), due the next day, internal (never shown to the client). One action
+// Each action is owned by its project's PM (or the owner the alert names), due by the alert's level (domain/rules.md,
+// D-38: P0 same day, P1 within 2 working days, P2 within the week — the project's country calendar, GB where there is
+// none), internal (never shown to the client). One action
 // per alert ref: the caller names the episode (R15: device and the time it went offline), so a done action is not
 // raised again while the same episode lasts, and a new episode raises a new one. A batch per job run, one audit
 // record per run. System only (worker alert jobs).
 import { z } from 'zod';
+import { addWorkingDays, calendarIds, localDateIn, type CalendarId } from '../../calendar/index.ts';
 import { defineCommand } from '../../kernel/index.ts';
 import { workPermissions } from '../permissions.ts';
 import { findSitePm, insertAction, lockAlertAction } from '../repository.ts';
 
-/** Assumption (internal default, no SOP clause): an alert action is due the day after it is raised. */
-const DUE_AFTER_DAYS = 1;
+/** domain/rules.md levels: working days until the action is due (P2 "within the week" = 5 working days). */
+const WORKING_DAYS = { P0: 0, P1: 2, P2: 5 } as const;
+const calendarOf = (country: string): CalendarId =>
+  (calendarIds as readonly string[]).includes(country) ? (country as CalendarId) : 'GB';
 
 export const raiseAlert = defineCommand({
   name: 'work.alert.raise',
@@ -22,6 +27,8 @@ export const raiseAlert = defineCommand({
           /** Stable per alert episode, e.g. "R15:<deviceId>:<offlineSince ISO>". */
           ref: z.string().trim().min(1).max(300),
           title: z.string().trim().min(1).max(300),
+          /** The rule's level in domain/rules.md; sets the due date. */
+          level: z.enum(['P0', 'P1', 'P2']),
           /** Owner other than the project's PM, e.g. Sales owner and director for an expired intake condition. */
           ownerId: z.uuid().optional(),
           /**
@@ -36,7 +43,7 @@ export const raiseAlert = defineCommand({
   }),
   describe: (i) => `Raise ${String(i.alerts.length)} alerts as actions`,
   handle: async (ctx, i) => {
-    const due = new Date(ctx.now.getTime() + DUE_AFTER_DAYS * 86_400_000).toISOString().slice(0, 10);
+    const today = localDateIn(ctx.now, 'UTC');
     const created: { ref: string; actionId: string }[] = [];
     /** Not raised: the project is gone, or has no PM to own the action — reported, the run goes on. */
     const skipped: { ref: string; reason: 'no_project' | 'no_pm' }[] = [];
@@ -56,6 +63,8 @@ export const raiseAlert = defineCommand({
         skipped.push({ ref: alert.ref, reason: 'no_pm' });
         continue;
       }
+      const days = WORKING_DAYS[alert.level];
+      const due = days === 0 ? today : addWorkingDays(today, days, calendarOf(project.countryCode));
       const row = {
         id: ctx.newId(),
         clientId: project.clientId,
