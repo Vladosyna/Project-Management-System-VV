@@ -39,21 +39,33 @@ export async function activeRecordsOfSite(tx: Tx, siteId: string): Promise<Comme
     .orderBy(asc(commercialRecord.kind), asc(commercialRecord.recordDate));
 }
 
-/** R14/R24/R26: active sites with their owner, whether installation is recorded, and confirmed PO / approved DPIA. */
-export async function commercialGaps(tx: Tx) {
+/**
+ * R5/R14/R24/R26: active sites with their owner and country, whether installation is recorded, when acceptance was
+ * recorded, and their confirmed records (PO, DPIA, invoice).
+ */
+export async function commercialGaps(tx: Tx, acceptedStep: string) {
   const sites = await tx
-    .select({ id: site.id, projectId: site.projectId, pmId: site.pmId })
+    .select({ id: site.id, projectId: site.projectId, pmId: site.pmId, countryCode: site.countryCode })
     .from(site)
     .where(isNull(site.archivedAt));
   const installed = await tx
     .select({ siteId: siteStep.siteId })
     .from(siteStep)
     .where(and(eq(siteStep.step, 'installed'), isNull(siteStep.archivedAt)));
+  const accepted = await tx
+    .select({ siteId: siteStep.siteId, doneOn: siteStep.doneOn })
+    .from(siteStep)
+    .where(and(eq(siteStep.step, acceptedStep), isNull(siteStep.archivedAt)));
   const records = await tx
     .select({ siteId: commercialRecord.siteId, kind: commercialRecord.kind, status: commercialRecord.status })
     .from(commercialRecord)
     .where(and(isNull(commercialRecord.archivedAt), sql`${commercialRecord.confirmedAt} IS NOT NULL`));
-  return { sites, installed: new Set(installed.map((r) => r.siteId)), records };
+  return {
+    sites,
+    installed: new Set(installed.map((r) => r.siteId)),
+    acceptedOn: new Map(accepted.map((r) => [r.siteId, r.doneOn])),
+    records,
+  };
 }
 
 /** R26: a site without an owner goes to the Delivery Directors. */
