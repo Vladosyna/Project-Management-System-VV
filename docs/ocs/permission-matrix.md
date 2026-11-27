@@ -49,6 +49,7 @@ External roles (`client`, `partner`) are switched off in the checker until the V
 | `lifecycle.gateTemplate.save` | Create or replace the gate template of a scope: base, client, programme, country (D-32) | ✓ |  |  |  |  |  | ✓ |  |  |  |  |
 | `lifecycle.gateTemplates.read` | See the gate templates and their scopes (D-32) | ✓ | ✓ |  |  |  | ✓ | ✓ |  |  |  |  |
 | `lifecycle.installation.plan` | Set the planned installation date, only once the site card is complete (SOP-DEL-04 §1) | ✓ | ✓ |  |  |  |  |  |  |  |  |  |
+| `lifecycle.programmeTracker.read` | The programme tracker (E11 AC3): every project with stage, planned installation, readiness and gates, by client, programme or country | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |  |  |  |
 | `lifecycle.readinessGaps.read` | For the hourly alert run: every active project, flagged when installation is within the readiness window and readiness is not confirmed (R9). |  |  |  |  |  |  |  |  |  |  | ✓ |
 | `lifecycle.siteLifecycle.read` | See a project's steps, gates, installation plan and readiness (E3) | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |  |  |  |
 | `lifecycle.step.record` | Record a step reached on a project — base step or gate — with date and evidence (E3 AC1) | ✓ | ✓ | ✓ |  |  |  |  |  |  |  |  |
