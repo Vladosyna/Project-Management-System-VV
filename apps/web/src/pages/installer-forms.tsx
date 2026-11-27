@@ -5,7 +5,10 @@ import { Button, Form, FormMessage, SelectField, TextField, useI18n } from '@ocs
 import { installerWrite } from '../api.ts';
 
 type Outcome = 'ok' | 'forbidden' | 'invalid' | 'rule' | 'conflict' | 'failed';
-type Partner = { id: string; name: string };
+interface Partner {
+  id: string;
+  name: string;
+}
 const KINDS = ['unit', 'hour', 'travel', 'extra'] as const;
 type Kind = (typeof KINDS)[number];
 interface Line {
