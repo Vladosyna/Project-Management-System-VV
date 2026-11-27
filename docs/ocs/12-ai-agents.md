@@ -42,6 +42,9 @@ Start: anything that changes a status, a date or an owner is a **proposal the pe
 - Do not claim done, fixed or passing without running the check and showing its output (`pnpm verify`, `pnpm e2e`, CLAUDE.md rule 11). If a check could not run, say so.
 - Unknown facts (a client's process, an API's behaviour, a date) are **questions for Vlad**, not assumptions. Where an assumption is allowed (CLAUDE.md §8), write it in the code comment and the PR as "Assumption: …".
 
+### Talking to other AIs
+Other AI assistants work on this repository too. Talk to them directly in the pull request's comments, following `09-review-protocol.md` §6 (D-39): sign every comment, one topic per comment, evidence with every claim, never approve or merge, hand decisions to a person.
+
 ### Keep it current — with every change
 - **Decisions**: a new or changed decision → a new entry in `01-decisions.md` with date and who decided (arch/ branch). Never edit an old entry's meaning; supersede it.
 - **AI surface (D-33)**: new commands and queries come from `pnpm gen:command` / `gen:query`, which register them for AI automatically. Give each permission a **description an AI can act on**: what it does, for whom, with the SOP or epic reference. The registry test fails on weak descriptions — fix the description, never the test.

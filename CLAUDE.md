@@ -55,7 +55,7 @@ One internal platform for every Vionvision delivery project: clients, projects a
 3. **Test first** — write the failing test that expresses the acceptance criterion.
 4. **Implement** — smallest change that passes. Use generators (`pnpm gen:*`) instead of hand-made structure.
 5. **Verify** — `pnpm verify` (typecheck, lint, unit, integration) and, for UI, the Playwright check. Paste the evidence.
-6. **Review** — run the review protocol (`ocs-review` skill) on your own diff before proposing a PR.
+6. **Review** — run the review protocol (`ocs-review` skill) on your own diff before proposing a PR. Other AIs on the project review and answer in the PR's comments; talk to them there directly (`09-review-protocol.md` §6, D-39).
 7. **Report** — short summary to the person: what changed, evidence, what is left. Russian for Vlad.
 
 ## 6. Protected zones (hooks enforce this)
