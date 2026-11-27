@@ -1,10 +1,11 @@
 // /projects — E11 AC3 (D-34 C5): the programme tracker that replaces the hand-kept Excel tracker, laid out as the
 // "Markets & gates" tab of the Project mockup — projects grouped by country, each with stage, planned installation,
 // R9 readiness, its gates and, for roles that see commercial data, client PO and DPIA (E13). Filters: client and
-// country. Each Project ID opens that project's Lifecycle tab. Every string is an i18n key (ocs-ui-screen).
+// country. Each Project ID opens that project's Lifecycle tab; "Export CSV" downloads what is shown, for the people
+// who still keep the Excel tracker until it is retired (D-19). Every string is an i18n key (ocs-ui-screen).
 import { Link } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
-import { Card, FormMessage, PageHeader, SelectField, StatusChip, TextField, useI18n } from '@ocs/ui';
+import { Button, Card, FormMessage, PageHeader, SelectField, StatusChip, TextField, useI18n } from '@ocs/ui';
 import {
   loadCommercialPortfolio,
   loadPortfolio,
@@ -13,6 +14,7 @@ import {
   type CommercialPortfolioRow,
   type ProgrammeTrackerRow,
 } from '../api.ts';
+import { trackerCsv } from '../tracker-csv.ts';
 import { STEP_LABELS } from './site-lifecycle.tsx';
 
 interface Data {
@@ -58,6 +60,55 @@ export function ProjectsPage() {
       )
     : [];
   const countries = [...new Set(shown.map((r) => r.countryCode))].sort();
+  const poText = (money: CommercialPortfolioRow | undefined) =>
+    money && money.poCount > 0
+      ? t('commercial.overview.poLine', { count: String(money.poCount), eur: money.poEur })
+      : t('commercial.overview.missing');
+  const dpiaText = (money: CommercialPortfolioRow | undefined) =>
+    money?.dpia ? t(`commercial.status.${money.dpia as Dpia}`) : t('commercial.overview.missing');
+  const label = (key: string): string => {
+    const [head, rest] = key.split('.') as [string, string | undefined];
+    if (head === 'stage') {
+      const step = rest ? STEP_LABELS[rest] : undefined;
+      return step ? t(step) : (rest ?? '');
+    }
+    if (head === 'gate') return t(`lifecycle.gate.${rest as 'passed' | 'current' | 'not_started'}`);
+    const fixed = {
+      projectId: t('portfolio.col.projectId'),
+      site: t('portfolio.col.site'),
+      country: t('projects.filter.country'),
+      city: t('portfolio.col.city'),
+      standard: t('portfolio.col.standard'),
+      stage: t('projects.col.stage'),
+      planned: t('lifecycle.planned'),
+      daysTo: t('projects.col.daysTo'),
+      readiness: t('projects.col.readiness'),
+      atRisk: t('lifecycle.readinessAtRisk'),
+      po: t('commercial.kind.client_po'),
+      dpia: t('commercial.kind.dpia'),
+    } as Record<string, string>;
+    return fixed[key] ?? key;
+  };
+  const exportCsv = () => {
+    const commercial = loaded?.commercial;
+    const csv = trackerCsv(shown, {
+      label,
+      commercial:
+        commercial &&
+        new Map(
+          shown.map((r) => [
+            r.siteId,
+            { po: poText(commercial.get(r.siteId)), dpia: dpiaText(commercial.get(r.siteId)) },
+          ]),
+        ),
+    });
+    const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `programme-tracker${wanted ? `-${wanted}` : ''}-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
 
   return (
     <>
@@ -91,7 +142,13 @@ export function ProjectsPage() {
                 setCountry(e.currentTarget.value);
               }}
             />
-            {shown.length === 0 ? <p>{t('projects.empty')}</p> : null}
+            {shown.length === 0 ? (
+              <p>{t('projects.empty')}</p>
+            ) : (
+              <Button type="button" variant="secondary" onClick={exportCsv}>
+                {t('projects.export')}
+              </Button>
+            )}
           </>
         ) : null}
       </Card>
@@ -163,19 +220,8 @@ export function ProjectsPage() {
                           </td>
                           {loaded.commercial ? (
                             <>
-                              <td>
-                                {money && money.poCount > 0
-                                  ? t('commercial.overview.poLine', {
-                                      count: String(money.poCount),
-                                      eur: money.poEur,
-                                    })
-                                  : t('commercial.overview.missing')}
-                              </td>
-                              <td>
-                                {money?.dpia
-                                  ? t(`commercial.status.${money.dpia as Dpia}`)
-                                  : t('commercial.overview.missing')}
-                              </td>
+                              <td>{poText(money)}</td>
+                              <td>{dpiaText(money)}</td>
                             </>
                           ) : null}
                         </tr>
