@@ -1,0 +1,2 @@
+# D-38: one line ending everywhere, so Prettier and the UI token test pass on Windows checkouts too.
+* text=auto eol=lf
