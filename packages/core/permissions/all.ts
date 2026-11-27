@@ -9,3 +9,4 @@ import '../work/index.ts';
 import '../lifecycle/index.ts';
 import '../commercial/index.ts';
 import '../installers/index.ts';
+import '../quotations/index.ts';
