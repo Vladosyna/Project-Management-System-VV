@@ -100,7 +100,8 @@ export async function runDevicePlatformJob(
           await kernel.execute(
             raiseAlert,
             actor,
-            { alerts: [{ siteId: site.siteId, ref: keep, title: title.slice(0, 300) }] },
+            // Reconciliation summary: P1 (assumption — R6-adjacent data mismatch, no own rule number yet).
+            { alerts: [{ siteId: site.siteId, ref: keep, title: title.slice(0, 300), level: 'P1' }] },
             'system',
           );
         }
@@ -127,6 +128,7 @@ export async function runDevicePlatformJob(
     return {
       siteId: d.siteId,
       ref: r15Ref(d.deviceId, since),
+      level: 'P1' as const, // R15: P1
       title: `Device ${d.sn} on ${d.projectId} offline since ${since.slice(0, 16).replace('T', ' ')} UTC — find the cause`,
     };
   });

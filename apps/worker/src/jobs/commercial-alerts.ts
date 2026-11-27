@@ -17,18 +17,19 @@ const TITLE = {
 export async function runCommercialAlertsJob(kernel: Pick<Kernel, 'execute' | 'read'>) {
   const actor = systemActor('commercial-alerts');
   const { sites, directors } = await kernel.read(gaps, actor, {});
-  const raise: { siteId: string; ref: string; title: string; ownerId?: string }[] = [];
+  const raise: { siteId: string; ref: string; title: string; level: 'P0' | 'P1'; ownerId?: string }[] = [];
   const clear: string[] = [];
   for (const s of sites) {
     for (const rule of ['R14', 'R24'] as const) {
       const ref = gapRef(rule, s.siteId);
       if (s[rule === 'R14' ? 'r14' : 'r24'])
-        raise.push({ siteId: s.siteId, ref, title: `${s.projectId}: ${TITLE[rule]}` });
+        raise.push({ siteId: s.siteId, ref, title: `${s.projectId}: ${TITLE[rule]}`, level: 'P0' });
       else clear.push(ref);
     }
     for (const d of directors) {
       const ref = gapRef('R26', s.siteId, d);
-      if (s.r26) raise.push({ siteId: s.siteId, ref, title: `${s.projectId}: ${TITLE.R26}`, ownerId: d });
+      if (s.r26)
+        raise.push({ siteId: s.siteId, ref, title: `${s.projectId}: ${TITLE.R26}`, level: 'P1', ownerId: d });
       else clear.push(ref);
     }
   }

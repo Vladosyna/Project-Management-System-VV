@@ -107,6 +107,7 @@ describe('device platform job', () => {
           siteId: 'site-a',
           ref: 'R15:d2:2026-11-11T07:30:00.000Z',
           title: 'Device SN-0002 on CLIENTA-ES-MAD-001 offline since 2026-11-11 07:30 UTC — find the cause',
+          level: 'P1',
         },
       ],
     });

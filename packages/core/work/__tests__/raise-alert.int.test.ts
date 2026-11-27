@@ -11,10 +11,11 @@ const job = systemActor('alerts');
 const pm = aStaffActor({ roles: ['pm'] });
 const clock = createFakeClock(new Date('2026-11-04T12:00:00Z'));
 let w: WorkWorld;
-const alert = (ref: string, siteId = w.siteId) => ({
+const alert = (ref: string, siteId = w.siteId, level: 'P0' | 'P1' | 'P2' = 'P1') => ({
   siteId,
   ref,
   title: `Device ${ref} offline — find the cause`,
+  level,
 });
 const raise = (...alerts: (ReturnType<typeof alert> & { ownerId?: string })[]) =>
   w.t.kernel.execute(raiseAlert, job, { alerts }, 'system');
@@ -39,16 +40,22 @@ describe('work.alert.raise', () => {
     await expect(raise({ ...alert('R15:a'), ref: ' ' })).rejects.toBeInstanceOf(ValidationFailed);
   });
 
-  it("raises an internal action owned by the project's PM, due the next day, sourced from the alert", async () => {
+  it("raises an internal action owned by the project's PM, due by its level (P1: 2 working days), from the alert", async () => {
     const r = await raise(alert('R15:dev-1:2026-11-03T10:00:00.000Z'));
     expect(r.created).toHaveLength(1);
     expect(
       await actions(
-        `source_kind = 'alert' AND source_ref = $1 AND owner_id = $2 AND due = '2026-11-05' AND visibility = 'internal'`,
+        `source_kind = 'alert' AND source_ref = $1 AND owner_id = $2 AND due = '2026-11-06' AND visibility = 'internal'`,
         ['R15:dev-1:2026-11-03T10:00:00.000Z', pm.id],
       ),
     ).toBe(1);
     expect(await countRows(w.testDb.url, `outbox WHERE event_type = 'work.action.created'`)).toBe(1);
+  });
+
+  it('P0 is due the same day, P2 within the week (domain/rules.md, D-38)', async () => {
+    await raise(alert('R14:p0', w.siteId, 'P0'), alert('R5:p2', w.siteId, 'P2'));
+    expect(await actions(`source_ref = 'R14:p0' AND due = '2026-11-04'`, [])).toBe(1);
+    expect(await actions(`source_ref = 'R5:p2' AND due = '2026-11-11'`, [])).toBe(1);
   });
 
   it('the same episode is raised once, even after its action is done; a new episode raises a new one', async () => {
@@ -72,7 +79,8 @@ describe('work.alert.raise', () => {
       { ref: 'R15:dev-2:x', reason: 'no_pm' },
       { ref: 'R15:dev-3:x', reason: 'no_project' },
     ]);
-    expect(await countRows(w.testDb.url, 'audit_event WHERE command = $1', [raiseAlert.name])).toBe(3);
+    // One audit record per run: the four runs so far in this file.
+    expect(await countRows(w.testDb.url, 'audit_event WHERE command = $1', [raiseAlert.name])).toBe(4);
   });
 
   it('an alert may name its owner instead of the PM (expired intake condition → Sales owner, director)', async () => {
