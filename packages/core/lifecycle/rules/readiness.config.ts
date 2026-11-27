@@ -12,8 +12,8 @@ export const readinessRule = {
   /** The step that clears the rule. */
   clearedBy: 'readiness_confirmed',
   /**
-   * The step after which the hourly R9 alert no longer fires. Assumption (to confirm with Vlad): once installed,
-   * readiness is moot — projects installed before OCS would otherwise carry a P0 alert for ever.
+   * The step after which the hourly R9 alert no longer fires. Vlad, 27 Nov: R9 is about readiness before
+   * installation; once "installed" is recorded it no longer applies.
    */
   alertEndsAt: 'installed',
 } as const;

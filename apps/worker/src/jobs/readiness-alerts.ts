@@ -10,13 +10,15 @@ export const readinessRef = (siteId: string) => `R9:${siteId}`;
 export async function runReadinessAlertsJob(kernel: Pick<Kernel, 'execute' | 'read'>) {
   const actor = systemActor('readiness-alerts');
   const sites = await kernel.read(readinessGaps, actor, {});
-  const raise: { siteId: string; ref: string; title: string }[] = [];
+  const raise: { siteId: string; ref: string; title: string; level: 'P0' }[] = [];
   const clear: string[] = [];
   for (const s of sites) {
     if (s.r9)
       raise.push({
         siteId: s.siteId,
         ref: readinessRef(s.siteId),
+        // domain/rules.md R9 is P0; the due date follows from the level (shared alert command).
+        level: 'P0',
         title: `${s.projectId}: installation ${String(s.plannedInstallationDate)}, readiness not confirmed — confirm it or move the date (R9)`,
       });
     else clear.push(readinessRef(s.siteId));

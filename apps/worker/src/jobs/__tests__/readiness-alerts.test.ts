@@ -15,7 +15,7 @@ function recordingKernel(sites: unknown[]) {
 }
 
 describe('readiness alerts job (R9)', () => {
-  it('raises R9 for the PM of each project at risk; withdraws it on the others', async () => {
+  it('raises R9 (level P0) for the PM of each project at risk; withdraws it on the others', async () => {
     const sites = [
       { siteId: 's1', projectId: 'CLIENTA-GB-LON-001', r9: true, plannedInstallationDate: '2026-12-09' },
       { siteId: 's2', projectId: 'CLIENTA-GB-LON-002', r9: false, plannedInstallationDate: null },
@@ -23,12 +23,13 @@ describe('readiness alerts job (R9)', () => {
     const k = recordingKernel(sites);
     expect(await runReadinessAlertsJob(k.kernel)).toEqual({ raised: 1, withdrawn: 0 });
     const raise = k.calls.find((c) => c.name === 'work.alert.raise')?.input as {
-      alerts: { siteId: string; ref: string; title: string; ownerId?: string }[];
+      alerts: { siteId: string; ref: string; title: string; level: string }[];
     };
     expect(raise.alerts).toEqual([
       {
         siteId: 's1',
         ref: readinessRef('s1'),
+        level: 'P0',
         title:
           'CLIENTA-GB-LON-001: installation 2026-12-09, readiness not confirmed — confirm it or move the date (R9)',
       },
