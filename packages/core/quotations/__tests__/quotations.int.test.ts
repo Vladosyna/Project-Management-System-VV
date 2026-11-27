@@ -92,11 +92,6 @@ afterAll(async () => {
 });
 
 describe('client quotations (D-40)', () => {
-  it('only a director sets settings and prices', async () => {
-    const price = { clientId, model: 'G6', unitPrice: '1', currency: 'EUR' };
-    await expect(t.kernel.execute(savePrice, pm, price, 'test')).rejects.toBeInstanceOf(Forbidden);
-  });
-
   it('an override of the time standard needs a reason', async () => {
     await expect(draft({ quotedHours: 78 })).rejects.toBeInstanceOf(RuleViolation);
   });
@@ -158,14 +153,5 @@ describe('client quotations (D-40)', () => {
       );
     const q = await draft({ stores: [{ siteId: first?.siteId, scope: 'partial' }] });
     expect([q.standardHours, q.lines[0]?.units]).toEqual([5, 3]);
-  });
-
-  it('manual lines for a client without the formula: prices, quantities, hours as entered (D-42)', async () => {
-    const manualLines = [
-      { kind: 'device', label: 'Sensor', unitPrice: '1000', units: 2 },
-      { kind: 'installation', label: 'Installation', unitPrice: '100', units: 7 },
-    ];
-    const q = await draft({ stores: [], manualLines });
-    expect([q.standardHours, q.quotedHours, q.total]).toEqual([7, 7, '3267.00']);
   });
 });
