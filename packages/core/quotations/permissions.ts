@@ -12,5 +12,10 @@ export const quotationsPermissions = {
     description: "Set a sensor model's unit price for a client in one currency; replaces the active price.",
     roles: ['director', 'sponsor'],
   }),
+  draftQuotation: permission('quotations.quotation.draft', {
+    description:
+      "Draft a client quotation for a batch of stores: sensors (model price × count) and installation (hours × rate) as separate lines; hours by the time standard (partial N + 2, full 2N + 2 per store), an override needs a reason; tax by the country's settings. A draft only; a person sends it.",
+    roles: ['director', 'pm', 'sales'],
+  }),
   // gen:permissions — `pnpm gen:command` and `pnpm gen:query` add entries above this line.
 };
