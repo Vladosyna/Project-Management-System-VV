@@ -104,6 +104,12 @@ Data enters through AI agents (commands via MCP/REST, D-33) as proposals; the PM
 - AC2 Alerts R14, R24–R27 (domain/rules.md).
 - AC3 Owner transfer (D-34 C8): one command moves all open items, sites, cases and threads of a person to a new owner with a handover note and a leaver flag; R33 flags anything still on a departed owner.
 
+### E15 Client quotation for PMI (D-40, V1 — moved from V1.1 for PMI)
+- AC1 Director sets per client × country: currency, hourly rate, tax mode (reverse charge per contract, or DDP with local VAT), seller entity, buyer details, bank details, terms, number prefix; and model prices.
+- AC2 A PM drafts a quotation for a batch of stores: sensors (model price × count) and installation (hours × rate) as separate lines; hours by the time standard per store (partial N + 2 h, full 2N + 2 h), override with a reason, both kept.
+- AC3 Tax by the country's mode; totals in the quotation currency; layout of the existing commercial quotation (number, issue date, seller, client, lines, tax, total, terms, payment details); PDF export.
+- AC4 Draft until a person sends it outside OCS and records "sent" (who, when); OCS never sends.
+
 ### E14 Shipments (D-34 N3, V1 minimal)
 - AC1 Shipment per site or batch: carrier, AWB, declared value (actual sales price), consignee (no departed staff), devices by SN, status, customs issue.
 - AC2 Status and ETA updated automatically from carrier mails/tracking (trust: automatic); new shipments are proposals.

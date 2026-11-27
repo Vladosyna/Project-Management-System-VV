@@ -557,3 +557,74 @@ export const quoteApproval = pgTable('quote_approval', {
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   archivedAt: timestamp('archived_at', { withTimezone: true }),
 });
+
+/** D-40 (0024): client quotation settings per client × country; entered by a director. Internal only. */
+export const clientQuoteConfig = pgTable('client_quote_config', {
+  id: uuid('id').primaryKey(),
+  clientId: uuid('client_id').notNull(),
+  countryCode: text('country_code').notNull(),
+  currency: text('currency').notNull(),
+  hourlyRate: numeric('hourly_rate', { precision: 14, scale: 2 }).notNull(),
+  taxMode: text('tax_mode', { enum: ['reverse_charge', 'ddp_local_vat'] }).notNull(),
+  vatRate: numeric('vat_rate', { precision: 5, scale: 2 }),
+  seller: jsonb('seller').notNull(),
+  buyer: jsonb('buyer').notNull(),
+  bank: jsonb('bank').notNull(),
+  terms: jsonb('terms').notNull(),
+  numberPrefix: text('number_prefix').notNull(),
+  createdBy: uuid('created_by').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  archivedAt: timestamp('archived_at', { withTimezone: true }),
+});
+
+/** D-40 (0024): a sensor model's price for a client. */
+export const sensorPrice = pgTable('sensor_price', {
+  id: uuid('id').primaryKey(),
+  clientId: uuid('client_id').notNull(),
+  model: text('model').notNull(),
+  unitPrice: numeric('unit_price', { precision: 14, scale: 2 }).notNull(),
+  currency: text('currency').notNull(),
+  createdBy: uuid('created_by').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  archivedAt: timestamp('archived_at', { withTimezone: true }),
+});
+
+/** D-40 (0024): a client quotation drafted by OCS; a person sends it and records that. */
+export const clientQuotation = pgTable('client_quotation', {
+  id: uuid('id').primaryKey(),
+  clientId: uuid('client_id').notNull(),
+  configId: uuid('config_id').notNull(),
+  number: text('number').notNull().unique(),
+  title: text('title').notNull(),
+  issueDate: date('issue_date', { mode: 'string' }).notNull(),
+  lines: jsonb('lines').notNull(),
+  standardHours: numeric('standard_hours', { precision: 8, scale: 1 }).notNull(),
+  quotedHours: numeric('quoted_hours', { precision: 8, scale: 1 }).notNull(),
+  hoursReason: text('hours_reason'),
+  currency: text('currency').notNull(),
+  subtotal: numeric('subtotal', { precision: 14, scale: 2 }).notNull(),
+  taxMode: text('tax_mode', { enum: ['reverse_charge', 'ddp_local_vat'] }).notNull(),
+  vatAmount: numeric('vat_amount', { precision: 14, scale: 2 }).notNull(),
+  total: numeric('total', { precision: 14, scale: 2 }).notNull(),
+  status: text('status', { enum: ['draft', 'sent'] })
+    .notNull()
+    .default('draft'),
+  sentBy: uuid('sent_by'),
+  sentAt: timestamp('sent_at', { withTimezone: true }),
+  createdBy: uuid('created_by').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  archivedAt: timestamp('archived_at', { withTimezone: true }),
+});
+
+/** D-40 (0024): the stores a quotation covers, with sensors and scope for the time standard. */
+export const clientQuotationSite = pgTable(
+  'client_quotation_site',
+  {
+    quotationId: uuid('quotation_id').notNull(),
+    clientId: uuid('client_id').notNull(),
+    siteId: uuid('site_id').notNull(),
+    sensorCount: integer('sensor_count').notNull(),
+    scope: text('scope', { enum: ['partial', 'full'] }).notNull(),
+  },
+  (t) => [primaryKey({ columns: [t.quotationId, t.siteId] })],
+);
