@@ -31,6 +31,7 @@ import {
 import {
   confirmQuote,
   createJob,
+  partners as installerPartners,
   proposeQuote,
   recordApproval,
   setJobStatus,
@@ -200,6 +201,9 @@ export function createApp(rt: Runtime, options: AppOptions = {}): Hono {
   });
 
   // E12 (D-34 N1): installer jobs and quotes of a site; confirm, CEO approval, status.
+  api.get('/installer-partners', async (c) =>
+    c.json(await rt.kernel.read(installerPartners, c.get('actor'), {})),
+  );
   api.get('/sites/:siteId/installer-jobs', async (c) =>
     c.json(await rt.kernel.read(siteJobs, c.get('actor'), { siteId: c.req.param('siteId') })),
   );

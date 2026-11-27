@@ -3,17 +3,24 @@
 // a reason when there is only one comparable quote) and the job status. The API decides who may do what. Staff only.
 import { useEffect, useState } from 'react';
 import { Button, Form, FormMessage, SelectField, TextField, useI18n } from '@ocs/ui';
-import { installerWrite, loadInstallerJobs, type InstallerJob } from '../api.ts';
+import { installerWrite, loadInstallerJobs, loadInstallerPartners, type InstallerJob } from '../api.ts';
+import { NewJob, NewQuote } from './installer-forms.tsx';
 
 type Outcome = 'ok' | 'forbidden' | 'invalid' | 'rule' | 'conflict' | 'failed';
 const NEXT = ['scheduled', 'done', 'attended_not_ready', 'cancelled'] as const;
 type Next = (typeof NEXT)[number];
 type Status = 'planned' | 'quoting' | 'approved' | Next;
 
-function JobCard(props: { job: InstallerJob; onDone: () => void }) {
+function JobCard(props: {
+  job: InstallerJob;
+  partners: readonly { id: string; name: string }[];
+  onDone: () => void;
+}) {
   const { t } = useI18n();
   const { job } = props;
-  const [quoteId, setQuoteId] = useState(job.quotes.find((q) => q.confirmed)?.id ?? '');
+  const [picked, setQuoteId] = useState('');
+  // Quotes arrive after the card first renders: until the user picks one, the cheapest confirmed quote is chosen.
+  const quoteId = picked || (job.quotes.find((q) => q.confirmed)?.id ?? '');
   const [ref, setRef] = useState('');
   const [approvedOn, setApprovedOn] = useState('');
   const [reason, setReason] = useState('');
@@ -77,6 +84,9 @@ function JobCard(props: { job: InstallerJob; onDone: () => void }) {
             ))}
           </tbody>
         </table>
+      ) : null}
+      {job.status === 'planned' || job.status === 'quoting' ? (
+        <NewQuote jobId={job.id} partners={props.partners} onDone={props.onDone} />
       ) : null}
       {job.status === 'planned' || job.status === 'quoting' ? (
         <Form
@@ -188,6 +198,12 @@ export function SiteInstallers(props: { siteId: string }) {
   const { t } = useI18n();
   const [jobs, setJobs] = useState<InstallerJob[] | 'forbidden' | null>(null);
   const [version, setVersion] = useState(0);
+  const [partners, setPartners] = useState<{ id: string; name: string }[]>([]);
+  useEffect(() => {
+    loadInstallerPartners().then(setPartners, () => {
+      setPartners([]);
+    });
+  }, []);
   useEffect(() => {
     loadInstallerJobs(props.siteId).then(
       (j) => {
@@ -200,18 +216,16 @@ export function SiteInstallers(props: { siteId: string }) {
   }, [props.siteId, version]);
   if (jobs === null) return <p>{t('common.loading')}</p>;
   if (jobs === 'forbidden') return <p>{t('commercial.noAccess')}</p>;
-  if (jobs.length === 0) return <p>{t('installers.none')}</p>;
+  const reload = () => {
+    setVersion((v) => v + 1);
+  };
   return (
     <>
+      {jobs.length === 0 ? <p>{t('installers.none')}</p> : null}
       {jobs.map((j) => (
-        <JobCard
-          key={j.id}
-          job={j}
-          onDone={() => {
-            setVersion((v) => v + 1);
-          }}
-        />
+        <JobCard key={j.id} job={j} partners={partners} onDone={reload} />
       ))}
+      <NewJob siteId={props.siteId} onDone={reload} />
     </>
   );
 }

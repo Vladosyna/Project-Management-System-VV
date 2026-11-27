@@ -477,12 +477,41 @@ test('a PM records a client PO in GBP, sees it in EUR and archives it (E13, D-34
   await pm.getByRole('navigation', { name: 'Main' }).getByRole('link', { name: 'Commercial' }).click();
   await expect(pm.getByRole('row', { name: /^CLIENTA-ES-MAD-001 1 · 1392\.00 EUR/ })).toBeVisible();
   await pm.getByRole('link', { name: 'CLIENTA-ES-MAD-001' }).click();
-  // E12: the Installers tab opens (job and quote forms arrive with the next PR).
+  // E12: job → two quotes → comparison cheapest first in EUR → CEO approval → scheduled.
   await pm
     .getByRole('navigation', { name: 'Project sections' })
     .getByRole('link', { name: 'Installers' })
     .click();
   await expect(pm.getByText('No installer job yet.')).toBeVisible();
+  await pm.getByLabel('Sensors').fill('4');
+  await pm.getByLabel('SOW version').fill('v1');
+  await pm.getByRole('button', { name: 'Create job' }).click();
+  await expect(pm.getByRole('heading', { name: 'Partial installation, 4 sensors — Planned' })).toBeVisible();
+  for (const [installer, price] of [
+    ['Installer Company 01', '95'],
+    ['Installer Company 02', '80'],
+  ] as const) {
+    await pm.getByLabel('Installer', { exact: true }).selectOption({ label: installer });
+    await pm.getByLabel('Description 1').fill('Mount and cable a sensor');
+    await pm.getByLabel('Quantity 1').fill('4');
+    await pm.getByLabel('Unit price 1').fill(price);
+    await pm.getByLabel('Quote date').fill('2026-11-27');
+    await pm.getByRole('button', { name: 'Save quote' }).click();
+    await expect(pm.getByRole('cell', { name: installer, exact: true })).toBeVisible();
+  }
+  const rows = pm.getByRole('row');
+  await expect(rows.nth(1)).toContainText('Installer Company 02');
+  await expect(rows.nth(1)).toContainText('320.00 EUR');
+  await pm.getByLabel('Approval reference (DingTalk OA or message)').fill('OA-E2E-1');
+  await pm.getByLabel('Approved on').fill('2026-11-27');
+  await pm.getByRole('button', { name: 'Record approval' }).click();
+  await expect(pm.getByRole('heading', { name: 'Partial installation, 4 sensors — Approved' })).toBeVisible();
+  await pm.getByLabel('Installation date').fill('2026-12-01');
+  await pm.getByRole('button', { name: 'Save status' }).click();
+  await expect(
+    pm.getByRole('heading', { name: 'Partial installation, 4 sensors — Scheduled' }),
+  ).toBeVisible();
+  await pm.screenshot({ path: 'test-results/installers-en.png', fullPage: true });
   await pm
     .getByRole('navigation', { name: 'Project sections' })
     .getByRole('link', { name: 'Commercial' })

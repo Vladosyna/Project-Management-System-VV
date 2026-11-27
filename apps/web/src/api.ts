@@ -327,6 +327,11 @@ export async function loadInstallerJobs(siteId: string): Promise<InstallerJob[] 
   return (await res.json()) as InstallerJob[];
 }
 
+/** E12: installer companies to choose from (internal names, staff only). */
+export function loadInstallerPartners(): Promise<{ id: string; name: string; countryCode: string }[]> {
+  return getJson('/api/installer-partners');
+}
+
 /** E12 writes: 'rule' = refused by a supplier rule (P-12) or the status order (422), 'conflict' = already done. */
 export async function installerWrite(
   path: string,
