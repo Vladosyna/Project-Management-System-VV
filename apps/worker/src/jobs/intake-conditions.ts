@@ -15,6 +15,8 @@ export async function runIntakeConditionsJob(kernel: Pick<Kernel, 'execute'>) {
       siteId: c.siteId,
       ref: conditionRef(c.conditionId, ownerId),
       ownerId,
+      // domain/rules.md intake: condition expiry → P1.
+      level: 'P1' as const,
       title: `${c.projectId}: intake condition ${c.itemCode} expired on ${c.deadline} — follow up (SOP-DEL-01 §8)`,
     })),
   );
