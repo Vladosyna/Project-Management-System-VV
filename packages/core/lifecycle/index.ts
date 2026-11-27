@@ -7,3 +7,4 @@ export { siteLifecycle } from './queries/site-lifecycle.ts';
 export { saveGateTemplate } from './commands/save-gate-template.ts';
 export { archiveGateTemplate } from './commands/archive-gate-template.ts';
 export { gateTemplates } from './queries/gate-templates.ts';
+export { readinessGaps } from './queries/readiness-gaps.ts';

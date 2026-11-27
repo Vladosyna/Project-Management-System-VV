@@ -6,6 +6,7 @@ import { createDevicePlatform } from './adapters/device-platform/index.ts';
 import { runDevicePlatformJob } from './jobs/device-platform.ts';
 import { runCommercialAlertsJob } from './jobs/commercial-alerts.ts';
 import { runIntakeConditionsJob } from './jobs/intake-conditions.ts';
+import { runReadinessAlertsJob } from './jobs/readiness-alerts.ts';
 
 const required = [
   'OCS_DATABASE_URL',
@@ -61,6 +62,15 @@ const queue = await startScheduledJobs(env('OCS_QUEUE_DATABASE_URL') || env('OCS
     run: async () => {
       const run = await runCommercialAlertsJob(runtime.kernel);
       console.log(JSON.stringify({ job: 'commercial-alerts', ...run }));
+    },
+  },
+  {
+    // R9 (SOP-DEL-04 steps 6–7): hourly, like the other alert rules (E8 AC1).
+    name: 'readiness-alerts',
+    everyMinutes: 60,
+    run: async () => {
+      const run = await runReadinessAlertsJob(runtime.kernel);
+      console.log(JSON.stringify({ job: 'readiness-alerts', ...run }));
     },
   },
 ]);

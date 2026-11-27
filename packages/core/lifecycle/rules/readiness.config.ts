@@ -11,4 +11,9 @@ export const readinessRule = {
   defaultDays: 7,
   /** The step that clears the rule. */
   clearedBy: 'readiness_confirmed',
+  /**
+   * The step after which the hourly R9 alert no longer fires. Vlad, 27 Nov: R9 is about readiness before
+   * installation; once "installed" is recorded it no longer applies.
+   */
+  alertEndsAt: 'installed',
 } as const;

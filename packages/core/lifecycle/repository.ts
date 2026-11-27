@@ -36,6 +36,23 @@ export async function findActiveSite(tx: Tx, id: string) {
   )[0];
 }
 
+/** Every active project with what R9 needs, for the hourly alert run. */
+export async function activeSitesForReadiness(tx: Tx) {
+  return tx
+    .select({
+      id: site.id,
+      projectId: site.projectId,
+      clientId: site.clientId,
+      programmeId: site.programmeId,
+      countryCode: site.countryCode,
+      plannedInstallationDate: site.plannedInstallationDate,
+      gateTemplateId: site.gateTemplateId,
+    })
+    .from(site)
+    .where(isNull(site.archivedAt))
+    .orderBy(site.projectId);
+}
+
 export async function activeSteps(tx: Tx, siteId: string) {
   return tx
     .select({
