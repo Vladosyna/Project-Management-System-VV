@@ -64,6 +64,8 @@ External roles (`client`, `partner`) are switched off in the checker until the V
 | `org.site.create` | Create a project/site; generates its Project ID | ✓ |  |  |  |  |  |  | ✓ |  |  |  |
 | `org.site.list` | See the projects/sites the signed-in person may see, with Project ID, city and standard (E1) | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |  |  |  |
 | `org.site.setDeviceAlerts` | Link a project to its mall on the device platform and switch its offline alerts on or off (E4) | ✓ | ✓ |  |  |  |  |  |  |  |  |  |
+| `quotations.config.save` | Set a client's quotation settings for one country: currency, hourly rate, tax mode (reverse charge or DDP with local VAT), seller, buyer, bank details, terms and number prefix. Replaces the active settings. | ✓ |  |  |  |  |  | ✓ |  |  |  |  |
+| `quotations.price.save` | Set a sensor model's unit price for a client in one currency; replaces the active price. | ✓ |  |  |  |  |  | ✓ |  |  |  |  |
 | `work.action.complete` | Mark an action done (its owner, or a director or PM) | ✓ | ✓ | ✓ | ✓ |  |  | ✓ |  |  |  |  |
 | `work.action.create` | Create an action with one owner and a due date (SOP-DEL-03) | ✓ | ✓ | ✓ | ✓ |  |  | ✓ |  |  |  |  |
 | `work.action.list` | See open actions by project or owner | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |  |  |  |
