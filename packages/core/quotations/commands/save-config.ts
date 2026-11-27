@@ -14,6 +14,7 @@ export const saveConfig = defineCommand({
     clientId: z.uuid(),
     countryCode: z.string().regex(/^[A-Z]{2}$/),
     currency: z.string().regex(/^[A-Z]{3}$/),
+    /** Net rate; with DDP local VAT the quotation grosses it up by the VAT (D-41). */
     hourlyRate: z.string().regex(/^\d{1,10}(\.\d{1,2})?$/),
     taxMode: z.enum(['reverse_charge', 'ddp_local_vat']),
     vatRate: z
