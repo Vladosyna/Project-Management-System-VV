@@ -5,8 +5,7 @@ import { defineQuery, NotFound } from '../../kernel/index.ts';
 import { lifecyclePermissions } from '../permissions.ts';
 import { activeSteps, findActiveSite, templateFor } from '../repository.ts';
 import { installationPlanRule } from '../rules/installation-plan.config.ts';
-import { readinessAtRisk } from '../rules/readiness.ts';
-import { workingDaysToInstallation } from './installation-countdown.ts';
+import { lifecycleView } from './lifecycle-view.ts';
 
 export const siteLifecycle = defineQuery({
   name: 'lifecycle.siteLifecycle.read',
@@ -16,32 +15,23 @@ export const siteLifecycle = defineQuery({
     const project = await findActiveSite(ctx.tx, i.siteId);
     if (!project) throw new NotFound('site', i.siteId);
     const steps = await activeSteps(ctx.tx, project.id);
-    const reached = steps.map((s) => s.step);
     const template = await templateFor(ctx.tx, project);
-    const gates = [...(template?.gates ?? [])].sort((a, b) => a.order - b.order);
-    const firstOpen = gates.find((g) => !reached.includes(g.key))?.key;
-    const planned = project.plannedInstallationDate;
-    const daysTo = workingDaysToInstallation(planned, ctx.now, project.countryCode);
-    const templateDays = gates.find((g) => g.readinessDays !== undefined)?.readinessDays;
-    const stage = [...installationPlanRule.baseSteps].reverse().find((s) => reached.includes(s)) ?? null;
+    const view = lifecycleView({
+      steps,
+      gates: template?.gates ?? [],
+      plannedInstallationDate: project.plannedInstallationDate,
+      countryCode: project.countryCode,
+      now: ctx.now,
+    });
     return {
-      stage,
+      stage: view.stage,
       steps,
       baseSteps: installationPlanRule.baseSteps,
       template: template ? { id: template.id, name: template.name } : null,
-      gates: gates.map((g) => ({
-        key: g.key,
-        name: g.name,
-        status: reached.includes(g.key)
-          ? ('passed' as const)
-          : g.key === firstOpen
-            ? ('current' as const)
-            : ('not_started' as const),
-        doneOn: steps.find((s) => s.step === g.key)?.doneOn ?? null,
-      })),
-      plannedInstallationDate: planned,
-      workingDaysToInstallation: daysTo,
-      readinessAtRisk: readinessAtRisk({ workingDaysToInstallation: daysTo, reached, templateDays }),
+      gates: view.gates,
+      plannedInstallationDate: view.plannedInstallationDate,
+      workingDaysToInstallation: view.workingDaysToInstallation,
+      readinessAtRisk: view.readinessAtRisk,
     };
   },
 });

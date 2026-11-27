@@ -6,7 +6,7 @@
 import { z } from 'zod';
 import { defineQuery } from '../../kernel/index.ts';
 import { lifecyclePermissions } from '../permissions.ts';
-import { activeSitesForReadiness, activeSteps, templateFor } from '../repository.ts';
+import { activeSites, activeSteps, templateFor } from '../repository.ts';
 import { readinessAtRisk } from '../rules/readiness.ts';
 import { readinessRule } from '../rules/readiness.config.ts';
 import { workingDaysToInstallation } from './installation-countdown.ts';
@@ -17,7 +17,7 @@ export const readinessGaps = defineQuery({
   input: z.object({}),
   handle: async (ctx) => {
     const rows = [];
-    for (const s of await activeSitesForReadiness(ctx.tx)) {
+    for (const s of await activeSites(ctx.tx)) {
       const daysTo = workingDaysToInstallation(s.plannedInstallationDate, ctx.now, s.countryCode);
       let r9 = false;
       if (daysTo !== null) {

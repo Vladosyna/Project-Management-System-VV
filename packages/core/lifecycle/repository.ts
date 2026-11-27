@@ -1,5 +1,5 @@
 // lifecycle repository — the only place in this module that touches tables.
-import { and, eq, gateTemplate, isNull, or, site, siteStep, type Tx } from '@ocs/db';
+import { and, eq, gateTemplate, inArray, isNull, or, site, siteStep, type Tx } from '@ocs/db';
 
 /** The active project, locked until the transaction ends, with what the life cycle needs. */
 export async function lockActiveSite(tx: Tx, id: string) {
@@ -36,21 +36,47 @@ export async function findActiveSite(tx: Tx, id: string) {
   )[0];
 }
 
-/** Every active project with what R9 needs, for the hourly alert run. */
-export async function activeSitesForReadiness(tx: Tx) {
+export interface SiteFilter {
+  readonly clientId?: string | undefined;
+  readonly programmeId?: string | undefined;
+  readonly countryCode?: string | undefined;
+}
+
+/** Active projects (RLS limits them to what the actor may see), by Project ID: the R9 run and the tracker. */
+export async function activeSites(tx: Tx, filter: SiteFilter = {}) {
   return tx
     .select({
       id: site.id,
       projectId: site.projectId,
+      name: site.name,
       clientId: site.clientId,
       programmeId: site.programmeId,
       countryCode: site.countryCode,
+      cityName: site.cityName,
+      standard: site.standard,
       plannedInstallationDate: site.plannedInstallationDate,
       gateTemplateId: site.gateTemplateId,
     })
     .from(site)
-    .where(isNull(site.archivedAt))
+    .where(
+      and(
+        isNull(site.archivedAt),
+        filter.clientId ? eq(site.clientId, filter.clientId) : undefined,
+        filter.programmeId ? eq(site.programmeId, filter.programmeId) : undefined,
+        filter.countryCode ? eq(site.countryCode, filter.countryCode) : undefined,
+      ),
+    )
     .orderBy(site.projectId);
+}
+
+/** The active steps of many projects in one read, oldest first. */
+export async function activeStepsOf(tx: Tx, siteIds: readonly string[]) {
+  if (siteIds.length === 0) return [];
+  return tx
+    .select({ siteId: siteStep.siteId, step: siteStep.step, doneOn: siteStep.doneOn })
+    .from(siteStep)
+    .where(and(inArray(siteStep.siteId, [...siteIds]), isNull(siteStep.archivedAt)))
+    .orderBy(siteStep.doneOn);
 }
 
 export async function activeSteps(tx: Tx, siteId: string) {
@@ -85,21 +111,39 @@ export async function findTemplate(tx: Tx, id: string) {
   )[0];
 }
 
-type TemplateRow = typeof gateTemplate.$inferSelect;
+type ScopedTemplate = Pick<
+  typeof gateTemplate.$inferSelect,
+  'id' | 'name' | 'gates' | 'clientId' | 'programmeId' | 'countryCode'
+>;
+
+interface TemplateTarget {
+  clientId: string;
+  programmeId: string | null;
+  countryCode: string;
+  gateTemplateId: string | null;
+}
 
 /**
  * D-32: the template a project takes — its own, else the most specific active scope among programme + country,
- * programme, client + country, client, base + country, base.
+ * programme, client + country, client, base + country, base. `active` = the active templates (any client).
  */
-export async function templateFor(
-  tx: Tx,
-  project: {
-    clientId: string;
-    programmeId: string | null;
-    countryCode: string;
-    gateTemplateId: string | null;
-  },
-) {
+export function pickTemplate(active: readonly ScopedTemplate[], project: TemplateTarget) {
+  const score = (t: ScopedTemplate) =>
+    (t.programmeId ? 4 : 0) + (t.clientId ? 2 : 0) + (t.countryCode ? 1 : 0);
+  const best = project.gateTemplateId
+    ? active.find((t) => t.id === project.gateTemplateId)
+    : active
+        .filter(
+          (t) =>
+            (t.clientId === null || t.clientId === project.clientId) &&
+            (t.programmeId === null || t.programmeId === project.programmeId) &&
+            (t.countryCode === null || t.countryCode === project.countryCode),
+        )
+        .sort((a, b) => score(b) - score(a))[0];
+  return best ? { id: best.id, name: best.name, gates: best.gates } : undefined;
+}
+
+export async function templateFor(tx: Tx, project: TemplateTarget) {
   if (project.gateTemplateId) return findTemplate(tx, project.gateTemplateId);
   const rows = await tx
     .select()
@@ -110,15 +154,7 @@ export async function templateFor(
         or(isNull(gateTemplate.clientId), eq(gateTemplate.clientId, project.clientId)),
       ),
     );
-  const score = (t: TemplateRow) => (t.programmeId ? 4 : 0) + (t.clientId ? 2 : 0) + (t.countryCode ? 1 : 0);
-  const best = rows
-    .filter(
-      (t) =>
-        (t.programmeId === null || t.programmeId === project.programmeId) &&
-        (t.countryCode === null || t.countryCode === project.countryCode),
-    )
-    .sort((a, b) => score(b) - score(a))[0];
-  return best ? { id: best.id, name: best.name, gates: best.gates } : undefined;
+  return pickTemplate(rows, project);
 }
 
 export interface GateScope {

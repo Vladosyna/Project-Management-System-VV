@@ -32,5 +32,10 @@ export const lifecyclePermissions = {
       'For the hourly alert run: every active project, flagged when installation is within the readiness window and readiness is not confirmed (R9).',
     roles: ['system'],
   }),
+  programmeTracker: permission('lifecycle.programmeTracker.read', {
+    description:
+      'The programme tracker (E11 AC3): every project with stage, planned installation, readiness and gates, by client, programme or country',
+    roles: ['director', 'pm', 'sales', 'rnd', 'finance', 'management', 'sponsor', 'admin'],
+  }),
   // gen:permissions — `pnpm gen:command` and `pnpm gen:query` add entries above this line.
 };
