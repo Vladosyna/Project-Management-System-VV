@@ -7,6 +7,7 @@ import { execFileSync } from 'node:child_process';
 import { rmSync } from 'node:fs';
 import path from 'node:path';
 import { generate, repoRoot } from './cli.ts';
+import { runPnpm } from './pnpm.ts';
 
 const git = (...args: string[]) => execFileSync('git', args, { cwd: repoRoot, encoding: 'utf8' });
 
@@ -27,7 +28,7 @@ const runs = [
 try {
   for (const argv of runs) generate(argv);
   for (const script of ['verify', 'test:matrix', 'e2e']) {
-    execFileSync('pnpm', [script], { cwd: repoRoot, stdio: 'inherit' });
+    runPnpm([script], repoRoot);
   }
   console.log(
     '\ngen:selftest: generated module, command, query, rule, migration and screen pass verify and e2e unchanged.',
