@@ -28,6 +28,14 @@ import {
   proposeRecord,
   siteCommercial,
 } from '@ocs/core/commercial';
+import {
+  confirmQuote,
+  createJob,
+  proposeQuote,
+  recordApproval,
+  setJobStatus,
+  siteJobs,
+} from '@ocs/core/installers';
 import { clientList, setDeviceAlerts, siteList } from '@ocs/core/org';
 import {
   addComment,
@@ -189,6 +197,30 @@ export function createApp(rt: Runtime, options: AppOptions = {}): Hono {
   api.post('/commercial/:recordId/archive', async (c) => {
     const input = { ...(await c.req.json<Record<string, unknown>>()), recordId: c.req.param('recordId') };
     return c.json(await rt.kernel.execute(archiveRecord, c.get('actor'), input, 'web'));
+  });
+
+  // E12 (D-34 N1): installer jobs and quotes of a site; confirm, CEO approval, status.
+  api.get('/sites/:siteId/installer-jobs', async (c) =>
+    c.json(await rt.kernel.read(siteJobs, c.get('actor'), { siteId: c.req.param('siteId') })),
+  );
+  api.post('/sites/:siteId/installer-jobs', async (c) => {
+    const input = { ...(await c.req.json<Record<string, unknown>>()), siteId: c.req.param('siteId') };
+    return c.json(await rt.kernel.execute(createJob, c.get('actor'), input, 'web'), 201);
+  });
+  api.post('/installer-jobs/:jobId/quotes', async (c) => {
+    const input = { ...(await c.req.json<Record<string, unknown>>()), jobId: c.req.param('jobId') };
+    return c.json(await rt.kernel.execute(proposeQuote, c.get('actor'), input, 'web'), 201);
+  });
+  api.post('/installer-quotes/:quoteId/confirm', async (c) =>
+    c.json(await rt.kernel.execute(confirmQuote, c.get('actor'), { quoteId: c.req.param('quoteId') }, 'web')),
+  );
+  api.post('/installer-jobs/:jobId/approval', async (c) => {
+    const input = { ...(await c.req.json<Record<string, unknown>>()), jobId: c.req.param('jobId') };
+    return c.json(await rt.kernel.execute(recordApproval, c.get('actor'), input, 'web'), 201);
+  });
+  api.post('/installer-jobs/:jobId/status', async (c) => {
+    const input = { ...(await c.req.json<Record<string, unknown>>()), jobId: c.req.param('jobId') };
+    return c.json(await rt.kernel.execute(setJobStatus, c.get('actor'), input, 'web'));
   });
 
   // D-36: a task in a project for a specific person (owner, due); the owner or a director/PM marks it done.
