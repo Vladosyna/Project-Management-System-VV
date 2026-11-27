@@ -23,6 +23,7 @@ export const SITE_TABS = [
   'network',
   'actions',
   'commercial',
+  'installers',
   'timeline',
   'settings',
 ] as const;

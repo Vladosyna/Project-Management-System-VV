@@ -297,6 +297,55 @@ export function archiveCommercial(recordId: string, reason: string): Promise<Wri
   return send('POST', `/api/commercial/${encodeURIComponent(recordId)}/archive`, { reason });
 }
 
+export interface InstallerQuote {
+  readonly id: string;
+  readonly installer: string;
+  readonly amount: string;
+  readonly currency: string;
+  readonly eur: string;
+  readonly validUntil: string | null;
+  readonly confirmed: boolean;
+}
+export interface InstallerJob {
+  readonly id: string;
+  readonly installer: string | null;
+  readonly scope: 'partial' | 'full';
+  readonly sensorCount: number;
+  readonly sowVersion: string | null;
+  readonly scheduledOn: string | null;
+  readonly status: string;
+  readonly quotes: readonly InstallerQuote[];
+}
+
+/** E12: a site's installer jobs with their quotes, cheapest first in EUR; undefined when the role may not see them. */
+export async function loadInstallerJobs(siteId: string): Promise<InstallerJob[] | undefined> {
+  const res = await fetch(`/api/sites/${encodeURIComponent(siteId)}/installer-jobs`, {
+    credentials: 'same-origin',
+  });
+  if (res.status === 403) return undefined;
+  if (!res.ok) throw new Error(`GET installer-jobs → ${String(res.status)}`);
+  return (await res.json()) as InstallerJob[];
+}
+
+/** E12 writes: 'rule' = refused by a supplier rule (P-12) or the status order (422), 'conflict' = already done. */
+export async function installerWrite(
+  path: string,
+  body: Record<string, unknown>,
+): Promise<'ok' | 'forbidden' | 'invalid' | 'rule' | 'conflict'> {
+  const res = await fetch(`/api/${path}`, {
+    method: 'POST',
+    credentials: 'same-origin',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  if (res.status === 403) return 'forbidden';
+  if (res.status === 422) return 'rule';
+  if (res.status === 409) return 'conflict';
+  if (res.status === 400 || res.status === 404) return 'invalid';
+  if (!res.ok) throw new Error(`POST ${path} → ${String(res.status)}`);
+  return 'ok';
+}
+
 /** D-36: a task in a project for one staff member, with a due date. */
 export function createSiteAction(
   siteId: string,

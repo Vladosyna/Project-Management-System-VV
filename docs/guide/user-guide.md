@@ -64,6 +64,9 @@ Client PO, DPIA, client invoice and price-list price of the project (staff only)
 
 The left-menu **Commercial** page shows every project at once: client POs (count and EUR), invoiced, paid, DPIA, price-list price and AI proposals waiting. Click a **Project ID** to open that project's Commercial tab.
 
+### Installers (D-34 N1)
+Installer jobs of the project (staff only), each with its quotes **cheapest first in EUR** — the quote comparison. A quote an AI assistant entered shows **Confirm**; a person confirms it. **CEO approval of the chosen quote**: pick the **Chosen quote** (confirmed quotes only), give the **Approval reference** (DingTalk OA or message) and **Approved on** → **Record approval**. OCS needs two comparable quotes from different installers on the same SOW; with only one, give the **Reason** (supplier rule P-12). Then **Next status**: **Scheduled** (with the installation date), and after the visit **Done**, **Attended — site not ready** (say what was not ready) or **Cancelled** → **Save status**. Creating jobs and entering quotes on this tab comes next; today they come in through an AI assistant or the API.
+
 ### Settings
 **Mall on the device platform** and **Offline alerts** (only with a linked mall) → **Save**.
 
