@@ -1,16 +1,12 @@
 // lifecycle.siteLifecycle.read — E3: a project's steps, its gates (passed / current / not started), the planned
 // installation date and R9 readiness, for the Lifecycle tab and the overview stage.
 import { z } from 'zod';
-import { calendarIds, localDateIn, workingDaysBetween, type CalendarId } from '../../calendar/index.ts';
 import { defineQuery, NotFound } from '../../kernel/index.ts';
 import { lifecyclePermissions } from '../permissions.ts';
 import { activeSteps, findActiveSite, templateFor } from '../repository.ts';
 import { installationPlanRule } from '../rules/installation-plan.config.ts';
 import { readinessAtRisk } from '../rules/readiness.ts';
-
-/** Assumption: a country without a working calendar yet counts like GB (Mon–Fri, GB holidays). */
-const calendarOf = (country: string): CalendarId =>
-  (calendarIds as readonly string[]).includes(country) ? (country as CalendarId) : 'GB';
+import { workingDaysToInstallation } from './installation-countdown.ts';
 
 export const siteLifecycle = defineQuery({
   name: 'lifecycle.siteLifecycle.read',
@@ -24,15 +20,8 @@ export const siteLifecycle = defineQuery({
     const template = await templateFor(ctx.tx, project);
     const gates = [...(template?.gates ?? [])].sort((a, b) => a.order - b.order);
     const firstOpen = gates.find((g) => !reached.includes(g.key))?.key;
-    const today = localDateIn(ctx.now, 'UTC');
     const planned = project.plannedInstallationDate;
-    const calendar = calendarOf(project.countryCode);
-    const daysTo =
-      planned === null
-        ? null
-        : planned >= today
-          ? workingDaysBetween(today, planned, calendar)
-          : -workingDaysBetween(planned, today, calendar);
+    const daysTo = workingDaysToInstallation(planned, ctx.now, project.countryCode);
     const templateDays = gates.find((g) => g.readinessDays !== undefined)?.readinessDays;
     const stage = [...installationPlanRule.baseSteps].reverse().find((s) => reached.includes(s)) ?? null;
     return {

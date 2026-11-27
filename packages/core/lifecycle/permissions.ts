@@ -27,5 +27,10 @@ export const lifecyclePermissions = {
     description: 'See the gate templates and their scopes (D-32)',
     roles: ['director', 'sponsor', 'pm', 'management'],
   }),
+  readinessGaps: permission('lifecycle.readinessGaps.read', {
+    description:
+      'For the hourly alert run: every active project, flagged when installation is within the readiness window and readiness is not confirmed (R9).',
+    roles: ['system'],
+  }),
   // gen:permissions — `pnpm gen:command` and `pnpm gen:query` add entries above this line.
 };
