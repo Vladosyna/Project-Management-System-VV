@@ -3,7 +3,7 @@
 // DDP with local VAT paid by Vionvision → no VAT on the document; total 57 027.30. A draft only.
 import { afterAll, beforeAll, describe, expect, inject, it } from 'vitest';
 import { aStaffActor, createTestDatabase, runAsOwner, type TestDatabase } from '@ocs/testing';
-import { Forbidden, NotFound, openTestKernel, RuleViolation, type TestKernel } from '../../kernel/index.ts';
+import { NotFound, openTestKernel, RuleViolation, type TestKernel } from '../../kernel/index.ts';
 import { createClient, createSite } from '../../org/index.ts';
 import { draftQuotation } from '../commands/draft-quotation.ts';
 import { saveConfig } from '../commands/save-config.ts';
