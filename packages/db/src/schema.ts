@@ -628,3 +628,16 @@ export const clientQuotationSite = pgTable(
   },
   (t) => [primaryKey({ columns: [t.quotationId, t.siteId] })],
 );
+
+/** D-43 (0025): a store's planned devices from the proposal (model × count), versioned; one active per store. */
+export const siteProposal = pgTable('site_proposal', {
+  id: uuid('id').primaryKey(),
+  clientId: uuid('client_id').notNull(),
+  siteId: uuid('site_id').notNull(),
+  version: integer('version').notNull(),
+  items: jsonb('items').notNull(),
+  proposalRef: text('proposal_ref').notNull(),
+  createdBy: uuid('created_by').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  archivedAt: timestamp('archived_at', { withTimezone: true }),
+});
