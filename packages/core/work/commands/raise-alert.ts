@@ -31,12 +31,6 @@ export const raiseAlert = defineCommand({
           level: z.enum(['P0', 'P1', 'P2']),
           /** Owner other than the project's PM, e.g. Sales owner and director for an expired intake condition. */
           ownerId: z.uuid().optional(),
-          /**
-           * domain/rules.md level: P0 same day, P1 within 2 working days, P2 within the week. Vlad, 27 Nov: alert
-           * jobs pass the level and never a due date; the shared due-by-level fix (all rules at once) reads it.
-           * Until then the due date stays the next day for every level.
-           */
-          level: z.enum(['P0', 'P1', 'P2']).optional(),
         }),
       )
       .max(1000),
