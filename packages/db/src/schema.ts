@@ -1,6 +1,7 @@
 // Drizzle table definitions. Source of truth for the database is migrations/*.sql;
 // schema-drift.int.test.ts fails when these definitions and the migrated database disagree.
 import {
+  bigint,
   boolean,
   date,
   inet,
@@ -791,4 +792,57 @@ export const formComment = pgTable('form_comment', {
   authorId: uuid('author_id').notNull(),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   archivedAt: timestamp('archived_at', { withTimezone: true }),
+});
+
+export const FILE_OWNER_TYPES = [
+  'site_proposal',
+  'commercial_record',
+  'client_quotation',
+  'country_compliance',
+  'form_request',
+  'form_answer',
+  'drawing',
+  'other',
+] as const;
+
+/** D-46 (0029): a file in EU object storage (never inline), with hash and version; confirmed before DingTalk. */
+export const storedFile = pgTable('stored_file', {
+  id: uuid('id').primaryKey(),
+  clientId: uuid('client_id').notNull(),
+  siteId: uuid('site_id'),
+  ownerType: text('owner_type', { enum: FILE_OWNER_TYPES }).notNull(),
+  ownerId: uuid('owner_id'),
+  sopFolder: text('sop_folder').notNull(),
+  objectKey: text('object_key').notNull().unique(),
+  sha256: text('sha256').notNull(),
+  sizeBytes: bigint('size_bytes', { mode: 'number' }).notNull(),
+  mimeType: text('mime_type').notNull(),
+  originalName: text('original_name').notNull(),
+  version: integer('version').notNull().default(1),
+  supersedesId: uuid('supersedes_id'),
+  uploadedBy: uuid('uploaded_by').notNull(),
+  uploadedVia: text('uploaded_via', { enum: ['web', 'ai', 'market_link', 'mail'] }).notNull(),
+  sourceRef: text('source_ref'),
+  confirmedBy: uuid('confirmed_by'),
+  confirmedAt: timestamp('confirmed_at', { withTimezone: true }),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  archivedAt: timestamp('archived_at', { withTimezone: true }),
+});
+
+/** D-46 (0029): one upload of a confirmed file into its DingTalk project folder; the worker retries. */
+export const dingtalkUpload = pgTable('dingtalk_upload', {
+  id: uuid('id').primaryKey(),
+  clientId: uuid('client_id').notNull(),
+  fileId: uuid('file_id').notNull().unique(),
+  status: text('status', { enum: ['pending', 'uploaded', 'failed'] })
+    .notNull()
+    .default('pending'),
+  requestedBy: uuid('requested_by').notNull(),
+  requestedAt: timestamp('requested_at', { withTimezone: true }).notNull().defaultNow(),
+  folderPath: text('folder_path'),
+  dentryId: text('dentry_id'),
+  dentryVersion: text('dentry_version'),
+  attempts: integer('attempts').notNull().default(0),
+  lastError: text('last_error'),
+  uploadedAt: timestamp('uploaded_at', { withTimezone: true }),
 });
