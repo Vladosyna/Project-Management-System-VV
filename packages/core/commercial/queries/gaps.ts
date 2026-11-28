@@ -1,7 +1,8 @@
 // commercial.gaps.read — the hourly alert run (domain/rules.md, D-34 N2): every active site with its commercial gaps.
 // R14 installed without a confirmed client PO; R24 installed without an approved DPIA; R26 no owner (no PM); R5
 // accepted 5 working days ago or more without a confirmed client invoice (project country's calendar); R27 approved
-// installer cost above the client price (EUR); R13 in more than one open client PO. Only confirmed records count: an
+// installer cost above the client price (EUR); R13 overlapping open client POs (same part of the work, D-45); R40 a
+// confirmed PO without the country's LPA (per-country clients, D-45). R24 accepts the country DPIA for those clients. Only confirmed records count: an
 // AI proposal is not yet a fact. The system actor only.
 import { z } from 'zod';
 import { calendarOfCountry, localDateIn } from '../../calendar/index.ts';
@@ -11,6 +12,7 @@ import { commercialGaps, directorIds } from '../repository.ts';
 import { invoiceOverdue } from '../rules/invoice-ready.ts';
 import { invoiceReadyRule } from '../rules/invoice-ready.config.ts';
 import { negativeMargin } from '../rules/negative-margin.ts';
+import { poWithoutLpa } from '../rules/po-without-lpa.ts';
 import { inTwoPos } from '../rules/site-in-two-pos.ts';
 
 /** D-45 (1): the record kinds that may cover a batch of stores. */
@@ -21,10 +23,8 @@ export const gaps = defineQuery({
   permission: commercialPermissions.gaps,
   input: z.object({}),
   handle: async (ctx) => {
-    const { sites, installed, acceptedOn, records, links, approvedCosts } = await commercialGaps(
-      ctx.tx,
-      invoiceReadyRule.afterStep,
-    );
+    const { sites, installed, acceptedOn, records, links, approvedCosts, countryApproved } =
+      await commercialGaps(ctx.tx, invoiceReadyRule.afterStep);
     /**
      * D-45 (1): a client PO or client invoice also covers the stores linked to it (a batch), for R13, R14 and R5. A DPIA
      * is never spread through links: it is per store or, for clients that agree it per country, per country (D-45 (3)).
@@ -43,11 +43,19 @@ export const gaps = defineQuery({
         (r) => r.siteId === siteId && r.kind === kind && (status === undefined || r.status === status),
       );
     const today = localDateIn(ctx.now, 'UTC');
+    /** D-45 (3): for a per-country client, the country's approved DPIA / LPA covers every store there. */
+    const inCountry = (s: (typeof sites)[number], kind: 'dpia' | 'lpa') =>
+      s.complianceScope === 'country' && countryApproved.has(`${s.clientId}:${s.countryCode}:${kind}`);
     const rows = sites.map((s) => ({
       siteId: s.id,
       projectId: s.projectId,
       r14: installed.has(s.id) && !has(s.id, 'client_po'),
-      r24: installed.has(s.id) && !has(s.id, 'dpia', 'approved'),
+      r24: installed.has(s.id) && !has(s.id, 'dpia', 'approved') && !inCountry(s, 'dpia'),
+      r40: poWithoutLpa({
+        complianceScope: s.complianceScope,
+        hasConfirmedPo: has(s.id, 'client_po'),
+        countryLpaApproved: inCountry(s, 'lpa'),
+      }),
       r26: s.pmId === null,
       r5: invoiceOverdue({
         acceptedOn: acceptedOn.get(s.id) ?? null,

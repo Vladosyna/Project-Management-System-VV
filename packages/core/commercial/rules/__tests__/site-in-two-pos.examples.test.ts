@@ -14,6 +14,30 @@ const examples = [
     records: [po, { kind: 'client_invoice' }, { kind: 'price_list' }],
     flagged: false,
   },
+  {
+    name: 'hardware PO and installation PO (D-45)',
+    records: [
+      { ...po, part: 'hardware' },
+      { ...po, part: 'installation' },
+    ],
+    flagged: false,
+  },
+  {
+    name: 'two hardware POs',
+    records: [
+      { ...po, part: 'hardware' },
+      { ...po, part: 'hardware' },
+    ],
+    flagged: true,
+  },
+  {
+    name: 'a PO for all of the work and an installation PO',
+    records: [
+      { ...po, part: 'all' },
+      { ...po, part: 'installation' },
+    ],
+    flagged: true,
+  },
 ] as const;
 
 describe(`${siteInTwoPosRule.cite} site in two POs`, () => {
