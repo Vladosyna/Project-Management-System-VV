@@ -35,10 +35,12 @@ export function ProjectsPage() {
   const [country, setCountry] = useState(ALL);
   /** Countries of the selected client's projects, for the country filter (set while no country is chosen). */
   const [countryOptions, setCountryOptions] = useState<string[]>([]);
+  /** The client list and commercial data do not depend on the filters: loaded once (review of #142). */
+  const [lists] = useState(() => Promise.all([loadPortfolio(), loadCommercialPortfolio()]));
   useEffect(() => {
     const filter = { ...(clientId ? { clientId } : {}), ...(country ? { countryCode: country } : {}) };
-    Promise.all([loadProgrammeTracker(filter), loadPortfolio(), loadCommercialPortfolio()]).then(
-      ([rows, portfolio, commercial]) => {
+    Promise.all([loadProgrammeTracker(filter), lists]).then(
+      ([rows, [portfolio, commercial]]) => {
         if (rows && country === ALL) setCountryOptions([...new Set(rows.map((r) => r.countryCode))].sort());
         setData(
           rows
@@ -54,7 +56,7 @@ export function ProjectsPage() {
         setData('failed');
       },
     );
-  }, [clientId, country]);
+  }, [clientId, country, lists]);
 
   const loaded = typeof data === 'object' && data !== null ? data : null;
   const shown = loaded ? loaded.rows : [];

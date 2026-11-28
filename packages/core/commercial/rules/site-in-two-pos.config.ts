@@ -1,5 +1,8 @@
 // R13 (domain/rules.md §13, P0) — "Site in two POs: same site in more than one open PO". The evaluator reads only
 // this config. A new version of the rule updates this file.
+// Known gaps (review of #141, D-44): a batch PO now links further stores (commercial_record_site_link, #139); a store
+// must count each batch PO it is linked to as well as its own — next PR. If clients later send separate hardware and
+// installation POs, R13 becomes "more than one open PO of the same type".
 export const siteInTwoPosRule = {
   cite: 'R13 (domain/rules.md §13)',
   sopVersion: '1.0',
