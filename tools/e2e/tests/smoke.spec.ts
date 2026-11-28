@@ -538,7 +538,7 @@ test('Projects is the programme tracker: projects by country with stage, dates a
   await pm.getByLabel('Client').selectOption({ label: 'CLIENTA — Client A' });
   await expect(pm.getByRole('link', { name: 'CLIENTC-PT-LIS-003' })).toBeHidden();
   await expect(pm.getByRole('link', { name: 'CLIENTA-ES-MAD-001' })).toBeVisible();
-  await pm.getByLabel('Country').fill('es');
+  await pm.getByLabel('Country').selectOption('ES'); // a select of the client's countries (review of #133)
   await expect(pm.getByRole('heading', { level: 2, name: /^ES · / })).toBeVisible();
   await expect(pm.getByRole('heading', { level: 2, name: /^PT · / })).toBeHidden();
   await pm.screenshot({ path: 'test-results/projects-en.png', fullPage: true });

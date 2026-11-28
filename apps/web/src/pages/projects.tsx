@@ -5,7 +5,7 @@
 // who still keep the Excel tracker until it is retired (D-19). Every string is an i18n key (ocs-ui-screen).
 import { Link } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
-import { Button, Card, FormMessage, PageHeader, SelectField, StatusChip, TextField, useI18n } from '@ocs/ui';
+import { Button, Card, FormMessage, PageHeader, SelectField, StatusChip, useI18n } from '@ocs/ui';
 import {
   loadCommercialPortfolio,
   loadPortfolio,
@@ -32,10 +32,14 @@ export function ProjectsPage() {
   const { t } = useI18n();
   const [data, setData] = useState<Data | 'forbidden' | 'failed' | null>(null);
   const [clientId, setClientId] = useState(ALL);
-  const [country, setCountry] = useState('');
+  const [country, setCountry] = useState(ALL);
+  /** Countries of the selected client's projects, for the country filter (set while no country is chosen). */
+  const [countryOptions, setCountryOptions] = useState<string[]>([]);
   useEffect(() => {
-    Promise.all([loadProgrammeTracker(), loadPortfolio(), loadCommercialPortfolio()]).then(
+    const filter = { ...(clientId ? { clientId } : {}), ...(country ? { countryCode: country } : {}) };
+    Promise.all([loadProgrammeTracker(filter), loadPortfolio(), loadCommercialPortfolio()]).then(
       ([rows, portfolio, commercial]) => {
+        if (rows && country === ALL) setCountryOptions([...new Set(rows.map((r) => r.countryCode))].sort());
         setData(
           rows
             ? {
@@ -50,15 +54,10 @@ export function ProjectsPage() {
         setData('failed');
       },
     );
-  }, []);
+  }, [clientId, country]);
 
   const loaded = typeof data === 'object' && data !== null ? data : null;
-  const wanted = country.trim().toUpperCase();
-  const shown = loaded
-    ? loaded.rows.filter(
-        (r) => (clientId === ALL || r.clientId === clientId) && (wanted === '' || r.countryCode === wanted),
-      )
-    : [];
+  const shown = loaded ? loaded.rows : [];
   const countries = [...new Set(shown.map((r) => r.countryCode))].sort();
   const poText = (money: CommercialPortfolioRow | undefined) =>
     money && money.poCount > 0
@@ -105,7 +104,7 @@ export function ProjectsPage() {
     const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
     const a = document.createElement('a');
     a.href = url;
-    a.download = `programme-tracker${wanted ? `-${wanted}` : ''}-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.download = `programme-tracker${country ? `-${country}` : ''}-${new Date().toISOString().slice(0, 10)}.csv`;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -130,14 +129,17 @@ export function ProjectsPage() {
               ]}
               onChange={(e) => {
                 setClientId(e.currentTarget.value);
+                setCountry(ALL);
               }}
             />
-            <TextField
+            <SelectField
               id="projects-country"
               label={t('projects.filter.country')}
-              hint={t('projects.filter.countryHint')}
-              maxLength={2}
               value={country}
+              options={[
+                { value: ALL, label: t('projects.filter.allCountries') },
+                ...countryOptions.map((cc) => ({ value: cc, label: cc })),
+              ]}
               onChange={(e) => {
                 setCountry(e.currentTarget.value);
               }}

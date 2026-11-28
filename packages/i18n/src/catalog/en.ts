@@ -371,7 +371,7 @@ export const en = {
   'projects.filter.client': 'Client',
   'projects.filter.allClients': 'All clients',
   'projects.filter.country': 'Country',
-  'projects.filter.countryHint': 'Two-letter code, e.g. ES. Empty: all countries.',
+  'projects.filter.allCountries': 'All countries',
   'projects.country': '{country} · {count} projects',
   'projects.col.stage': 'Stage',
   'projects.col.gates': 'Gates',

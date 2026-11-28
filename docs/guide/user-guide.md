@@ -22,7 +22,7 @@ Your name and role are shown bottom left. **中文** (top right) switches the la
 |---|---|
 | **Home** | Your start page |
 | **Portfolio** | All clients and their projects (Project IDs) you may see |
-| **Projects** | Programme tracker: every project by country with stage, planned installation (working days to go, readiness warning) and gates; client PO and DPIA for roles that see commercial data. Filter by **Client** and **Country**; click a Project ID to open its Lifecycle. **Export CSV** downloads what is shown, one column per gate (opens in Excel, 中文 included) |
+| **Projects** | Programme tracker: every project by country with stage, planned installation (working days to go, readiness warning) and gates; client PO and DPIA for roles that see commercial data. Filter by **Client** and **Country** (a list of the countries of that client's projects); click a Project ID to open its Lifecycle. **Export CSV** downloads what is shown, one column per gate (opens in Excel, 中文 included) |
 | **Sites** | List of projects/sites → click a Project ID to open it (section 3) |
 | **Intake Register** | Every Handover Card submission (section 5) — director, sponsor, management |
 | **Actions & alerts** | Every open action with owner and due date; **Mine** shows yours |

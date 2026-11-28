@@ -366,7 +366,7 @@ export const zh = {
   'projects.filter.client': '客户',
   'projects.filter.allClients': '全部客户',
   'projects.filter.country': '国家',
-  'projects.filter.countryHint': '两位国家代码，例如 ES。留空表示全部国家。',
+  'projects.filter.allCountries': '全部国家',
   'projects.country': '{country} · {count} 个项目',
   'projects.col.stage': '阶段',
   'projects.col.gates': '关卡',

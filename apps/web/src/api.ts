@@ -469,9 +469,15 @@ export interface ProgrammeTrackerRow {
   readonly readinessAtRisk: boolean;
 }
 
-/** E11 AC3: the programme tracker, every project the user may see; undefined when the role may not. */
-export async function loadProgrammeTracker(): Promise<ProgrammeTrackerRow[] | undefined> {
-  const res = await fetch('/api/programme-tracker', { credentials: 'same-origin' });
+/**
+ * E11 AC3: the programme tracker, every project the user may see; undefined when the role may not. The API filters
+ * (review of #133), so the screen and its CSV export always show the same rows.
+ */
+export async function loadProgrammeTracker(
+  filter: { clientId?: string; countryCode?: string } = {},
+): Promise<ProgrammeTrackerRow[] | undefined> {
+  const query = new URLSearchParams(filter);
+  const res = await fetch(`/api/programme-tracker?${query.toString()}`, { credentials: 'same-origin' });
   if (res.status === 403) return undefined;
   if (!res.ok) throw new Error(`GET programme-tracker → ${String(res.status)}`);
   return (await res.json()) as ProgrammeTrackerRow[];
