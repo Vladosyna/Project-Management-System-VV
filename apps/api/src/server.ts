@@ -2,6 +2,7 @@
 import { serve } from '@hono/node-server';
 import { createRuntime } from '@ocs/core/runtime';
 import { createApp } from './app.ts';
+import { localObjectStore } from './object-store.ts';
 
 function required(name: string): string {
   const value = process.env[name];
@@ -29,5 +30,11 @@ if (!introspection) {
   );
 }
 const port = Number(process.env.PORT ?? '3000');
-serve({ fetch: createApp(runtime, introspection ? { introspection } : {}).fetch, port });
+// D-46: EU file storage (a directory on the EU host for now); without it, uploads answer 503.
+const fileDir = process.env.OCS_FILE_STORE_DIR;
+const options = {
+  ...(introspection ? { introspection } : {}),
+  ...(fileDir ? { fileStore: localObjectStore(fileDir) } : {}),
+};
+serve({ fetch: createApp(runtime, options).fetch, port });
 console.log(JSON.stringify({ level: 'info', msg: 'api listening', port }));
