@@ -5,7 +5,7 @@ External roles (`client`, `partner`) are switched off in the checker until the V
 
 | Permission | What it allows | director | pm | sales | rnd | finance | management | sponsor | admin | client | partner | system |
 |---|---|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-| `commercial.gaps.read` | For the hourly alert run: every active site with its commercial gaps — installed without a confirmed PO (R14) or without an approved DPIA (R24), without an owner (R26), accepted 5 working days ago without a confirmed client invoice (R5), an approved installer cost above the client price (R27), and more than one open client PO (R13). |  |  |  |  |  |  |  |  |  |  | ✓ |
+| `commercial.gaps.read` | For the hourly alert run: every active site with its commercial gaps — installed without a confirmed PO (R14) or without an approved DPIA (R24), without an owner (R26), accepted 5 working days ago without a confirmed client invoice (R5), an approved installer cost above the client price (R27), and more than one open client PO (R13). A batch PO counts for every store linked to it (D-44). |  |  |  |  |  |  |  |  |  |  | ✓ |
 | `commercial.portfolio.read` | Commercial status of every site the actor may see: client PO, DPIA, invoices, price list in EUR, and AI proposals waiting for confirmation. | ✓ | ✓ |  |  | ✓ | ✓ | ✓ |  |  |  |  |
 | `commercial.record.archive` | Archive a wrong or replaced commercial record of a site, with a reason; never deleted. | ✓ | ✓ |  |  | ✓ |  |  |  |  |  |  |
 | `commercial.record.confirm` | Confirm a commercial record an AI agent proposed (a person only, never an agent): money data is applied only when confirmed. | ✓ | ✓ |  |  | ✓ |  |  |  |  |  |  |

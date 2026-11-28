@@ -18,12 +18,22 @@ export const gaps = defineQuery({
   permission: commercialPermissions.gaps,
   input: z.object({}),
   handle: async (ctx) => {
-    const { sites, installed, acceptedOn, records, approvedCosts } = await commercialGaps(
+    const { sites, installed, acceptedOn, records, links, approvedCosts } = await commercialGaps(
       ctx.tx,
       invoiceReadyRule.afterStep,
     );
+    /**
+     * D-44: a record also covers the stores linked to it (a batch PO), for R5, R13, R14 and R24. R27 keeps the
+     * store's own records: a batch PO's amount is for all its stores, not one.
+     */
+    const covering = [
+      ...records,
+      ...links.flatMap((l) =>
+        records.filter((r) => r.id === l.recordId).map((r) => ({ ...r, siteId: l.siteId })),
+      ),
+    ];
     const has = (siteId: string, kind: string, status?: string) =>
-      records.some(
+      covering.some(
         (r) => r.siteId === siteId && r.kind === kind && (status === undefined || r.status === status),
       );
     const today = localDateIn(ctx.now, 'UTC');
@@ -39,7 +49,7 @@ export const gaps = defineQuery({
         hasInvoice: has(s.id, invoiceReadyRule.clearedBy),
         calendar: calendarOfCountry(s.countryCode),
       }),
-      r13: inTwoPos(records.filter((r) => r.siteId === s.id)),
+      r13: inTwoPos(covering.filter((r) => r.siteId === s.id)),
       r27: negativeMargin({
         approvedCostsEur: approvedCosts.filter((c) => c.siteId === s.id).map((c) => c.eurAmount),
         clientPrices: records.filter((r) => r.siteId === s.id),
