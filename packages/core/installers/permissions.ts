@@ -39,7 +39,7 @@ export const installersPermissions = {
   }),
   quoteChecks: permission('installers.quoteChecks.read', {
     description:
-      'For the hourly alert run: every active site with an installer job, flagged when a confirmed quote of a job still being quoted has more hours than the time standard — partial N + 2 h, full 2N + 2 h (R29).',
+      'For the hourly alert run: every active site with an installer job, flagged when a confirmed quote of a job still being quoted is, per sensor, more than 20 % above the average of the other confirmed quotes of the same country and scope — labour or total (R29, D-44).',
     roles: ['system'],
   }),
   // gen:permissions — `pnpm gen:command` and `pnpm gen:query` add entries above this line.

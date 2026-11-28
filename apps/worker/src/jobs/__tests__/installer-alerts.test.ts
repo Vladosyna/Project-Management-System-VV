@@ -15,10 +15,10 @@ function recordingKernel(sites: unknown[]) {
 }
 
 describe('installer alerts job (R29)', () => {
-  it('raises R29 (P1) for the PM when a quote is above the time standard; withdraws it on the others', async () => {
+  it('raises R29 (P1) for the PM when a quote is above the average (D-44); withdraws it on the others', async () => {
     const sites = [
-      { siteId: 's1', projectId: 'CLIENTA-GB-LON-001', r29: true, quotedHours: 12, standardHours: 10 },
-      { siteId: 's2', projectId: 'CLIENTA-GB-LON-002', r29: false, quotedHours: null, standardHours: null },
+      { siteId: 's1', projectId: 'CLIENTA-GB-LON-001', r29: true, labourPercent: 33, totalPercent: 25 },
+      { siteId: 's2', projectId: 'CLIENTA-GB-LON-002', r29: false, labourPercent: null, totalPercent: null },
     ];
     const k = recordingKernel(sites);
     await runInstallerAlertsJob(k.kernel);
@@ -29,7 +29,7 @@ describe('installer alerts job (R29)', () => {
         ref: quoteRef('s1'),
         level: 'P1',
         title:
-          'CLIENTA-GB-LON-001: installer quote has 12 h against the time standard of 10 h — ask for the reason or a new quote (R29)',
+          'CLIENTA-GB-LON-001: installer quote per sensor is above the average of comparable quotes (labour +33 %, total +25 %) — check it before approval (R29)',
       },
     ]);
     const resolve = k.calls.find((c) => c.name === 'work.alert.resolve')?.input as { refs: string[] };

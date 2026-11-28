@@ -75,7 +75,7 @@ const queue = await startScheduledJobs(env('OCS_QUEUE_DATABASE_URL') || env('OCS
     },
   },
   {
-    // R29 (P-12, D-34 N1): hourly, like the other alert rules (E8 AC1).
+    // R29 (D-44): hourly, like the other alert rules (E8 AC1).
     name: 'installer-alerts',
     everyMinutes: 60,
     run: async () => {

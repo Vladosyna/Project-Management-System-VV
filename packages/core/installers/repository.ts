@@ -135,8 +135,8 @@ export async function activePartners(tx: Tx) {
 }
 
 /**
- * R29: every active site that has an installer job, and the confirmed, active quotes of its active jobs with the
- * job's scope, sensors and status. Sites without a flag are still listed, so their alert can be withdrawn.
+ * R29 (D-44): every active site that has an installer job, and every confirmed, active quote with its job's site,
+ * country, scope, sensors and status. Sites without a flag are still listed, so their alert can be withdrawn.
  */
 export async function quotesToCheck(tx: Tx) {
   const sites = await tx
@@ -147,18 +147,24 @@ export async function quotesToCheck(tx: Tx) {
     .orderBy(asc(site.projectId));
   const quotes = await tx
     .select({
+      id: priceProposal.id,
       siteId: installerJob.siteId,
+      countryCode: site.countryCode,
       scope: installerJob.scope,
       sensorCount: installerJob.sensorCount,
       status: installerJob.status,
       lines: priceProposal.lines,
+      eurAmount: priceProposal.eurAmount,
+      fxRate: priceProposal.fxRate,
     })
     .from(priceProposal)
     .innerJoin(installerJob, eq(installerJob.id, priceProposal.jobId))
+    .innerJoin(site, eq(site.id, installerJob.siteId))
     .where(
       and(
         isNull(priceProposal.archivedAt),
         isNull(installerJob.archivedAt),
+        isNull(site.archivedAt),
         sql`${priceProposal.confirmedAt} IS NOT NULL`,
       ),
     );
