@@ -49,5 +49,10 @@ export const orgPermissions = {
       'Link a project to its mall on the device platform and switch its offline alerts on or off (E4)',
     roles: ['director', 'pm'],
   }),
+  setComplianceScope: permission('org.complianceScope.set', {
+    description:
+      'Set whether a client agrees DPIA and LPA per store or once per country (D-45); per country, a country record covers every store.',
+    roles: ['director'],
+  }),
   // gen:permissions — `pnpm gen:command` and `pnpm gen:query` add entries above this line.
 };

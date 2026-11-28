@@ -32,5 +32,14 @@ export const commercialPermissions = {
       'Commercial status of every site the actor may see: client PO, DPIA, invoices, price list in EUR, and AI proposals waiting for confirmation.',
     roles: ['director', 'pm', 'finance', 'sponsor', 'management'],
   }),
+  proposeCountry: permission('commercial.country.propose', {
+    description:
+      "Record a client's DPIA or LPA for a whole country (D-45): it covers every store of that client there. Replaces the previous one, which is archived. From an AI agent it stays a proposal until a person confirms it.",
+    roles: ['director', 'pm', 'finance', 'sponsor'],
+  }),
+  confirmCountry: permission('commercial.country.confirm', {
+    description: 'Confirm a country DPIA or LPA an AI agent proposed (a person only, never an agent).',
+    roles: ['director', 'pm', 'finance'],
+  }),
   // gen:permissions — `pnpm gen:command` and `pnpm gen:query` add entries above this line.
 };

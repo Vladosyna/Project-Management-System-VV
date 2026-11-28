@@ -173,3 +173,8 @@ export async function siteLinkedTo(tx: Tx, platformRef: string, exceptId: string
       .where(and(eq(site.platformRef, platformRef), isNull(site.archivedAt), sql`${site.id} <> ${exceptId}`))
   )[0];
 }
+
+/** D-45: DPIA and LPA per store or once per country. */
+export async function setClientComplianceScope(tx: Tx, id: string, scope: ClientRow['complianceScope']) {
+  await tx.update(client).set({ complianceScope: scope }).where(eq(client.id, id));
+}
