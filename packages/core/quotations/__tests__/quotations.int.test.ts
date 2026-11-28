@@ -143,15 +143,28 @@ describe('client quotations (D-40)', () => {
     ]);
   });
 
-  it("a store's devices default to those registered on the project (D-42)", async () => {
-    const [first] = stores;
-    for (const sn of ['SN-Q1', 'SN-Q2', 'SN-Q3'])
-      await runAsOwner(
+  it("a store's devices default to its active proposal (D-43)", async () => {
+    const [first, second] = stores;
+    const row = (version: number, items: unknown, archived: boolean) =>
+      runAsOwner(
         testDb.url,
-        `INSERT INTO device (id, client_id, site_id, sn, model) VALUES (gen_random_uuid(), $1, $2, $3, 'G6')`,
-        [clientId, first?.siteId, sn],
+        `INSERT INTO site_proposal (id, client_id, site_id, version, items, proposal_ref, created_by, archived_at)
+         VALUES (gen_random_uuid(), $1, $2, $3, $4, 'Proposal 1', gen_random_uuid(), ${archived ? 'now()' : 'NULL'})`,
+        [clientId, first?.siteId, version, JSON.stringify(items)],
       );
+    await row(1, [{ model: 'G6', count: 9 }], true);
+    await row(
+      2,
+      [
+        { model: 'G6', count: 3 },
+        { model: 'CBox', count: 1 },
+      ],
+      false,
+    );
     const q = await draft({ stores: [{ siteId: first?.siteId, scope: 'partial' }] });
     expect([q.standardHours, q.lines[0]?.units]).toEqual([5, 3]);
+    await expect(draft({ stores: [{ siteId: second?.siteId, scope: 'partial' }] })).rejects.toThrow(
+      RuleViolation,
+    );
   });
 });
