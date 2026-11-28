@@ -85,7 +85,7 @@ Dates from D-17. Each epic lists acceptance criteria (AC). An epic is done when 
 - AC2 Credentials in sources are detected and dropped (D-20).
 
 ### E11 Reports
-- AC1 **Friday weekly report per project** first (management rule, 5 Nov), then the Monday pack, both from OCS data (D-34 C5).
+- AC1 **Friday weekly report per client** first (management rule, 5 Nov): what changed this week in the client's cases, projects and commercial data (D-44); then the Monday pack, both from OCS data (D-34 C5).
 - AC2 Intake Register monthly report.
 - AC3 Programme tracker export (stores, dates, status, gates) replacing the hand-kept PMI tracker.
 

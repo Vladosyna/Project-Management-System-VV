@@ -13,7 +13,7 @@ Working calendars (`packages/core/calendar`): **CN** from the State Council noti
 | R5 | Invoice-ready, no invoice | No invoice 5 working days after acceptance gate | P1 | V1 |
 | R6 | Duplicate SN | Block at save: same SN (any case) in two active records. Not the MAC: it can change on restart (D-29) | P0 | V1 |
 | R7 | Site Information Card missing | Incomplete 10 calendar days after request (SOP-DEL-04) | P1 | V1 |
-| R8 | Installation date not agreed | Approved, no date 20 days before planned installation (template-configurable) | P1 | V1 |
+| R8 | Installation date not agreed | 20 days before the planned installation, no date agreed with the market (template-configurable; D-44) | P1 | V1 |
 | R9 | Readiness / go-no-go not passed | ≤ configured working days to installation (PMI template: D−2), readiness not confirmed | P0 | V1 |
 | R10 | Calibration without written DPIA | Calibration requested, DPIA evidence missing | P0 | V1.1 |
 | R11 | Calibration access about to expire | < 6 h of 48-hour access left, not done | P1 | V1.1 |
@@ -34,7 +34,7 @@ Working calendars (`packages/core/calendar`): **CN** from the State Council noti
 | R26 | Site without owner | Active site with no owner, or owner flagged as leaver (D-34 N2, C8) | P1 | V1 |
 | R27 | Negative margin | Approved installer cost > client price for the site (P-03, D-34 N2) | P0 | V1 |
 | R28 | Shipment held in customs | Carrier status shows customs hold (D-34 N3) | P1 | V1 |
-| R29 | Quote not compliant | Quote line above the internal time standard or supplier rules; fewer than 2 comparable quotes without a reason (P-12, D-34 N1) | P1 | V1 |
+| R29 | Quote above average | Installer quote above the running average of confirmed quotes of the same country and scope, per sensor (labour ÷ sensors, total ÷ sensors), by more than the configured margin once enough quotes exist (D-44; not the time standard) | P1 | V1 |
 | R30 | Reply owed | Client thread awaiting our reply > 2 working days (rule of 25 Oct, D-34 C6) | P1 | V1 |
 | R31 | Readiness evidence missing | Readiness checklist item without photo/written evidence 2 working days before installation (D-34 C3) | P0 | V1 |
 | R32 | Installer booked before readiness | Block at save: installer booking while readiness not passed (D-34 C3) | P0 | V1 |
