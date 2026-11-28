@@ -5,6 +5,7 @@ import { createRuntime, startScheduledJobs } from '@ocs/core/runtime';
 import { createDevicePlatform } from './adapters/device-platform/index.ts';
 import { runDevicePlatformJob } from './jobs/device-platform.ts';
 import { runCommercialAlertsJob } from './jobs/commercial-alerts.ts';
+import { runInstallerAlertsJob } from './jobs/installer-alerts.ts';
 import { runIntakeConditionsJob } from './jobs/intake-conditions.ts';
 import { runReadinessAlertsJob } from './jobs/readiness-alerts.ts';
 
@@ -71,6 +72,15 @@ const queue = await startScheduledJobs(env('OCS_QUEUE_DATABASE_URL') || env('OCS
     run: async () => {
       const run = await runReadinessAlertsJob(runtime.kernel);
       console.log(JSON.stringify({ job: 'readiness-alerts', ...run }));
+    },
+  },
+  {
+    // R29 (D-44): hourly, like the other alert rules (E8 AC1).
+    name: 'installer-alerts',
+    everyMinutes: 60,
+    run: async () => {
+      const run = await runInstallerAlertsJob(runtime.kernel);
+      console.log(JSON.stringify({ job: 'installer-alerts', ...run }));
     },
   },
 ]);
