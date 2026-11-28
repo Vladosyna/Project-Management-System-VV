@@ -53,7 +53,7 @@ External roles (`client`, `partner`) are switched off in the checker until the V
 | `lifecycle.gateTemplates.read` | See the gate templates and their scopes (D-32) | ✓ | ✓ |  |  |  | ✓ | ✓ |  |  |  |  |
 | `lifecycle.installation.plan` | Set the planned installation date, only once the site card is complete (SOP-DEL-04 §1) | ✓ | ✓ |  |  |  |  |  |  |  |  |  |
 | `lifecycle.programmeTracker.read` | The programme tracker (E11 AC3): every project with stage, planned installation, readiness and gates, by client, programme or country | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |  |  |  |
-| `lifecycle.readinessGaps.read` | For the hourly alert run: every active project, flagged when installation is within the readiness window and readiness is not confirmed (R9). |  |  |  |  |  |  |  |  |  |  | ✓ |
+| `lifecycle.readinessGaps.read` | For the hourly alert run: every active project, flagged when installation is within the readiness window and readiness is not confirmed (R9), or is 20 working days away or closer and readiness is not confirmed (R32, D-47). |  |  |  |  |  |  |  |  |  |  | ✓ |
 | `lifecycle.siteLifecycle.read` | See a project's steps, gates, installation plan and readiness (E3) | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |  |  |  |
 | `lifecycle.step.record` | Record a step reached on a project — base step or gate — with date and evidence (E3 AC1) | ✓ | ✓ | ✓ |  |  |  |  |  |  |  |  |
 | `org.client.create` | Create a client (top of the SOP-DEL-02 hierarchy) | ✓ |  |  |  |  |  |  | ✓ |  |  |  |

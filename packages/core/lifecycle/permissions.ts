@@ -29,7 +29,7 @@ export const lifecyclePermissions = {
   }),
   readinessGaps: permission('lifecycle.readinessGaps.read', {
     description:
-      'For the hourly alert run: every active project, flagged when installation is within the readiness window and readiness is not confirmed (R9).',
+      'For the hourly alert run: every active project, flagged when installation is within the readiness window and readiness is not confirmed (R9), or is 20 working days away or closer and readiness is not confirmed (R32, D-47).',
     roles: ['system'],
   }),
   programmeTracker: permission('lifecycle.programmeTracker.read', {

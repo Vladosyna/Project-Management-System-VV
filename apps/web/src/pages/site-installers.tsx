@@ -6,7 +6,7 @@ import { Button, Form, FormMessage, SelectField, TextField, useI18n } from '@ocs
 import { installerWrite, loadInstallerJobs, loadInstallerPartners, type InstallerJob } from '../api.ts';
 import { NewJob, NewQuote } from './installer-forms.tsx';
 
-type Outcome = 'ok' | 'forbidden' | 'invalid' | 'rule' | 'readiness' | 'conflict' | 'failed';
+type Outcome = 'ok' | 'forbidden' | 'invalid' | 'rule' | 'conflict' | 'failed';
 const NEXT = ['scheduled', 'done', 'attended_not_ready', 'cancelled'] as const;
 type Next = (typeof NEXT)[number];
 type Status = 'planned' | 'quoting' | 'approved' | Next;

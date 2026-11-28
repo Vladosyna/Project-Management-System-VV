@@ -1,6 +1,6 @@
-// Readiness alerts job (R9): what it asks core to do (the query has its own integration test).
+// Readiness alerts job (R9, R32): what it asks core to do (the query has its own integration test).
 import { describe, expect, it } from 'vitest';
-import { readinessRef, runReadinessAlertsJob } from '../readiness-alerts.ts';
+import { readinessD20Ref, readinessRef, runReadinessAlertsJob } from '../readiness-alerts.ts';
 
 function recordingKernel(sites: unknown[]) {
   const calls: { name: string; input: unknown }[] = [];
@@ -36,6 +36,35 @@ describe('readiness alerts job (R9)', () => {
     ]);
     const resolve = k.calls.find((c) => c.name === 'work.alert.resolve')?.input as { refs: string[] };
     expect(resolve.refs).toEqual([readinessRef('s2')]);
+  });
+
+  it('raises R32 (level P1) at D−20 without readiness (D-47); withdraws it on the others', async () => {
+    const sites = [
+      {
+        siteId: 's1',
+        projectId: 'CLIENTA-GB-LON-001',
+        r9: false,
+        r32: true,
+        plannedInstallationDate: '2027-01-05',
+      },
+      { siteId: 's2', projectId: 'CLIENTA-GB-LON-002', r9: false, r32: false, plannedInstallationDate: null },
+    ];
+    const k = recordingKernel(sites);
+    await runReadinessAlertsJob(k.kernel);
+    const raise = k.calls.find((c) => c.name === 'work.alert.raise')?.input as { alerts: unknown[] };
+    expect(raise.alerts).toEqual([
+      {
+        siteId: 's1',
+        ref: readinessD20Ref('s1'),
+        level: 'P1',
+        title:
+          'CLIENTA-GB-LON-001: installation 2027-01-05 is 20 working days away or less and readiness is not confirmed — get the market to confirm it (R32)',
+      },
+    ]);
+    const refs = k.calls
+      .filter((c) => c.name === 'work.alert.resolve')
+      .flatMap((c) => (c.input as { refs: string[] }).refs);
+    expect(refs).toEqual([readinessRef('s1'), readinessRef('s2'), readinessD20Ref('s2')]);
   });
 
   it('asks nothing when there are no projects', async () => {
