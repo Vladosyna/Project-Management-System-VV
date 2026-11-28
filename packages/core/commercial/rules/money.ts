@@ -18,3 +18,6 @@ export function toEur(amount: string, rate: string): string {
   const s = cents.toString().padStart(3, '0');
   return `${s.slice(0, -2)}.${s.slice(-2)}`;
 }
+
+/** A stored amount (up to 2 decimals) in cents, for exact comparison. */
+export const toCents = (value: string): bigint => scaled(value, 2);

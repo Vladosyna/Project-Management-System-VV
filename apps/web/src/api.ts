@@ -453,6 +453,30 @@ export async function writeLifecycle(
   return 'ok';
 }
 
+export interface ProgrammeTrackerRow {
+  readonly siteId: string;
+  readonly projectId: string;
+  readonly name: string;
+  readonly clientId: string;
+  readonly programmeId: string | null;
+  readonly countryCode: string;
+  readonly cityName: string;
+  readonly standard: 'L' | 'S';
+  readonly stage: string | null;
+  readonly gates: readonly SiteLifecycle['gates'][number][];
+  readonly plannedInstallationDate: string | null;
+  readonly workingDaysToInstallation: number | null;
+  readonly readinessAtRisk: boolean;
+}
+
+/** E11 AC3: the programme tracker, every project the user may see; undefined when the role may not. */
+export async function loadProgrammeTracker(): Promise<ProgrammeTrackerRow[] | undefined> {
+  const res = await fetch('/api/programme-tracker', { credentials: 'same-origin' });
+  if (res.status === 403) return undefined;
+  if (!res.ok) throw new Error(`GET programme-tracker → ${String(res.status)}`);
+  return (await res.json()) as ProgrammeTrackerRow[];
+}
+
 export interface GateTemplate {
   readonly id: string;
   readonly clientId: string | null;

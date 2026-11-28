@@ -34,7 +34,7 @@ Working calendars (`packages/core/calendar`): **CN** from the State Council noti
 | R26 | Site without owner | Active site with no owner, or owner flagged as leaver (D-34 N2, C8) | P1 | V1 |
 | R27 | Negative margin | Approved installer cost > client price for the site (P-03, D-34 N2) | P0 | V1 |
 | R28 | Shipment held in customs | Carrier status shows customs hold (D-34 N3) | P1 | V1 |
-| R29 | Quote above average | Installer quote above the running average of confirmed quotes of the same country and scope, per sensor (labour ÷ sensors, total ÷ sensors), by more than the configured margin once enough quotes exist (D-44; not the time standard) | P1 | V1 |
+| R29 | Quote above average | Installer quote above the running average of confirmed quotes of the same country and scope, per sensor (labour ÷ sensors, total ÷ sensors), by more than 20 % once at least 3 such quotes exist (D-44; not the time standard) | P1 | V1 |
 | R30 | Reply owed | Client thread awaiting our reply > 2 working days (rule of 25 Oct, D-34 C6) | P1 | V1 |
 | R31 | Readiness evidence missing | Readiness checklist item without photo/written evidence 2 working days before installation (D-34 C3) | P0 | V1 |
 | R32 | Installer booked before readiness | Block at save: installer booking while readiness not passed (D-34 C3) | P0 | V1 |

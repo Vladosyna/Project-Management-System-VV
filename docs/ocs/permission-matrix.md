@@ -5,7 +5,7 @@ External roles (`client`, `partner`) are switched off in the checker until the V
 
 | Permission | What it allows | director | pm | sales | rnd | finance | management | sponsor | admin | client | partner | system |
 |---|---|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-| `commercial.gaps.read` | For the hourly alert run: every active site with its commercial gaps — installed without a confirmed PO (R14) or without an approved DPIA (R24), without an owner (R26), and accepted 5 working days ago without a confirmed client invoice (R5). |  |  |  |  |  |  |  |  |  |  | ✓ |
+| `commercial.gaps.read` | For the hourly alert run: every active site with its commercial gaps — installed without a confirmed PO (R14) or without an approved DPIA (R24), without an owner (R26), accepted 5 working days ago without a confirmed client invoice (R5), and an approved installer cost above the client price (R27). |  |  |  |  |  |  |  |  |  |  | ✓ |
 | `commercial.portfolio.read` | Commercial status of every site the actor may see: client PO, DPIA, invoices, price list in EUR, and AI proposals waiting for confirmation. | ✓ | ✓ |  |  | ✓ | ✓ | ✓ |  |  |  |  |
 | `commercial.record.archive` | Archive a wrong or replaced commercial record of a site, with a reason; never deleted. | ✓ | ✓ |  |  | ✓ |  |  |  |  |  |  |
 | `commercial.record.confirm` | Confirm a commercial record an AI agent proposed (a person only, never an agent): money data is applied only when confirmed. | ✓ | ✓ |  |  | ✓ |  |  |  |  |  |  |
@@ -66,6 +66,7 @@ External roles (`client`, `partner`) are switched off in the checker until the V
 | `org.site.setDeviceAlerts` | Link a project to its mall on the device platform and switch its offline alerts on or off (E4) | ✓ | ✓ |  |  |  |  |  |  |  |  |  |
 | `quotations.config.save` | Set a client's quotation settings for one country: currency, hourly rate, tax mode (reverse charge or DDP with local VAT), seller, buyer, bank details, terms and number prefix. Replaces the active settings. | ✓ |  |  |  |  |  | ✓ |  |  |  |  |
 | `quotations.price.save` | Set a sensor model's unit price for a client in one currency; replaces the active price. | ✓ |  |  |  |  |  | ✓ |  |  |  |  |
+| `quotations.quotation.draft` | Draft a client quotation for a batch of stores: sensors (model price × count) and installation (hours × rate) as separate lines; hours by the time standard (partial N + 2, full 2N + 2 per store), an override needs a reason; tax by the country's settings. A draft only; a person sends it. | ✓ | ✓ | ✓ |  |  |  |  |  |  |  |  |
 | `work.action.complete` | Mark an action done (its owner, or a director or PM) | ✓ | ✓ | ✓ | ✓ |  |  | ✓ |  |  |  |  |
 | `work.action.create` | Create an action with one owner and a due date (SOP-DEL-03) | ✓ | ✓ | ✓ | ✓ |  |  | ✓ |  |  |  |  |
 | `work.action.list` | See open actions by project or owner | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |  |  |  |

@@ -363,6 +363,19 @@ export const en = {
   'commercial.overview.proposals': 'AI proposals to confirm',
   'commercial.overview.poLine': '{count} · {eur} EUR',
   'commercial.overview.missing': 'Missing',
+  'projects.intro':
+    'Programme tracker: every project by country with its stage, planned installation, readiness and gates. Open a Project ID to update its life cycle.',
+  'projects.noAccess': 'Your role cannot see the programme tracker.',
+  'projects.failed': 'Could not load the programme tracker. Try again.',
+  'projects.empty': 'No projects match the filters.',
+  'projects.filter.client': 'Client',
+  'projects.filter.allClients': 'All clients',
+  'projects.filter.country': 'Country',
+  'projects.filter.countryHint': 'Two-letter code, e.g. ES. Empty: all countries.',
+  'projects.country': '{country} · {count} projects',
+  'projects.col.stage': 'Stage',
+  'projects.col.gates': 'Gates',
+  'projects.notStarted': 'Not started',
   'commercial.overview.eur': '{eur} EUR',
   'installers.newJob': 'New installer job',
   'installers.scope': 'Scope',
@@ -588,5 +601,6 @@ export const en = {
   'intakeRegister.title': 'Intake Register',
   'agents.title': 'AI agents',
   'commercial.title': 'Commercial',
+  'projects.title': 'Projects',
   // gen:screen-titles — `pnpm gen:screen` adds screen titles above this line.
 } as const;

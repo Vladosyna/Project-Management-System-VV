@@ -3,3 +3,4 @@
 export { quotationsPermissions } from './permissions.ts';
 export { saveConfig } from './commands/save-config.ts';
 export { savePrice } from './commands/save-price.ts';
+export { draftQuotation } from './commands/draft-quotation.ts';

@@ -22,6 +22,7 @@ Your name and role are shown bottom left. **中文** (top right) switches the la
 |---|---|
 | **Home** | Your start page |
 | **Portfolio** | All clients and their projects (Project IDs) you may see |
+| **Projects** | Programme tracker: every project by country with stage, planned installation (working days to go, readiness warning) and gates; client PO and DPIA for roles that see commercial data. Filter by **Client** and **Country**; click a Project ID to open its Lifecycle |
 | **Sites** | List of projects/sites → click a Project ID to open it (section 3) |
 | **Intake Register** | Every Handover Card submission (section 5) — director, sponsor, management |
 | **Actions & alerts** | Every open action with owner and due date; **Mine** shows yours |
@@ -71,7 +72,7 @@ Installer jobs of the project (staff only), each with its quotes **cheapest firs
 **Mall on the device platform** and **Offline alerts** (only with a linked mall) → **Save**.
 
 ## 4. Actions & alerts
-All open actions in columns, with owner, due date and source (comment, visit, alert). **Mine** filters to yours; **Done** on a card closes it (owner, director or PM). Alerts (device offline > 24 h, device lists not matching the platform, expired intake conditions; installation within the readiness window (template days, e.g. D−2) without readiness confirmed — R9, to the PM; an installed project without a confirmed client PO or approved DPIA; an accepted project without a confirmed client invoice after 5 working days — R5, to the PM; a project without a PM — sent to the directors) arrive here as actions automatically, and go away by themselves once the gap is closed.
+All open actions in columns, with owner, due date and source (comment, visit, alert). **Mine** filters to yours; **Done** on a card closes it (owner, director or PM). Alerts (device offline > 24 h, device lists not matching the platform, expired intake conditions; installation within the readiness window (template days, e.g. D−2) without readiness confirmed — R9, to the PM; an installed project without a confirmed client PO or approved DPIA; an accepted project without a confirmed client invoice after 5 working days — R5, to the PM; an approved installer quote above the client price — R27, to the PM; a project without a PM — sent to the directors) arrive here as actions automatically, and go away by themselves once the gap is closed.
 
 ## 5. Intake Register
 One row per submitted card version: Project ID, submitted, decision, decided, returns, working days to acceptance. **Month of submission** filters; **Export CSV** downloads what is shown — for the monthly review with the Sales Lead.
@@ -104,7 +105,7 @@ The full list is generated from the code: `docs/ocs/permission-matrix.md`.
 
 Each section below is a placeholder for a feature on the roadmap (`docs/ocs/05-roadmap.md`). **Planned — not available yet** means exactly that: it is not in OCS today. When a feature ships, its placeholder is replaced by real instructions (screen, buttons, who may use it) in the same PR, and it moves up into the sections above. Targets are the roadmap's, not promises.
 
-### 9.1 Projects (menu **Projects**) — Planned — not available yet
+### 9.1 Project hierarchy and partner labels — Planned — not available yet
 Client → programme → country → city → project hierarchy (SOP-DEL-02), Project IDs `CLIENT-CC-CITY-NNN`, folder standard L/S per site and changing it; partners with their client-facing label (Partner A/B/C). *Target: pilot / January.*
 
 ### 9.3 Handover Card — full Annex B sections — Planned — not available yet

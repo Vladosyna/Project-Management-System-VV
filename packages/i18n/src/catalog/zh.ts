@@ -358,6 +358,19 @@ export const zh = {
   'commercial.overview.proposals': '待确认的 AI 建议',
   'commercial.overview.poLine': '{count} 份 · {eur} 欧元',
   'commercial.overview.missing': '缺失',
+  'projects.intro':
+    '项目进度总表：按国家列出每个项目的阶段、计划安装日期、就绪状态和关卡。点击项目编号可更新其生命周期。',
+  'projects.noAccess': '你的角色无法查看项目进度总表。',
+  'projects.failed': '项目进度总表加载失败，请重试。',
+  'projects.empty': '没有符合筛选条件的项目。',
+  'projects.filter.client': '客户',
+  'projects.filter.allClients': '全部客户',
+  'projects.filter.country': '国家',
+  'projects.filter.countryHint': '两位国家代码，例如 ES。留空表示全部国家。',
+  'projects.country': '{country} · {count} 个项目',
+  'projects.col.stage': '阶段',
+  'projects.col.gates': '关卡',
+  'projects.notStarted': '未开始',
   'commercial.overview.eur': '{eur} 欧元',
   'installers.newJob': '新建安装任务',
   'installers.scope': '范围',
@@ -582,5 +595,6 @@ export const zh = {
   'intakeRegister.title': '接收登记册',
   'agents.title': 'AI 助手',
   'commercial.title': '商务',
+  'projects.title': '项目',
   // gen:screen-titles — `pnpm gen:screen` adds screen titles above this line.
 } as const satisfies Catalog;
