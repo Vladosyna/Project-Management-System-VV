@@ -9,8 +9,12 @@ import { quoteAverageRule } from '../rules/quote-average.config.ts';
 const lines = z.array(z.object({ kind: z.string(), quantity: z.number(), unitPrice: z.string() }));
 const labourKinds = new Set<string>(quoteAverageRule.labourLines);
 
-export async function compareQuotes(tx: Parameters<typeof quotesToCheck>[0]) {
-  const { sites, quotes } = await quotesToCheck(tx);
+/** `near`: only the pools of one site (its country and job scopes), for its Installers tab. */
+export async function compareQuotes(
+  tx: Parameters<typeof quotesToCheck>[0],
+  near?: Parameters<typeof quotesToCheck>[1],
+) {
+  const { sites, quotes } = await quotesToCheck(tx, near);
   const all = quotes.map((q) => {
     // Labour lines are in the quote's currency; the rate turns them into EUR like the stored total.
     const labour = lines

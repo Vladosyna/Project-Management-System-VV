@@ -138,13 +138,22 @@ export async function activePartners(tx: Tx) {
  * R29 (D-44): every active site that has an installer job, and every confirmed, active quote with its job's site,
  * country, scope, sensors and status. Sites without a flag are still listed, so their alert can be withdrawn.
  */
-export async function quotesToCheck(tx: Tx) {
-  const sites = await tx
-    .selectDistinct({ id: site.id, projectId: site.projectId })
-    .from(site)
-    .innerJoin(installerJob, eq(installerJob.siteId, site.id))
-    .where(isNull(site.archivedAt))
-    .orderBy(asc(site.projectId));
+export async function quotesToCheck(tx: Tx, near?: { siteId: string }) {
+  // The Installers tab of one site needs only its pools: same country, and the scopes of its jobs (review of #147).
+  const pool = near
+    ? [
+        sql`${site.countryCode} = (SELECT country_code FROM site WHERE id = ${near.siteId})`,
+        sql`${installerJob.scope} IN (SELECT scope FROM installer_job WHERE site_id = ${near.siteId} AND archived_at IS NULL)`,
+      ]
+    : [];
+  const sites = near
+    ? []
+    : await tx
+        .selectDistinct({ id: site.id, projectId: site.projectId })
+        .from(site)
+        .innerJoin(installerJob, eq(installerJob.siteId, site.id))
+        .where(isNull(site.archivedAt))
+        .orderBy(asc(site.projectId));
   const quotes = await tx
     .select({
       id: priceProposal.id,
@@ -166,6 +175,7 @@ export async function quotesToCheck(tx: Tx) {
         isNull(installerJob.archivedAt),
         isNull(site.archivedAt),
         sql`${priceProposal.confirmedAt} IS NOT NULL`,
+        ...pool,
       ),
     );
   return { sites, quotes };
