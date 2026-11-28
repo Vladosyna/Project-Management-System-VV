@@ -37,5 +37,10 @@ export const installersPermissions = {
       'Installer companies (partners) with their internal names and country, for choosing an installer on a job or quote. Staff only; never shown to clients.',
     roles: ['director', 'pm', 'finance', 'sponsor', 'management'],
   }),
+  quoteChecks: permission('installers.quoteChecks.read', {
+    description:
+      'For the hourly alert run: every active site with an installer job, flagged when a confirmed quote of a job still being quoted has more hours than the time standard — partial N + 2 h, full 2N + 2 h (R29).',
+    roles: ['system'],
+  }),
   // gen:permissions — `pnpm gen:command` and `pnpm gen:query` add entries above this line.
 };

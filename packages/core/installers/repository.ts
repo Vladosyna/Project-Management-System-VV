@@ -133,3 +133,34 @@ export async function activePartners(tx: Tx) {
     .where(isNull(partner.archivedAt))
     .orderBy(asc(partner.realName));
 }
+
+/**
+ * R29: every active site that has an installer job, and the confirmed, active quotes of its active jobs with the
+ * job's scope, sensors and status. Sites without a flag are still listed, so their alert can be withdrawn.
+ */
+export async function quotesToCheck(tx: Tx) {
+  const sites = await tx
+    .selectDistinct({ id: site.id, projectId: site.projectId })
+    .from(site)
+    .innerJoin(installerJob, eq(installerJob.siteId, site.id))
+    .where(isNull(site.archivedAt))
+    .orderBy(asc(site.projectId));
+  const quotes = await tx
+    .select({
+      siteId: installerJob.siteId,
+      scope: installerJob.scope,
+      sensorCount: installerJob.sensorCount,
+      status: installerJob.status,
+      lines: priceProposal.lines,
+    })
+    .from(priceProposal)
+    .innerJoin(installerJob, eq(installerJob.id, priceProposal.jobId))
+    .where(
+      and(
+        isNull(priceProposal.archivedAt),
+        isNull(installerJob.archivedAt),
+        sql`${priceProposal.confirmedAt} IS NOT NULL`,
+      ),
+    );
+  return { sites, quotes };
+}
