@@ -1,14 +1,14 @@
-// quotations.quotation.draft — D-40/D-41/D-42, E15 AC2/AC3: a client quotation for a batch of stores of one client and
+// quotations.quotation.draft — D-40/D-41/D-42/D-43, E15 AC2/AC3: a client quotation for a batch of stores of one client and
 // country. Formula mode: one line per device model (net price, grossed up by VAT under DDP) and one installation line
 // (hours × rate); hours by the time standard over the stores' sensors (G6, G6S, G6 WiFi, B1 — not CBox), an override needs a
-// reason; a store's devices default to those registered on the project. A draft — OCS never sends (CLAUDE.md §3 rule 4).
+// reason; a store's devices default to its active proposal (D-43). A draft — OCS never sends (CLAUDE.md §3 rule 4).
 import { z } from 'zod';
 import { defineCommand, NotFound, RuleViolation } from '../../kernel/index.ts';
 import { quotationsPermissions } from '../permissions.ts';
 import {
   activeConfig,
   countNumbered,
-  devicesOfSites,
+  proposalsOfSites,
   insertQuotation,
   pricesOf,
   sitesOf,
@@ -32,7 +32,7 @@ export const draftQuotation = defineCommand({
         z.object({
           siteId: z.uuid(),
           scope: z.enum(['partial', 'full']),
-          /** Omitted: the active devices registered on the project (D-42). */
+          /** Omitted: the items of the store's active proposal (D-43). */
           devices: devices.optional(),
         }),
       )
@@ -69,22 +69,25 @@ export const draftQuotation = defineCommand({
         'D-40',
         `store ${wrong.siteId} is not an active site of this client in ${i.countryCode}`,
       );
-    const registered = i.stores.some((s) => !s.devices)
-      ? await devicesOfSites(
+    const proposals = i.stores.some((s) => !s.devices)
+      ? await proposalsOfSites(
           ctx.tx,
           i.stores.map((s) => s.siteId),
         )
       : [];
-    const stores = i.stores.map((s) => ({
-      ...s,
-      devices:
-        s.devices ??
-        registered.filter((d) => d.siteId === s.siteId).map((d) => ({ model: d.model, count: d.count })),
-    }));
+    const stores = i.stores.map((s) => {
+      if (s.devices) return { ...s, devices: s.devices };
+      const items = proposals.find((p) => p.siteId === s.siteId)?.items as
+        { model: string; count: number }[] | undefined;
+      if (!items)
+        throw new RuleViolation('D-43', `store ${s.siteId} has no proposal — record it or give the devices`);
+      return { ...s, devices: items };
+    });
 
     if (stores.length === 0) throw new RuleViolation('D-40', 'name the stores');
     const empty = stores.find((s) => sensorsOf(s.devices) === 0);
-    if (empty) throw new RuleViolation('D-42', `store ${empty.siteId} has no sensors registered or given`);
+    if (empty)
+      throw new RuleViolation('D-42', `store ${empty.siteId} has no sensors in its proposal or given`);
     const byModel = new Map<string, number>();
     for (const d of stores.flatMap((s) => s.devices))
       byModel.set(d.model, (byModel.get(d.model) ?? 0) + d.count);

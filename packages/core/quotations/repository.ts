@@ -4,12 +4,12 @@ import {
   clientQuotation,
   clientQuotationSite,
   clientQuoteConfig,
-  device,
   eq,
   inArray,
   isNull,
   sensorPrice,
   site,
+  siteProposal,
   sql,
   type Tx,
 } from '@ocs/db';
@@ -103,13 +103,12 @@ export async function insertQuotation(
   await tx.insert(clientQuotation).values(row);
   if (stores.length > 0) await tx.insert(clientQuotationSite).values(stores);
 }
-/** D-42: the active devices registered on these projects, counted by site and model. */
-export async function devicesOfSites(tx: Tx, siteIds: readonly string[]) {
+/** D-43: the items (model × count) of each store's active proposal. */
+export async function proposalsOfSites(tx: Tx, siteIds: readonly string[]) {
   return tx
-    .select({ siteId: device.siteId, model: device.model, count: sql<number>`count(*)::int` })
-    .from(device)
-    .where(and(inArray(device.siteId, [...siteIds]), isNull(device.archivedAt)))
-    .groupBy(device.siteId, device.model);
+    .select({ siteId: siteProposal.siteId, items: siteProposal.items })
+    .from(siteProposal)
+    .where(and(inArray(siteProposal.siteId, [...siteIds]), isNull(siteProposal.archivedAt)));
 }
 /** Active net prices of these models for the client in one currency. */
 export async function pricesOf(tx: Tx, clientId: string, models: readonly string[], currency: string) {
