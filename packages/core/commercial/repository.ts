@@ -57,15 +57,23 @@ export async function activeRecordsOfSite(tx: Tx, siteId: string): Promise<Comme
 }
 
 /**
- * R5/R14/R24/R26/R27: active sites with their owner and country, whether installation is recorded, when acceptance
+ * R5/R13/R14/R24/R26/R27/R40: active sites with their owner and country, whether installation is recorded, when acceptance
  * was recorded, their confirmed records (PO, DPIA, invoice, price list, with the EUR amount), the further stores a
  * batch record covers (D-44) and the EUR amount of each CEO-approved installer quote on an active job that is not
  * cancelled.
  */
 export async function commercialGaps(tx: Tx, acceptedStep: string) {
   const sites = await tx
-    .select({ id: site.id, projectId: site.projectId, pmId: site.pmId, countryCode: site.countryCode })
+    .select({
+      id: site.id,
+      projectId: site.projectId,
+      pmId: site.pmId,
+      clientId: site.clientId,
+      countryCode: site.countryCode,
+      complianceScope: client.complianceScope,
+    })
     .from(site)
+    .innerJoin(client, eq(client.id, site.clientId))
     .where(isNull(site.archivedAt));
   const installed = await tx
     .select({ siteId: siteStep.siteId })
@@ -81,10 +89,26 @@ export async function commercialGaps(tx: Tx, acceptedStep: string) {
       siteId: commercialRecord.siteId,
       kind: commercialRecord.kind,
       status: commercialRecord.status,
+      part: commercialRecord.part,
       eurAmount: commercialRecord.eurAmount,
     })
     .from(commercialRecord)
     .where(and(isNull(commercialRecord.archivedAt), sql`${commercialRecord.confirmedAt} IS NOT NULL`));
+  /** D-45 (3)(4): approved, confirmed, active DPIA / LPA per client and country. */
+  const countryApproved = await tx
+    .select({
+      clientId: countryCompliance.clientId,
+      countryCode: countryCompliance.countryCode,
+      kind: countryCompliance.kind,
+    })
+    .from(countryCompliance)
+    .where(
+      and(
+        isNull(countryCompliance.archivedAt),
+        eq(countryCompliance.status, 'approved'),
+        sql`${countryCompliance.confirmedAt} IS NOT NULL`,
+      ),
+    );
   const approvedCosts = await tx
     .select({ siteId: installerJob.siteId, eurAmount: priceProposal.eurAmount })
     .from(quoteApproval)
@@ -109,6 +133,7 @@ export async function commercialGaps(tx: Tx, acceptedStep: string) {
     records,
     links,
     approvedCosts,
+    countryApproved: new Set(countryApproved.map((c) => `${c.clientId}:${c.countryCode}:${c.kind}`)),
   };
 }
 
