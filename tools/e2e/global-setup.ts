@@ -68,15 +68,16 @@ export default async function globalSetup(): Promise<() => Promise<void>> {
   process.env.OCS_E2E_INVITE_TOKEN = invite.token;
   process.env.OCS_E2E_ADMIN_EMAIL = ADMIN_EMAIL;
 
-  const tsx = path.join(root, 'node_modules/.bin/tsx');
-  const api = start(tsx, ['apps/api/src/server.ts'], {
+  // Node itself runs both servers (one process each, no shell): node_modules/.bin entries are shell scripts that
+  // Windows cannot spawn, and a shell wrapper would leave the server running when the run stops it.
+  const api = start(process.execPath, ['--import', 'tsx', 'apps/api/src/server.ts'], {
     OCS_DATABASE_URL: db.url,
     OCS_AUTH_SECRET: auth.secret,
     OCS_PUBLIC_URL: webOrigin,
     PORT: String(API_PORT),
   });
-  const vite = path.join(root, 'apps/web/node_modules/.bin/vite');
-  const web = start(vite, ['--config', 'apps/web/vite.config.ts', 'apps/web'], {
+  const vite = path.join(root, 'apps/web/node_modules/vite/bin/vite.js');
+  const web = start(process.execPath, [vite, '--config', 'apps/web/vite.config.ts', 'apps/web'], {
     OCS_API_URL: `http://localhost:${String(API_PORT)}`,
     PORT: String(WEB_PORT),
   });
