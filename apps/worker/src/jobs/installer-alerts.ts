@@ -33,7 +33,7 @@ export async function runInstallerAlertsJob(kernel: Pick<Kernel, 'execute' | 're
       ? await kernel.execute(
           resolveAlert,
           actor,
-          { refs: clear, reason: 'Quote within the time standard or decided' },
+          { refs: clear, reason: 'Quote no longer above the average, archived or approved' },
           'system',
         )
       : null;
