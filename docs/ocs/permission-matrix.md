@@ -32,6 +32,7 @@ External roles (`client`, `partner`) are switched off in the checker until the V
 | `identity.user.invite` | Invite a new staff user by link | ✓ |  |  |  |  |  |  | ✓ |  |  |  |
 | `identity.user.read` | See the user list with roles and MFA status | ✓ |  |  |  |  |  |  | ✓ |  |  |  |
 | `installers.approval.record` | Record the CEO's approval of the chosen installer quote with its reference (DingTalk OA or message). Needs two comparable confirmed quotes on the same SOW, or a reason for a single quote (P-11, P-12). A person only, never an AI agent. | ✓ | ✓ |  |  |  |  |  |  |  |  |  |
+| `installers.designChecks.read` | For the hourly alert run: every active site with an installer job, flagged when an open job counts a different number of sensors than the store’s current design (active proposal; CBox not counted) — R12. |  |  |  |  |  |  |  |  |  |  | ✓ |
 | `installers.job.create` | Create an installer job on a site: installer, scope (partial/full on-site), number of sensors, SOW version; the installer's real name stays internal. | ✓ | ✓ |  |  |  |  |  |  |  |  |  |
 | `installers.job.setStatus` | Move an installer job on: scheduled (with date), done, attended but site not ready, or cancelled, with an outcome note. | ✓ | ✓ |  |  |  |  |  |  |  |  |  |
 | `installers.partners.read` | Installer companies (partners) with their internal names and country, for choosing an installer on a job or quote. Staff only; never shown to clients. | ✓ | ✓ |  |  | ✓ | ✓ | ✓ |  |  |  |  |

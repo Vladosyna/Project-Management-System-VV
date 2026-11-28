@@ -42,5 +42,10 @@ export const installersPermissions = {
       'For the hourly alert run: every active site with an installer job, flagged when a confirmed quote of a job still being quoted is, per sensor, more than 20 % above the average of the other confirmed quotes of the same country and scope — labour or total (R29, D-44).',
     roles: ['system'],
   }),
+  designChecks: permission('installers.designChecks.read', {
+    description:
+      'For the hourly alert run: every active site with an installer job, flagged when an open job counts a different number of sensors than the store’s current design (active proposal; CBox not counted) — R12.',
+    roles: ['system'],
+  }),
   // gen:permissions — `pnpm gen:command` and `pnpm gen:query` add entries above this line.
 };
