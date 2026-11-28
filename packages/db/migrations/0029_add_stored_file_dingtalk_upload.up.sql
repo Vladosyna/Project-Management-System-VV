@@ -12,8 +12,13 @@ CREATE TABLE stored_file (
   owner_id       uuid,
   -- SOP-DEL-02 folder (L) or slot prefix (S), e.g. '01' commercial, '02' site information.
   sop_folder     text NOT NULL CHECK (sop_folder ~ '^(0[0-9]|1[01])$'),
-  object_key     text NOT NULL UNIQUE CHECK (btrim(object_key) <> ''),
-  sha256         text NOT NULL CHECK (sha256 ~ '^[0-9a-f]{64}$'),
+  -- EU storage key; NULL for a file indexed from DingTalk that stays only there (D-09: originals stay in DingTalk).
+  object_key     text UNIQUE CHECK (btrim(object_key) <> ''),
+  -- The file in DingTalk Drive: after an upload, or when found by the audit of existing folders. Opens by link.
+  dingtalk_space_id  text,
+  dingtalk_dentry_id text UNIQUE,
+  dingtalk_url   text CHECK (dingtalk_url ~ '^https://'),
+  sha256         text CHECK (sha256 ~ '^[0-9a-f]{64}$'),
   size_bytes     bigint NOT NULL CHECK (size_bytes > 0),
   mime_type      text NOT NULL,
   original_name  text NOT NULL CHECK (btrim(original_name) <> ''),
@@ -21,7 +26,7 @@ CREATE TABLE stored_file (
   -- A new version supersedes the previous file of the same owner; the old one is archived, never deleted.
   supersedes_id  uuid REFERENCES stored_file (id),
   uploaded_by    uuid NOT NULL,
-  uploaded_via   text NOT NULL CHECK (uploaded_via IN ('web', 'ai', 'market_link', 'mail')),
+  uploaded_via   text NOT NULL CHECK (uploaded_via IN ('web', 'ai', 'market_link', 'mail', 'dingtalk_audit')),
   source_ref     text,
   -- D-46 (2): a person confirms the file before it may go to DingTalk.
   confirmed_by   uuid,
@@ -30,7 +35,9 @@ CREATE TABLE stored_file (
   archived_at    timestamptz,
   UNIQUE (id, client_id),
   FOREIGN KEY (site_id, client_id) REFERENCES site (id, client_id),
-  CHECK ((confirmed_by IS NULL) = (confirmed_at IS NULL))
+  CHECK ((confirmed_by IS NULL) = (confirmed_at IS NULL)),
+  -- Stored in the EU (with its hash) or known in DingTalk — at least one place.
+  CHECK ((object_key IS NOT NULL AND sha256 IS NOT NULL) OR dingtalk_dentry_id IS NOT NULL)
 );
 CREATE INDEX stored_file_owner ON stored_file (owner_type, owner_id) WHERE archived_at IS NULL;
 CREATE INDEX stored_file_site ON stored_file (site_id) WHERE archived_at IS NULL;

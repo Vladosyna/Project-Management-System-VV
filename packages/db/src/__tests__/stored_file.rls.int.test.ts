@@ -78,6 +78,22 @@ it('a client cannot write', async () => {
 it('valid hash and SOP folder; one upload per file; uploaded needs the dentry', async () => {
   await expect(asStaff((tx) => tx.insert(storedFile).values(file({ sha256: 'xyz' })))).rejects.toThrow();
   await expect(asStaff((tx) => tx.insert(storedFile).values(file({ sopFolder: '12' })))).rejects.toThrow();
+  // Nowhere stored: neither in the EU nor in DingTalk.
+  await expect(
+    asStaff((tx) => tx.insert(storedFile).values(file({ objectKey: null, sha256: null }))),
+  ).rejects.toThrow();
+  // Found by the audit of existing DingTalk folders: no EU copy, the DingTalk link only.
+  await asStaff((tx) =>
+    tx.insert(storedFile).values(
+      file({
+        objectKey: null,
+        sha256: null,
+        uploadedVia: 'dingtalk_audit',
+        dingtalkDentryId: 'dentry-1',
+        dingtalkUrl: 'https://example.invalid/file/dentry-1',
+      }),
+    ),
+  );
   await expect(
     asStaff((tx) =>
       tx

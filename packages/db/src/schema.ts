@@ -805,7 +805,10 @@ export const FILE_OWNER_TYPES = [
   'other',
 ] as const;
 
-/** D-46 (0029): a file in EU object storage (never inline), with hash and version; confirmed before DingTalk. */
+/**
+ * D-46 (0029): a file in EU object storage (never inline) and/or in DingTalk Drive (uploaded, or found by the audit of
+ * existing folders), with hash and version; confirmed by a person before it goes to DingTalk.
+ */
 export const storedFile = pgTable('stored_file', {
   id: uuid('id').primaryKey(),
   clientId: uuid('client_id').notNull(),
@@ -813,15 +816,20 @@ export const storedFile = pgTable('stored_file', {
   ownerType: text('owner_type', { enum: FILE_OWNER_TYPES }).notNull(),
   ownerId: uuid('owner_id'),
   sopFolder: text('sop_folder').notNull(),
-  objectKey: text('object_key').notNull().unique(),
-  sha256: text('sha256').notNull(),
+  objectKey: text('object_key').unique(),
+  dingtalkSpaceId: text('dingtalk_space_id'),
+  dingtalkDentryId: text('dingtalk_dentry_id').unique(),
+  dingtalkUrl: text('dingtalk_url'),
+  sha256: text('sha256'),
   sizeBytes: bigint('size_bytes', { mode: 'number' }).notNull(),
   mimeType: text('mime_type').notNull(),
   originalName: text('original_name').notNull(),
   version: integer('version').notNull().default(1),
   supersedesId: uuid('supersedes_id'),
   uploadedBy: uuid('uploaded_by').notNull(),
-  uploadedVia: text('uploaded_via', { enum: ['web', 'ai', 'market_link', 'mail'] }).notNull(),
+  uploadedVia: text('uploaded_via', {
+    enum: ['web', 'ai', 'market_link', 'mail', 'dingtalk_audit'],
+  }).notNull(),
   sourceRef: text('source_ref'),
   confirmedBy: uuid('confirmed_by'),
   confirmedAt: timestamp('confirmed_at', { withTimezone: true }),
