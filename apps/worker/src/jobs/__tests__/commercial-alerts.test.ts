@@ -25,6 +25,7 @@ describe('commercial alerts job', () => {
         r26: false,
         r5: false,
         r27: false,
+        r13: false,
       },
       {
         siteId: 's2',
@@ -34,6 +35,7 @@ describe('commercial alerts job', () => {
         r26: true,
         r5: false,
         r27: false,
+        r13: false,
       },
     ];
     const k = recordingKernel(sites, ['d1']);
@@ -50,11 +52,13 @@ describe('commercial alerts job', () => {
       gapRef('R24', 's1'),
       gapRef('R5', 's1'),
       gapRef('R27', 's1'),
+      gapRef('R13', 's1'),
       gapRef('R26', 's1', 'd1'),
       gapRef('R14', 's2'),
       gapRef('R24', 's2'),
       gapRef('R5', 's2'),
       gapRef('R27', 's2'),
+      gapRef('R13', 's2'),
     ]);
   });
 
@@ -68,6 +72,7 @@ describe('commercial alerts job', () => {
         r26: false,
         r5: true,
         r27: false,
+        r13: false,
       },
     ];
     const k = recordingKernel(sites, []);
@@ -86,6 +91,32 @@ describe('commercial alerts job', () => {
     ]);
   });
 
+  it('raises R13 (P0) for the PM when a project is in more than one open client PO (§13)', async () => {
+    const sites = [
+      {
+        siteId: 's1',
+        projectId: 'CLIENTA-GB-LON-001',
+        r14: false,
+        r24: false,
+        r26: false,
+        r5: false,
+        r27: false,
+        r13: true,
+      },
+    ];
+    const k = recordingKernel(sites, []);
+    await runCommercialAlertsJob(k.kernel);
+    const raise = k.calls.find((c) => c.name === 'work.alert.raise')?.input as { alerts: unknown[] };
+    expect(raise.alerts).toEqual([
+      {
+        siteId: 's1',
+        ref: gapRef('R13', 's1'),
+        level: 'P0',
+        title: 'CLIENTA-GB-LON-001: in more than one open client PO — keep one, archive the others (R13)',
+      },
+    ]);
+  });
+
   it('raises R27 (P0) for the PM when the approved installer cost is above the client price (§27)', async () => {
     const sites = [
       {
@@ -96,6 +127,7 @@ describe('commercial alerts job', () => {
         r26: false,
         r5: false,
         r27: true,
+        r13: false,
       },
     ];
     const k = recordingKernel(sites, []);
