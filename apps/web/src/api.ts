@@ -305,6 +305,8 @@ export interface InstallerQuote {
   readonly eur: string;
   readonly validUntil: string | null;
   readonly confirmed: boolean;
+  /** R29 (D-44): per sensor against the average of comparable quotes; null until confirmed, percentages null below 3. */
+  readonly vsAverage: { readonly labourPercent: number | null; readonly totalPercent: number | null } | null;
 }
 export interface InstallerJob {
   readonly id: string;

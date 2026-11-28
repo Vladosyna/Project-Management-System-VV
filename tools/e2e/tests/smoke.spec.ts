@@ -503,6 +503,9 @@ test('a PM records a client PO in GBP, sees it in EUR and archives it (E13, D-34
   const rows = pm.getByRole('row');
   await expect(rows.nth(1)).toContainText('Installer Company 02');
   await expect(rows.nth(1)).toContainText('320.00 EUR');
+  // R29 (D-44): two quotes are too few to compare against an average (review of #136).
+  await expect(pm.getByRole('columnheader', { name: 'Per sensor vs average' })).toBeVisible();
+  await expect(rows.nth(1)).toContainText('Fewer than 3 to compare');
   await pm.getByLabel('Approval reference (DingTalk OA or message)').fill('OA-E2E-1');
   await pm.getByLabel('Approved on').fill('2026-11-27');
   await pm.getByRole('button', { name: 'Record approval' }).click();
