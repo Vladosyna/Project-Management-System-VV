@@ -18,7 +18,7 @@ Working calendars (`packages/core/calendar`): **CN** from the State Council noti
 | R10 | Calibration without written DPIA | Calibration requested, DPIA evidence missing | P0 | V1.1 |
 | R11 | Calibration access about to expire | < 6 h of 48-hour access left, not done | P1 | V1.1 |
 | R12 | Quote ≠ design | Quoted sensor count differs from current design | P0 | V1 |
-| R13 | Site in two POs | Same site in more than one open PO | P0 | V1 |
+| R13 | Site in two POs | Same site in more than one open PO for the same part of the work (all, hardware, installation; D-45) | P0 | V1 |
 | R14 | Installed without PO | Installation recorded, no PO linked | P0 | V1 |
 | R15 | Sensor offline after go-live | Offline > 24 h (device platform) | P1 | Jan |
 | R16 | Partner update overdue | No partner update 48 h after installation day | P2 | V1.1 |
@@ -29,7 +29,7 @@ Working calendars (`packages/core/calendar`): **CN** from the State Council noti
 | R21 | Conflicting answers | Two different answers to the same question (AI check) | P1 | Jan |
 | R22 | Change to live devices without client notice | Firmware / configuration push with no client-notice record — block (Change-management SOP) | P0 | V1.1 |
 | R23 | Message not linked | Inbox message untouched for 1 working day | P2 | V1 |
-| R24 | Installed without DPIA | Installation recorded, DPIA not approved (D-34 N2) | P0 | V1 |
+| R24 | Installed without DPIA | Installation recorded, DPIA not approved for the store or, where the client agrees it per country, for its country (D-34 N2, D-45) | P0 | V1 |
 | R25 | Installer invoice without client PO | Supplier invoice recorded for a site with no client PO (D-34 N2) | P0 | V1 |
 | R26 | Site without owner | Active site with no owner, or owner flagged as leaver (D-34 N2, C8) | P1 | V1 |
 | R27 | Negative margin | Approved installer cost > client price for the site (P-03, D-34 N2) | P0 | V1 |
@@ -45,6 +45,7 @@ Working calendars (`packages/core/calendar`): **CN** from the State Council noti
 | R37 | DPIA missing for calibration | Calibration requested, DPIA confirmation missing (D-37, D-34 C2; with R10) | P0 | V1 |
 | R38 | Promised attachment overdue | Attachment slot "To be provided" past its promised date (D-37) | P1 | V1 |
 | R39 | Returned form not corrected | Returned form request not corrected 2 working days after return (D-37) | P1 | V1 |
+| R40 | PO without LPA | A confirmed client PO for a store whose country has no approved LPA, for clients that agree the LPA per country — an alert, never a block: PO and LPA often arrive together (D-45) | P1 | V1 |
 
 Intake (SOP-DEL-01) rules — implemented as validations, not alerts:
 
