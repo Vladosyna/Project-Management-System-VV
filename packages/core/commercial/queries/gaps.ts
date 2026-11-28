@@ -13,6 +13,9 @@ import { invoiceReadyRule } from '../rules/invoice-ready.config.ts';
 import { negativeMargin } from '../rules/negative-margin.ts';
 import { inTwoPos } from '../rules/site-in-two-pos.ts';
 
+/** D-45 (1): the record kinds that may cover a batch of stores. */
+const BATCH_KINDS = new Set(['client_po', 'client_invoice']);
+
 export const gaps = defineQuery({
   name: 'commercial.gaps.read',
   permission: commercialPermissions.gaps,
@@ -23,13 +26,16 @@ export const gaps = defineQuery({
       invoiceReadyRule.afterStep,
     );
     /**
-     * D-44: a record also covers the stores linked to it (a batch PO), for R5, R13, R14 and R24. R27 keeps the
-     * store's own records: a batch PO's amount is for all its stores, not one.
+     * D-45 (1): a client PO or client invoice also covers the stores linked to it (a batch), for R13, R14 and R5. A DPIA
+     * is never spread through links: it is per store or, for clients that agree it per country, per country (D-45 (3)).
+     * R27 keeps the store's own records: a batch amount is for all its stores, not one.
      */
     const covering = [
       ...records,
       ...links.flatMap((l) =>
-        records.filter((r) => r.id === l.recordId).map((r) => ({ ...r, siteId: l.siteId })),
+        records
+          .filter((r) => r.id === l.recordId && BATCH_KINDS.has(r.kind))
+          .map((r) => ({ ...r, siteId: l.siteId })),
       ),
     ];
     const has = (siteId: string, kind: string, status?: string) =>
