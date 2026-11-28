@@ -1,5 +1,19 @@
 // commercial repository — the only place in this module that touches tables.
-import { and, asc, commercialRecord, eq, isNull, site, siteStep, sql, userRole, type Tx } from '@ocs/db';
+import {
+  and,
+  asc,
+  commercialRecord,
+  eq,
+  installerJob,
+  isNull,
+  priceProposal,
+  quoteApproval,
+  site,
+  siteStep,
+  sql,
+  userRole,
+  type Tx,
+} from '@ocs/db';
 
 export type CommercialRow = typeof commercialRecord.$inferSelect;
 
@@ -40,8 +54,9 @@ export async function activeRecordsOfSite(tx: Tx, siteId: string): Promise<Comme
 }
 
 /**
- * R5/R14/R24/R26: active sites with their owner and country, whether installation is recorded, when acceptance was
- * recorded, and their confirmed records (PO, DPIA, invoice).
+ * R5/R14/R24/R26/R27: active sites with their owner and country, whether installation is recorded, when acceptance
+ * was recorded, their confirmed records (PO, DPIA, invoice, price list, with the EUR amount) and the EUR amount of each
+ * CEO-approved installer quote on an active job that is not cancelled.
  */
 export async function commercialGaps(tx: Tx, acceptedStep: string) {
   const sites = await tx
@@ -57,14 +72,32 @@ export async function commercialGaps(tx: Tx, acceptedStep: string) {
     .from(siteStep)
     .where(and(eq(siteStep.step, acceptedStep), isNull(siteStep.archivedAt)));
   const records = await tx
-    .select({ siteId: commercialRecord.siteId, kind: commercialRecord.kind, status: commercialRecord.status })
+    .select({
+      siteId: commercialRecord.siteId,
+      kind: commercialRecord.kind,
+      status: commercialRecord.status,
+      eurAmount: commercialRecord.eurAmount,
+    })
     .from(commercialRecord)
     .where(and(isNull(commercialRecord.archivedAt), sql`${commercialRecord.confirmedAt} IS NOT NULL`));
+  const approvedCosts = await tx
+    .select({ siteId: installerJob.siteId, eurAmount: priceProposal.eurAmount })
+    .from(quoteApproval)
+    .innerJoin(priceProposal, eq(priceProposal.id, quoteApproval.proposalId))
+    .innerJoin(installerJob, eq(installerJob.id, quoteApproval.jobId))
+    .where(
+      and(
+        isNull(quoteApproval.archivedAt),
+        isNull(installerJob.archivedAt),
+        sql`${installerJob.status} <> 'cancelled'`,
+      ),
+    );
   return {
     sites,
     installed: new Set(installed.map((r) => r.siteId)),
     acceptedOn: new Map(accepted.map((r) => [r.siteId, r.doneOn])),
     records,
+    approvedCosts,
   };
 }
 
