@@ -109,6 +109,8 @@ describe('installers.quoteChecks.read — R29 (D-44)', () => {
     expect(await vs('p1')).toEqual({ labourPercent: -20, totalPercent: -20 });
     expect(await vs('es1')).toEqual({ labourPercent: null, totalPercent: null }); // fewer than 3 to compare
     expect(await vs('agentOnly')).toBeNull(); // not confirmed yet
+    // The tab reads only its own pools (review of PR 147): a GB partial quote never meets the GB full ones.
+    expect(await vs('otherScope')).toEqual({ labourPercent: null, totalPercent: null });
   });
 
   it('is for the alert run only', async () => {

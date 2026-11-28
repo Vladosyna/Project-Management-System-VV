@@ -13,7 +13,7 @@ export const siteJobs = defineQuery({
   input: z.object({ siteId: z.uuid() }),
   handle: async (ctx, i) => {
     const { jobs, quotes } = await jobsOfSite(ctx.tx, i.siteId);
-    const vs = new Map((await compareQuotes(ctx.tx)).compared.map((c) => [c.id, c]));
+    const vs = new Map((await compareQuotes(ctx.tx, { siteId: i.siteId })).compared.map((c) => [c.id, c]));
     /** Null until confirmed; the percentages are null while fewer than 3 quotes compare. */
     const vsAverage = (id: string) => {
       const c = vs.get(id);
