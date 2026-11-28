@@ -3,15 +3,12 @@
 // On the project's latest card, which must be Returned; one dispute per return. Working days follow the project's
 // country calendar (GB where none exists yet), as everywhere in intake.
 import { z } from 'zod';
-import { addWorkingDays, calendarIds, localDateIn, type CalendarId } from '../../calendar/index.ts';
+import { addWorkingDays, calendarOfCountry, localDateIn } from '../../calendar/index.ts';
 import { Conflict, defineCommand, NotFound, RuleViolation } from '../../kernel/index.ts';
 import { intakePermissions } from '../permissions.ts';
 import { decisionOf, disputeOf, insertDispute, latestCard, lockActiveSite } from '../repository.ts';
 
 const SPONSOR_WORKING_DAYS = 2;
-const calendarOf = (country: string): CalendarId =>
-  (calendarIds as readonly string[]).includes(country) ? (country as CalendarId) : 'GB';
-
 export const raiseDispute = defineCommand({
   name: 'intake.dispute.raise',
   permission: intakePermissions.raiseDispute,
@@ -29,7 +26,7 @@ export const raiseDispute = defineCommand({
     const dueOn = addWorkingDays(
       localDateIn(ctx.now, 'UTC'),
       SPONSOR_WORKING_DAYS,
-      calendarOf(project.countryCode),
+      calendarOfCountry(project.countryCode),
     );
     const row = {
       id: ctx.newId(),

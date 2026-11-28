@@ -6,16 +6,13 @@
 // raised again while the same episode lasts, and a new episode raises a new one. A batch per job run, one audit
 // record per run. System only (worker alert jobs).
 import { z } from 'zod';
-import { addWorkingDays, calendarIds, localDateIn, type CalendarId } from '../../calendar/index.ts';
+import { addWorkingDays, calendarOfCountry, localDateIn } from '../../calendar/index.ts';
 import { defineCommand } from '../../kernel/index.ts';
 import { workPermissions } from '../permissions.ts';
 import { findSitePm, insertAction, lockAlertAction } from '../repository.ts';
 
 /** domain/rules.md levels: working days until the action is due (P2 "within the week" = 5 working days). */
 const WORKING_DAYS = { P0: 0, P1: 2, P2: 5 } as const;
-const calendarOf = (country: string): CalendarId =>
-  (calendarIds as readonly string[]).includes(country) ? (country as CalendarId) : 'GB';
-
 export const raiseAlert = defineCommand({
   name: 'work.alert.raise',
   permission: workPermissions.raiseAlert,
@@ -58,7 +55,7 @@ export const raiseAlert = defineCommand({
         continue;
       }
       const days = WORKING_DAYS[alert.level];
-      const due = days === 0 ? today : addWorkingDays(today, days, calendarOf(project.countryCode));
+      const due = days === 0 ? today : addWorkingDays(today, days, calendarOfCountry(project.countryCode));
       const row = {
         id: ctx.newId(),
         clientId: project.clientId,

@@ -3,16 +3,13 @@
 // working days) or Returned (every gap listed; Sales resubmits as the next version). Section 11 of the card.
 // Assumption: working days follow the project's country calendar (GB where none exists yet), as in E3.
 import { IntakeReview } from '@ocs/contracts';
-import { addWorkingDays, calendarIds, localDateIn, type CalendarId } from '../../calendar/index.ts';
+import { addWorkingDays, calendarOfCountry, localDateIn } from '../../calendar/index.ts';
 import { defineCommand, NotFound } from '../../kernel/index.ts';
 import { intakePermissions } from '../permissions.ts';
 import { insertDecision, lockActiveSite, openCard, updateCard } from '../repository.ts';
 import { intakeReviewRule } from '../rules/intake-review.config.ts';
 import { checkIntakeReview } from '../rules/intake-review.ts';
 import { z } from 'zod';
-
-const calendarOf = (country: string): CalendarId =>
-  (calendarIds as readonly string[]).includes(country) ? (country as CalendarId) : 'GB';
 
 export const decideIntake = defineCommand({
   name: 'intake.review.decide',
@@ -28,7 +25,7 @@ export const decideIntake = defineCommand({
     const latestDeadline = addWorkingDays(
       today,
       intakeReviewRule.maxConditionWorkingDays,
-      calendarOf(project.countryCode),
+      calendarOfCountry(project.countryCode),
     );
     checkIntakeReview({
       decision: i.decision,

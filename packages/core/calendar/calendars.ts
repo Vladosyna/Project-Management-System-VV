@@ -7,6 +7,10 @@ import { addDays, makeLocalDate, weekday, yearOf, type LocalDate } from './local
 export const calendarIds = ['CN', 'ES', 'DE', 'PT', 'GB'] as const;
 export type CalendarId = (typeof calendarIds)[number];
 
+/** A project's working calendar: its country's, or GB (Mon–Fri, GB holidays) where none exists yet. */
+export const calendarOfCountry = (country: string): CalendarId =>
+  (calendarIds as readonly string[]).includes(country) ? (country as CalendarId) : 'GB';
+
 export class CalendarDataMissing extends Error {
   constructor(calendar: CalendarId, year: number) {
     super(
