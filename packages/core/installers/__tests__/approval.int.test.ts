@@ -1,5 +1,6 @@
 // Quote confirmation, CEO approval and job status (E12 AC4–AC6; P-11, P-12; 08-ai-and-mcp): a person confirms and
-// records the approval, never an agent; two comparable quotes or a reason; one approval per job; status in order.
+// records the approval, never an agent; two comparable quotes or a reason; one approval per job; status in order;
+// R32 (D-34 C3): the installer is booked (scheduled) only once the project's readiness is confirmed.
 import { randomUUID } from 'node:crypto';
 import { afterAll, beforeAll, describe, expect, inject, it } from 'vitest';
 import { aStaffActor, createTestDatabase, runAsOwner, type TestDatabase } from '@ocs/testing';
@@ -26,6 +27,7 @@ const [x, y] = [randomUUID(), randomUUID()];
 let testDb: TestDatabase;
 let t: TestKernel;
 let siteA: string;
+let clientA: string;
 const run = <S extends z.ZodType, R>(cmd: Command<S, R>, input: unknown, actor = pm) =>
   t.kernel.execute(cmd, actor, input, 'test');
 const quote = (jobId: string, partnerId: string, unitPrice = '80') => ({
@@ -51,6 +53,7 @@ beforeAll(async () => {
   );
   const a = await run(createClient, { shortCode: 'CLIENTA', name: 'Client A' });
   const place = { countryCode: 'PL', cityCode: 'WAW', cityName: 'Warsaw', name: 'Store 1', standard: 'S' };
+  clientA = a.id;
   ({ id: siteA } = await run(createSite, { clientId: a.id, ...place }));
   for (const id of [x, y]) {
     await runAsOwner(
@@ -113,7 +116,17 @@ describe('quote approval and job status', () => {
     await expect(run(setJobStatus, { jobId: job.id, status: 'scheduled' })).rejects.toBeInstanceOf(
       RuleViolation,
     );
-    await run(setJobStatus, { jobId: job.id, status: 'scheduled', scheduledOn: '2026-12-01' });
+    // R32: readiness not confirmed yet → the booking is refused, citing the rule.
+    const book = { jobId: job.id, status: 'scheduled', scheduledOn: '2026-12-01' };
+    const refused: unknown = await run(setJobStatus, book).catch((e: unknown) => e);
+    expect(refused).toBeInstanceOf(RuleViolation);
+    expect((refused as RuleViolation).clause).toMatch(/^R32/);
+    await runAsOwner(
+      testDb.url,
+      `INSERT INTO site_step (id, client_id, site_id, step, done_on, actor_id) VALUES ($1, $2, $3, 'readiness_confirmed', '2026-11-27', $4)`,
+      [randomUUID(), clientA, siteA, pm.id],
+    );
+    await run(setJobStatus, book);
     await expect(run(setJobStatus, { jobId: job.id, status: 'attended_not_ready' })).rejects.toBeInstanceOf(
       RuleViolation,
     );

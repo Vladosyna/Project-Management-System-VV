@@ -434,6 +434,8 @@ export const en = {
   'installers.outcome.invalid': 'Check the entries.',
   'installers.outcome.rule':
     'Not allowed: two comparable quotes or a reason (P-12), or the steps are out of order.',
+  'installers.outcome.readiness':
+    'Not allowed yet: readiness is not confirmed. Record “Readiness confirmed” on the Lifecycle tab first (R32).',
   'installers.outcome.conflict': 'Already done.',
   'installers.outcome.failed': 'Could not save. Try again.',
   'site.tab.commercial': 'Commercial',
