@@ -679,3 +679,116 @@ export const countryCompliance = pgTable('country_compliance', {
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   archivedAt: timestamp('archived_at', { withTimezone: true }),
 });
+
+/** MI-1 (0028, D-37): Market Input form templates — base (no client) or a client's, by programme or country. */
+export const formTemplate = pgTable('form_template', {
+  id: uuid('id').primaryKey(),
+  clientId: uuid('client_id'),
+  programmeId: uuid('programme_id'),
+  countryCode: text('country_code'),
+  name: text('name').notNull(),
+  version: integer('version').notNull(),
+  createdBy: uuid('created_by').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  archivedAt: timestamp('archived_at', { withTimezone: true }),
+});
+
+export const FORM_FIELD_TYPES = [
+  'text',
+  'email',
+  'date',
+  'date_window',
+  'number',
+  'enum',
+  'yes_no_tbc',
+  'attachment_slot',
+  'checklist_item',
+] as const;
+export const FORM_REQUIREMENTS = ['required', 'optional', 'conditional'] as const;
+
+/** MI-1 (0028): one field of a template (rows, not jsonb — Vlad, 28 Nov). */
+export const formField = pgTable('form_field', {
+  id: uuid('id').primaryKey(),
+  templateId: uuid('template_id').notNull(),
+  key: text('key').notNull(),
+  section: text('section').notNull(),
+  sortOrder: integer('sort_order').notNull(),
+  labelEn: text('label_en').notNull(),
+  labelZh: text('label_zh').notNull(),
+  type: text('type', { enum: FORM_FIELD_TYPES }).notNull(),
+  requirement: text('requirement', { enum: FORM_REQUIREMENTS }).notNull(),
+  answeredBy: text('answered_by', { enum: ['market', 'vionvision'] }).notNull(),
+  options: jsonb('options'),
+  condition: jsonb('condition'),
+  guidanceEn: text('guidance_en'),
+  guidanceZh: text('guidance_zh'),
+  dueOffset: text('due_offset', { enum: ['d_minus_20', 'd_minus_2', 'before_calibration'] }),
+  version: integer('version').notNull().default(1),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  archivedAt: timestamp('archived_at', { withTimezone: true }),
+});
+
+/** MI-1 (0028): per client × country batch (no site) or per store — a field off, on, or with another requirement. */
+export const formFieldOverride = pgTable('form_field_override', {
+  id: uuid('id').primaryKey(),
+  clientId: uuid('client_id').notNull(),
+  countryCode: text('country_code').notNull(),
+  siteId: uuid('site_id'),
+  fieldId: uuid('field_id').notNull(),
+  action: text('action', { enum: ['disable', 'enable', 'change'] }).notNull(),
+  requirement: text('requirement', { enum: FORM_REQUIREMENTS }),
+  reason: text('reason').notNull(),
+  createdBy: uuid('created_by').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  archivedAt: timestamp('archived_at', { withTimezone: true }),
+});
+
+export const FORM_REQUEST_STATUSES = [
+  'not_started',
+  'in_progress',
+  'ready',
+  'submitted',
+  'reviewed',
+  'returned',
+  'changed_review_needed',
+] as const;
+
+/** MI-1 (0028): one form request per store and template version. */
+export const formRequest = pgTable('form_request', {
+  id: uuid('id').primaryKey(),
+  clientId: uuid('client_id').notNull(),
+  siteId: uuid('site_id').notNull(),
+  templateId: uuid('template_id').notNull(),
+  dueOn: date('due_on', { mode: 'string' }),
+  status: text('status', { enum: FORM_REQUEST_STATUSES }).notNull().default('not_started'),
+  currentRevision: integer('current_revision').notNull().default(0),
+  createdBy: uuid('created_by').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  archivedAt: timestamp('archived_at', { withTimezone: true }),
+});
+
+/** MI-1 (0028): an answer; a newer one supersedes it, never overwrites. */
+export const formAnswer = pgTable('form_answer', {
+  id: uuid('id').primaryKey(),
+  clientId: uuid('client_id').notNull(),
+  requestId: uuid('request_id').notNull(),
+  fieldId: uuid('field_id').notNull(),
+  value: jsonb('value').notNull(),
+  answeredBy: uuid('answered_by').notNull(),
+  answeredVia: text('answered_via', { enum: ['link', 'excel', 'agent', 'staff'] }).notNull(),
+  answeredAt: timestamp('answered_at', { withTimezone: true }).notNull().defaultNow(),
+  supersededAt: timestamp('superseded_at', { withTimezone: true }),
+});
+
+/** MI-1 (0028): per field, "Comment from market" / "Comment from Vionvision". */
+export const formComment = pgTable('form_comment', {
+  id: uuid('id').primaryKey(),
+  clientId: uuid('client_id').notNull(),
+  requestId: uuid('request_id').notNull(),
+  fieldId: uuid('field_id').notNull(),
+  side: text('side', { enum: ['market', 'vionvision'] }).notNull(),
+  body: text('body').notNull(),
+  authorId: uuid('author_id').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  archivedAt: timestamp('archived_at', { withTimezone: true }),
+});
