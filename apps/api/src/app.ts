@@ -17,6 +17,7 @@ import {
   archiveGateTemplate,
   gateTemplates,
   planInstallation,
+  programmeTracker,
   recordStep,
   saveGateTemplate,
   siteLifecycle,
@@ -279,6 +280,16 @@ export function createApp(rt: Runtime, options: AppOptions = {}): Hono {
   api.get('/sites/:siteId/lifecycle', async (c) =>
     c.json(await rt.kernel.read(siteLifecycle, c.get('actor'), { siteId: c.req.param('siteId') })),
   );
+  // E11 AC3: the programme tracker — every project with stage, dates and gates; optional filters.
+  api.get('/programme-tracker', async (c) => {
+    const filter = Object.fromEntries(
+      (['clientId', 'programmeId', 'countryCode'] as const).flatMap((k) => {
+        const v = c.req.query(k);
+        return v ? [[k, v]] : [];
+      }),
+    );
+    return c.json(await rt.kernel.read(programmeTracker, c.get('actor'), filter));
+  });
   api.post('/sites/:siteId/steps', async (c) => {
     const body = await c.req.json<Record<string, unknown>>();
     return c.json(
