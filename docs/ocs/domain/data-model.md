@@ -48,6 +48,7 @@ Conventions: UUID v7 `id`; `created_at/by`, `updated_at/by`; `archived_at` (no d
 - **PriceProposal** (0023): job_id, partner_id, sow_version, lines [{kind unit | hour | travel | extra, description, quantity, unitPrice}], amount + currency + EUR with rate, valid_until, source (mail | pdf | xlsx | whatsapp | manual) + ref, proposed_by/via, confirmed_by/at.
 - **QuoteApproval** (0023, P-11/P-12): job_id, proposal_id, approval_ref (DingTalk OA or message), approved_on, single_quote_reason, recorded_by; one active per job; recorded by a person, never by AI.
 
+- **SiteProposal** (0025, D-43): site, version, planned devices [{model, count}], proposal reference; one active per store, revisions archived. The quotation takes its counts from here; the invoice counts installed devices by serial number.
 - **ClientQuoteConfig** (0024, D-40): client × country — currency, hourly rate, tax mode (reverse_charge | ddp_local_vat + VAT rate), seller entity, buyer billing details, bank details, terms, number prefix; one active per client × country; entered by a director.
 - **SensorPrice** (0024): client, model, unit price, currency.
 - **ClientQuotation** (0024): number, title, issue date, lines (sensor / installation / other), standard hours vs quoted hours (+ reason when they differ), currency, subtotal, tax mode, VAT, total, status draft | sent (sent_by/at recorded by the person who sent it — OCS never sends); **ClientQuotationSite**: the stores covered, with sensors and scope for the time standard.
