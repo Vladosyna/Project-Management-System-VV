@@ -12,3 +12,4 @@ export { assignPartner } from './commands/assign-partner.ts';
 export { partnerLabels } from './queries/partner-labels.ts';
 export { partnerList } from './queries/partner-list.ts';
 export { setDeviceAlerts } from './commands/set-device-alerts.ts';
+export { setComplianceScope } from './commands/set-compliance-scope.ts';

@@ -4,6 +4,7 @@ import {
   asc,
   commercialRecord,
   commercialRecordSite,
+  countryCompliance,
   eq,
   installerJob,
   isNull,
@@ -14,6 +15,7 @@ import {
   sql,
   userRole,
   type Tx,
+  client,
 } from '@ocs/db';
 
 export type CommercialRow = typeof commercialRecord.$inferSelect;
@@ -128,4 +130,46 @@ export async function sitesWithRecords(tx: Tx) {
     .orderBy(asc(site.projectId));
   const records = await tx.select().from(commercialRecord).where(isNull(commercialRecord.archivedAt));
   return { sites, records };
+}
+
+export type CountryRow = typeof countryCompliance.$inferSelect;
+
+/** D-45: an active client (RLS: staff only). */
+export async function findActiveClient(tx: Tx, id: string) {
+  return (
+    await tx
+      .select({ id: client.id })
+      .from(client)
+      .where(and(eq(client.id, id), isNull(client.archivedAt)))
+  )[0];
+}
+
+/** D-45: the active DPIA or LPA of a client's country, locked for replacement or confirmation. */
+export async function lockActiveCountry(
+  tx: Tx,
+  key: { clientId: string; countryCode: string; kind: 'dpia' | 'lpa' } | { id: string },
+): Promise<CountryRow | undefined> {
+  const where =
+    'id' in key
+      ? eq(countryCompliance.id, key.id)
+      : and(
+          eq(countryCompliance.clientId, key.clientId),
+          eq(countryCompliance.countryCode, key.countryCode),
+          eq(countryCompliance.kind, key.kind),
+        );
+  return (
+    await tx
+      .select()
+      .from(countryCompliance)
+      .where(and(where, isNull(countryCompliance.archivedAt)))
+      .for('update')
+  )[0];
+}
+
+export async function insertCountry(tx: Tx, row: typeof countryCompliance.$inferInsert) {
+  await tx.insert(countryCompliance).values(row);
+}
+
+export async function updateCountry(tx: Tx, id: string, set: Partial<typeof countryCompliance.$inferInsert>) {
+  await tx.update(countryCompliance).set(set).where(eq(countryCompliance.id, id));
 }
