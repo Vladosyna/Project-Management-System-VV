@@ -21,7 +21,7 @@ One internal platform for every Vionvision delivery project: clients, projects a
 4. **Never send anything to a client automatically.** No outbound client email, no client notification, ever, from code or from you. OCS creates drafts; a person sends. Same for you: never send email or messages on Vlad's behalf.
 5. **Partners are anonymous to clients** (Partner A/B/C). Any client-facing output that could expose a partner name is a P0 defect.
 6. **No secrets in code or files.** No passwords in documents, seeds, commits or test data (SOP-DEL-04 §4). Secrets come from the environment / secret manager.
-7. **EU data residency.** Client data lives in the EU deployment only. Nothing auto-pushes client personal data to DingTalk or any China-hosted service.
+7. **EU data residency.** Client data lives in the EU deployment only. Nothing auto-pushes client personal data to DingTalk or any China-hosted service. The one exception: files a person confirms are uploaded into the DingTalk project folders (D-46).
 8. **Deny by default.** Every read and write goes through the permission layer. External users (client, partner) see only their own client's rows marked client-visible. Isolation is enforced in PostgreSQL row-level security, not only in code.
 9. **One write path.** All writes are commands in `packages/core` → permission check → zod validation → rules → transaction → audit event → outbox event. No writes from UI handlers, scripts or integrations that bypass it.
 10. **Never delete business records.** Archive/soft-delete only (SOP-DEL-02 "never delete").
