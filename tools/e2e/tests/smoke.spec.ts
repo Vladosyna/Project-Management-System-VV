@@ -2,6 +2,7 @@
 // mockup in EN and 中文, navigates, adds a passkey and signs in with it (ADR-002 passkey gap).
 import { expect, test, type Browser, type Page } from '@playwright/test';
 import { createHash, randomBytes } from 'node:crypto';
+import { readFile } from 'node:fs/promises';
 import { Secret, TOTP } from 'otpauth';
 
 const PASSWORD = 'correct horse battery staple';
@@ -520,7 +521,7 @@ test('a PM records a client PO in GBP, sees it in EUR and archives it (E13, D-34
   await expect(row).toBeHidden();
 });
 
-test('Projects is the programme tracker: projects by country with stage, dates and gates (E11 AC3)', async ({
+test('Projects is the programme tracker: projects by country with stage, dates and gates; CSV export (E11 AC3)', async ({
   page,
   browser,
 }) => {
@@ -537,10 +538,20 @@ test('Projects is the programme tracker: projects by country with stage, dates a
   await pm.getByLabel('Client').selectOption({ label: 'CLIENTA — Client A' });
   await expect(pm.getByRole('link', { name: 'CLIENTC-PT-LIS-003' })).toBeHidden();
   await expect(pm.getByRole('link', { name: 'CLIENTA-ES-MAD-001' })).toBeVisible();
-  await pm.getByLabel('Country').fill('es');
+  await pm.getByLabel('Country').selectOption('ES'); // a select of the client's countries (review of #133)
   await expect(pm.getByRole('heading', { level: 2, name: /^ES · / })).toBeVisible();
   await expect(pm.getByRole('heading', { level: 2, name: /^PT · / })).toBeHidden();
   await pm.screenshot({ path: 'test-results/projects-en.png', fullPage: true });
+  // Export CSV downloads what is shown: Client A in ES only.
+  const [download] = await Promise.all([
+    pm.waitForEvent('download'),
+    pm.getByRole('button', { name: 'Export CSV' }).click(),
+  ]);
+  expect(download.suggestedFilename()).toMatch(/^programme-tracker-ES-\d{4}-\d{2}-\d{2}\.csv$/);
+  const csv = await readFile(await download.path(), 'utf8');
+  expect(csv.split('\r\n')[0]).toContain('"Project ID","Site","Country"');
+  expect(csv).toContain('"CLIENTA-ES-MAD-001"');
+  expect(csv).not.toContain('CLIENTC-');
   // Each Project ID opens that project's Lifecycle tab.
   await pm.getByRole('link', { name: 'CLIENTA-ES-MAD-001' }).click();
   await expect(pm.getByRole('heading', { level: 2, name: 'Lifecycle' })).toBeVisible();
