@@ -93,6 +93,10 @@ export const client = pgTable('client', {
   id: uuid('id').primaryKey(),
   shortCode: text('short_code').notNull().unique(),
   name: text('name').notNull(),
+  /** D-45 (0027): DPIA and LPA agreed per store or once per country. */
+  complianceScope: text('compliance_scope', { enum: ['site', 'country'] })
+    .notNull()
+    .default('site'),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   archivedAt: timestamp('archived_at', { withTimezone: true }),
 });
@@ -468,12 +472,16 @@ export const intakeDispute = pgTable('intake_dispute', {
 });
 
 /** D-34 N2: commercial status per site (0022). Money in the original currency and in EUR with the rate used. */
+/** D-45: the part of the work a PO, invoice or quotation covers. */
+export const RECORD_PARTS = ['all', 'hardware', 'installation'] as const;
 export const COMMERCIAL_KINDS = ['client_po', 'dpia', 'client_invoice', 'price_list'] as const;
 export const commercialRecord = pgTable('commercial_record', {
   id: uuid('id').primaryKey(),
   clientId: uuid('client_id').notNull(),
   siteId: uuid('site_id').notNull(),
   kind: text('kind', { enum: COMMERCIAL_KINDS }).notNull(),
+  /** D-45 (0027): all of the work, or hardware / installation only. */
+  part: text('part', { enum: RECORD_PARTS }).notNull().default('all'),
   reference: text('reference'),
   status: text('status').notNull(),
   recordDate: date('record_date', { mode: 'string' }).notNull(),
@@ -603,6 +611,8 @@ export const sensorPrice = pgTable('sensor_price', {
 export const clientQuotation = pgTable('client_quotation', {
   id: uuid('id').primaryKey(),
   clientId: uuid('client_id').notNull(),
+  /** D-45 (0027): all of the work, or hardware / installation only. */
+  part: text('part', { enum: RECORD_PARTS }).notNull().default('all'),
   configId: uuid('config_id').notNull(),
   number: text('number').notNull().unique(),
   title: text('title').notNull(),
@@ -648,6 +658,24 @@ export const siteProposal = pgTable('site_proposal', {
   items: jsonb('items').notNull(),
   proposalRef: text('proposal_ref').notNull(),
   createdBy: uuid('created_by').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  archivedAt: timestamp('archived_at', { withTimezone: true }),
+});
+
+/** D-45 (0027): a DPIA or LPA approved once for a client's country; covers every store there. Internal only. */
+export const countryCompliance = pgTable('country_compliance', {
+  id: uuid('id').primaryKey(),
+  clientId: uuid('client_id').notNull(),
+  countryCode: text('country_code').notNull(),
+  kind: text('kind', { enum: ['dpia', 'lpa'] }).notNull(),
+  status: text('status', { enum: ['pending', 'approved', 'rejected'] }).notNull(),
+  reference: text('reference'),
+  recordDate: date('record_date', { mode: 'string' }).notNull(),
+  sourceRef: text('source_ref'),
+  proposedBy: uuid('proposed_by').notNull(),
+  proposedVia: text('proposed_via', { enum: ['web', 'ai'] }).notNull(),
+  confirmedBy: uuid('confirmed_by'),
+  confirmedAt: timestamp('confirmed_at', { withTimezone: true }),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   archivedAt: timestamp('archived_at', { withTimezone: true }),
 });

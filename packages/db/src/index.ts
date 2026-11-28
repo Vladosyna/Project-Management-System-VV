@@ -32,3 +32,4 @@ export { INSTALLER_JOB_STATUSES, installerJob, priceProposal, quoteApproval } fr
 export { clientQuotation, clientQuotationSite, clientQuoteConfig, sensorPrice } from './schema.ts';
 export { siteProposal } from './schema.ts';
 export { commercialRecordSite } from './schema.ts';
+export { countryCompliance, RECORD_PARTS } from './schema.ts';
