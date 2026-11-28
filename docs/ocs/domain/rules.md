@@ -37,7 +37,7 @@ Working calendars (`packages/core/calendar`): **CN** from the State Council noti
 | R29 | Quote above average | Installer quote above the running average of confirmed quotes of the same country and scope, per sensor (labour ÷ sensors, total ÷ sensors), by more than 20 % once at least 3 such quotes exist (D-44; not the time standard) | P1 | V1 |
 | R30 | Reply owed | Client thread awaiting our reply > 2 working days (rule of 25 Oct, D-34 C6) | P1 | V1 |
 | R31 | Readiness evidence missing | Readiness checklist item without photo/written evidence 2 working days before installation (D-34 C3) | P0 | V1 |
-| R32 | Installer booked before readiness | Block at save: installer booking while readiness not passed (D-34 C3) | P0 | V1 |
+| R32 | Readiness not confirmed at D−20 | A planned installation date exists and readiness is not confirmed 20 days before it (country working calendar). An alert, not a block: an installer may be booked before readiness (D-47) | P1 | V1 |
 | R33 | Item on a departed owner | Open item, site, case or thread owned by a person flagged as leaver (D-34 C8) | P1 | V1 |
 | R34 | Market input not started | Form request not started 3 working days after sending (D-37) | P2 | V1 |
 | R35 | Market input incomplete at D−20 | Required fields missing 20 days before planned installation (D-37) | P1 | V1 |
