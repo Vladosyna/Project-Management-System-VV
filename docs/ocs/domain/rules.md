@@ -45,7 +45,7 @@ Working calendars (`packages/core/calendar`): **CN** from the State Council noti
 | R37 | DPIA missing for calibration | Calibration requested, DPIA confirmation missing (D-37, D-34 C2; with R10) | P0 | V1 |
 | R38 | Promised attachment overdue | Attachment slot "To be provided" past its promised date (D-37) | P1 | V1 |
 | R39 | Returned form not corrected | Returned form request not corrected 2 working days after return (D-37) | P1 | V1 |
-| R40 | PO without LPA | Block at save: a client PO for a store whose country has no approved LPA, for clients that agree the LPA per country (D-45) | P0 | V1 |
+| R40 | PO without LPA | A confirmed client PO for a store whose country has no approved LPA, for clients that agree the LPA per country — an alert, never a block: PO and LPA often arrive together (D-45) | P1 | V1 |
 
 Intake (SOP-DEL-01) rules — implemented as validations, not alerts:
 
