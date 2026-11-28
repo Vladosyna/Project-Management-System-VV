@@ -31,3 +31,4 @@ export { COMMERCIAL_KINDS, commercialRecord } from './schema.ts';
 export { INSTALLER_JOB_STATUSES, installerJob, priceProposal, quoteApproval } from './schema.ts';
 export { clientQuotation, clientQuotationSite, clientQuoteConfig, sensorPrice } from './schema.ts';
 export { siteProposal } from './schema.ts';
+export { commercialRecordSite } from './schema.ts';

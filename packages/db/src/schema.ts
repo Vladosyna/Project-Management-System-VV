@@ -492,6 +492,16 @@ export const commercialRecord = pgTable('commercial_record', {
   archivedAt: timestamp('archived_at', { withTimezone: true }),
 });
 
+/** D-44 (0026): further stores a commercial record (a batch PO) covers, besides commercialRecord.siteId. */
+export const commercialRecordSite = pgTable('commercial_record_site_link', {
+  recordId: uuid('record_id').notNull(),
+  clientId: uuid('client_id').notNull(),
+  siteId: uuid('site_id').notNull(),
+  createdBy: uuid('created_by').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  archivedAt: timestamp('archived_at', { withTimezone: true }),
+});
+
 /** D-34 N1 (0023): an installer job per site or trip. Internal only. */
 export const INSTALLER_JOB_STATUSES = [
   'planned',
