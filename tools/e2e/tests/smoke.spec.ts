@@ -535,12 +535,19 @@ test('Projects is the programme tracker: projects by country with stage, dates a
     await expect(pm.getByRole('columnheader', { name: col }).first()).toBeVisible();
   await expect(pm.getByRole('link', { name: 'CLIENTC-PT-LIS-003' })).toBeVisible();
   // Filters: one client, then one country.
+  // Only the tracker is fetched again; the client list and commercial data load once (review of #142).
+  const refetched: string[] = [];
+  pm.on('request', (r) => {
+    const p = new URL(r.url()).pathname;
+    if (p === '/api/clients' || p === '/api/commercial') refetched.push(p);
+  });
   await pm.getByLabel('Client').selectOption({ label: 'CLIENTA — Client A' });
   await expect(pm.getByRole('link', { name: 'CLIENTC-PT-LIS-003' })).toBeHidden();
   await expect(pm.getByRole('link', { name: 'CLIENTA-ES-MAD-001' })).toBeVisible();
   await pm.getByLabel('Country').selectOption('ES'); // a select of the client's countries (review of #133)
   await expect(pm.getByRole('heading', { level: 2, name: /^ES · / })).toBeVisible();
   await expect(pm.getByRole('heading', { level: 2, name: /^PT · / })).toBeHidden();
+  expect(refetched).toEqual([]);
   await pm.screenshot({ path: 'test-results/projects-en.png', fullPage: true });
   // Export CSV downloads what is shown: Client A in ES only.
   const [download] = await Promise.all([
