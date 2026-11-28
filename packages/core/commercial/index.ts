@@ -9,3 +9,5 @@ export { isAmount, isRate, toEur } from './rules/money.ts';
 export { archiveRecord } from './commands/archive-record.ts';
 export { gaps } from './queries/gaps.ts';
 export { portfolio } from './queries/portfolio.ts';
+export { proposeCountry } from './commands/propose-country.ts';
+export { confirmCountry } from './commands/confirm-country.ts';

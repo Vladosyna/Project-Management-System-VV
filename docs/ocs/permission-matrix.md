@@ -5,6 +5,8 @@ External roles (`client`, `partner`) are switched off in the checker until the V
 
 | Permission | What it allows | director | pm | sales | rnd | finance | management | sponsor | admin | client | partner | system |
 |---|---|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| `commercial.country.confirm` | Confirm a country DPIA or LPA an AI agent proposed (a person only, never an agent). | ✓ | ✓ |  |  | ✓ |  |  |  |  |  |  |
+| `commercial.country.propose` | Record a client's DPIA or LPA for a whole country (D-45): it covers every store of that client there. Replaces the previous one, which is archived. From an AI agent it stays a proposal until a person confirms it. | ✓ | ✓ |  |  | ✓ |  | ✓ |  |  |  |  |
 | `commercial.gaps.read` | For the hourly alert run: every active site with its commercial gaps — installed without a confirmed PO (R14) or without an approved DPIA (R24), without an owner (R26), accepted 5 working days ago without a confirmed client invoice (R5), an approved installer cost above the client price (R27), and more than one open client PO (R13). A batch PO or invoice counts for every store linked to it (D-45). |  |  |  |  |  |  |  |  |  |  | ✓ |
 | `commercial.portfolio.read` | Commercial status of every site the actor may see: client PO, DPIA, invoices, price list in EUR, and AI proposals waiting for confirmation. | ✓ | ✓ |  |  | ✓ | ✓ | ✓ |  |  |  |  |
 | `commercial.record.archive` | Archive a wrong or replaced commercial record of a site, with a reason; never deleted. | ✓ | ✓ |  |  | ✓ |  |  |  |  |  |  |
@@ -56,6 +58,7 @@ External roles (`client`, `partner`) are switched off in the checker until the V
 | `lifecycle.step.record` | Record a step reached on a project — base step or gate — with date and evidence (E3 AC1) | ✓ | ✓ | ✓ |  |  |  |  |  |  |  |  |
 | `org.client.create` | Create a client (top of the SOP-DEL-02 hierarchy) | ✓ |  |  |  |  |  |  | ✓ |  |  |  |
 | `org.client.list` | See the clients the signed-in person may see: short code and name (E1) | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |  |  |  |
+| `org.complianceScope.set` | Set whether a client agrees DPIA and LPA per store or once per country (D-45); per country, a country record covers every store. | ✓ |  |  |  |  |  |  |  |  |  |  |
 | `org.partner.assign` | Assign a partner to a client under the next Partner letter | ✓ | ✓ |  |  |  |  |  | ✓ |  |  |  |
 | `org.partner.create` | Register a partner company (real name, staff only) | ✓ |  |  |  |  |  |  | ✓ |  |  |  |
 | `org.partner.labels` | See a client's partners as Partner A/B/C (no real names) | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |  |  |

@@ -4,6 +4,7 @@ import {
   asc,
   commercialRecord,
   commercialRecordSite,
+  countryCompliance,
   eq,
   installerJob,
   isNull,
@@ -14,6 +15,7 @@ import {
   sql,
   userRole,
   type Tx,
+  client,
 } from '@ocs/db';
 
 export type CommercialRow = typeof commercialRecord.$inferSelect;
@@ -55,15 +57,23 @@ export async function activeRecordsOfSite(tx: Tx, siteId: string): Promise<Comme
 }
 
 /**
- * R5/R14/R24/R26/R27: active sites with their owner and country, whether installation is recorded, when acceptance
+ * R5/R13/R14/R24/R26/R27/R40: active sites with their owner and country, whether installation is recorded, when acceptance
  * was recorded, their confirmed records (PO, DPIA, invoice, price list, with the EUR amount), the further stores a
  * batch record covers (D-44) and the EUR amount of each CEO-approved installer quote on an active job that is not
  * cancelled.
  */
 export async function commercialGaps(tx: Tx, acceptedStep: string) {
   const sites = await tx
-    .select({ id: site.id, projectId: site.projectId, pmId: site.pmId, countryCode: site.countryCode })
+    .select({
+      id: site.id,
+      projectId: site.projectId,
+      pmId: site.pmId,
+      clientId: site.clientId,
+      countryCode: site.countryCode,
+      complianceScope: client.complianceScope,
+    })
     .from(site)
+    .innerJoin(client, eq(client.id, site.clientId))
     .where(isNull(site.archivedAt));
   const installed = await tx
     .select({ siteId: siteStep.siteId })
@@ -79,10 +89,26 @@ export async function commercialGaps(tx: Tx, acceptedStep: string) {
       siteId: commercialRecord.siteId,
       kind: commercialRecord.kind,
       status: commercialRecord.status,
+      part: commercialRecord.part,
       eurAmount: commercialRecord.eurAmount,
     })
     .from(commercialRecord)
     .where(and(isNull(commercialRecord.archivedAt), sql`${commercialRecord.confirmedAt} IS NOT NULL`));
+  /** D-45 (3)(4): approved, confirmed, active DPIA / LPA per client and country. */
+  const countryApproved = await tx
+    .select({
+      clientId: countryCompliance.clientId,
+      countryCode: countryCompliance.countryCode,
+      kind: countryCompliance.kind,
+    })
+    .from(countryCompliance)
+    .where(
+      and(
+        isNull(countryCompliance.archivedAt),
+        eq(countryCompliance.status, 'approved'),
+        sql`${countryCompliance.confirmedAt} IS NOT NULL`,
+      ),
+    );
   const approvedCosts = await tx
     .select({ siteId: installerJob.siteId, eurAmount: priceProposal.eurAmount })
     .from(quoteApproval)
@@ -107,6 +133,7 @@ export async function commercialGaps(tx: Tx, acceptedStep: string) {
     records,
     links,
     approvedCosts,
+    countryApproved: new Set(countryApproved.map((c) => `${c.clientId}:${c.countryCode}:${c.kind}`)),
   };
 }
 
@@ -128,4 +155,46 @@ export async function sitesWithRecords(tx: Tx) {
     .orderBy(asc(site.projectId));
   const records = await tx.select().from(commercialRecord).where(isNull(commercialRecord.archivedAt));
   return { sites, records };
+}
+
+export type CountryRow = typeof countryCompliance.$inferSelect;
+
+/** D-45: an active client (RLS: staff only). */
+export async function findActiveClient(tx: Tx, id: string) {
+  return (
+    await tx
+      .select({ id: client.id })
+      .from(client)
+      .where(and(eq(client.id, id), isNull(client.archivedAt)))
+  )[0];
+}
+
+/** D-45: the active DPIA or LPA of a client's country, locked for replacement or confirmation. */
+export async function lockActiveCountry(
+  tx: Tx,
+  key: { clientId: string; countryCode: string; kind: 'dpia' | 'lpa' } | { id: string },
+): Promise<CountryRow | undefined> {
+  const where =
+    'id' in key
+      ? eq(countryCompliance.id, key.id)
+      : and(
+          eq(countryCompliance.clientId, key.clientId),
+          eq(countryCompliance.countryCode, key.countryCode),
+          eq(countryCompliance.kind, key.kind),
+        );
+  return (
+    await tx
+      .select()
+      .from(countryCompliance)
+      .where(and(where, isNull(countryCompliance.archivedAt)))
+      .for('update')
+  )[0];
+}
+
+export async function insertCountry(tx: Tx, row: typeof countryCompliance.$inferInsert) {
+  await tx.insert(countryCompliance).values(row);
+}
+
+export async function updateCountry(tx: Tx, id: string, set: Partial<typeof countryCompliance.$inferInsert>) {
+  await tx.update(countryCompliance).set(set).where(eq(countryCompliance.id, id));
 }

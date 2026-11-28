@@ -26,6 +26,7 @@ describe('commercial alerts job', () => {
         r5: false,
         r27: false,
         r13: false,
+        r40: false,
       },
       {
         siteId: 's2',
@@ -36,6 +37,7 @@ describe('commercial alerts job', () => {
         r5: false,
         r27: false,
         r13: false,
+        r40: false,
       },
     ];
     const k = recordingKernel(sites, ['d1']);
@@ -53,12 +55,14 @@ describe('commercial alerts job', () => {
       gapRef('R5', 's1'),
       gapRef('R27', 's1'),
       gapRef('R13', 's1'),
+      gapRef('R40', 's1'),
       gapRef('R26', 's1', 'd1'),
       gapRef('R14', 's2'),
       gapRef('R24', 's2'),
       gapRef('R5', 's2'),
       gapRef('R27', 's2'),
       gapRef('R13', 's2'),
+      gapRef('R40', 's2'),
     ]);
   });
 
@@ -73,6 +77,7 @@ describe('commercial alerts job', () => {
         r5: true,
         r27: false,
         r13: false,
+        r40: false,
       },
     ];
     const k = recordingKernel(sites, []);
@@ -102,6 +107,7 @@ describe('commercial alerts job', () => {
         r5: false,
         r27: false,
         r13: true,
+        r40: false,
       },
     ];
     const k = recordingKernel(sites, []);
@@ -128,6 +134,7 @@ describe('commercial alerts job', () => {
         r5: false,
         r27: true,
         r13: false,
+        r40: false,
       },
     ];
     const k = recordingKernel(sites, []);

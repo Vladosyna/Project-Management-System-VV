@@ -33,3 +33,14 @@ export { clientQuotation, clientQuotationSite, clientQuoteConfig, sensorPrice } 
 export { siteProposal } from './schema.ts';
 export { commercialRecordSite } from './schema.ts';
 export { countryCompliance, RECORD_PARTS } from './schema.ts';
+export {
+  formAnswer,
+  formComment,
+  formField,
+  formFieldOverride,
+  formRequest,
+  formTemplate,
+  FORM_FIELD_TYPES,
+  FORM_REQUEST_STATUSES,
+  FORM_REQUIREMENTS,
+} from './schema.ts';
