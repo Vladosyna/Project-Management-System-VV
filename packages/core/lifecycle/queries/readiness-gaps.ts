@@ -3,12 +3,14 @@
 // set when the planned installation is within the readiness window — the gate template's days, else the rule
 // default — and readiness is not confirmed; never once the project reached readinessRule.alertEndsAt (installed).
 // Read in three queries whatever the number of projects (review of #121), the same way as the programme tracker.
+// R32 (D-47): r32 set when the planned installation is 20 working days away or closer and readiness is not confirmed.
 // The system actor only.
 import { z } from 'zod';
 import { defineQuery } from '../../kernel/index.ts';
 import { lifecyclePermissions } from '../permissions.ts';
 import { activeSites, activeStepsOf, activeTemplates, pickTemplate } from '../repository.ts';
 import { readinessRule } from '../rules/readiness.config.ts';
+import { readinessMissingAtD20 } from '../rules/readiness-d20.ts';
 import { lifecycleView } from './lifecycle-view.ts';
 
 export const readinessGaps = defineQuery({
@@ -35,6 +37,10 @@ export const readinessGaps = defineQuery({
         siteId: s.id,
         projectId: s.projectId,
         r9: view.readinessAtRisk && !mine.some((st) => st.step === readinessRule.alertEndsAt),
+        r32: readinessMissingAtD20({
+          workingDaysToInstallation: view.workingDaysToInstallation,
+          reached: mine.map((st) => st.step),
+        }),
         plannedInstallationDate: s.plannedInstallationDate,
         workingDaysToInstallation: view.workingDaysToInstallation,
       };
