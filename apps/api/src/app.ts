@@ -53,6 +53,9 @@ import { offeredOperations, operationsFor, type Runtime } from '@ocs/core/runtim
 import { oauthProviderAuthServerMetadata } from '@better-auth/oauth-provider';
 import { createMcpHttpHandler } from '@ocs/mcp';
 import { errorResponse } from './errors.ts';
+import { receiveFile } from './files.ts';
+import type { ObjectStore } from './object-store.ts';
+import { confirmFile, requestUpload } from '@ocs/core/files';
 import { openApiDocument } from './openapi.ts';
 import { createAgentTokenCheck, type IntrospectionClient } from './agent-tokens.ts';
 
@@ -63,6 +66,8 @@ interface Env {
 export interface AppOptions {
   /** D-33: the MCP resource client for token introspection (secret store); without it, userinfo is used. */
   readonly introspection?: IntrospectionClient;
+  /** D-46: EU object storage for attached files; without it, uploads answer 503. */
+  readonly fileStore?: ObjectStore;
 }
 
 export function createApp(rt: Runtime, options: AppOptions = {}): Hono {
@@ -290,6 +295,27 @@ export function createApp(rt: Runtime, options: AppOptions = {}): Hono {
     );
     return c.json(await rt.kernel.read(programmeTracker, c.get('actor'), filter));
   });
+  // D-46: attach a file (multipart: file, ownerType, sopFolder, …); confirm it; put it in its DingTalk folder.
+  api.post('/sites/:siteId/files', async (c) => {
+    if (!options.fileStore) return c.json({ error: 'file storage is not configured' }, 503);
+    const out = await receiveFile(
+      rt,
+      options.fileStore,
+      c.get('actor'),
+      c.req.param('siteId'),
+      await c.req.formData(),
+    );
+    return c.json(out.body, out.status);
+  });
+  api.post('/files/:fileId/confirm', async (c) =>
+    c.json(await rt.kernel.execute(confirmFile, c.get('actor'), { fileId: c.req.param('fileId') }, 'web')),
+  );
+  api.post('/files/:fileId/upload', async (c) =>
+    c.json(
+      await rt.kernel.execute(requestUpload, c.get('actor'), { fileId: c.req.param('fileId') }, 'web'),
+      202,
+    ),
+  );
   api.post('/sites/:siteId/steps', async (c) => {
     const body = await c.req.json<Record<string, unknown>>();
     return c.json(
