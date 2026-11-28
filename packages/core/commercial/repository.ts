@@ -3,6 +3,7 @@ import {
   and,
   asc,
   commercialRecord,
+  commercialRecordSite,
   eq,
   installerJob,
   isNull,
@@ -55,8 +56,9 @@ export async function activeRecordsOfSite(tx: Tx, siteId: string): Promise<Comme
 
 /**
  * R5/R14/R24/R26/R27: active sites with their owner and country, whether installation is recorded, when acceptance
- * was recorded, their confirmed records (PO, DPIA, invoice, price list, with the EUR amount) and the EUR amount of each
- * CEO-approved installer quote on an active job that is not cancelled.
+ * was recorded, their confirmed records (PO, DPIA, invoice, price list, with the EUR amount), the further stores a
+ * batch record covers (D-44) and the EUR amount of each CEO-approved installer quote on an active job that is not
+ * cancelled.
  */
 export async function commercialGaps(tx: Tx, acceptedStep: string) {
   const sites = await tx
@@ -73,6 +75,7 @@ export async function commercialGaps(tx: Tx, acceptedStep: string) {
     .where(and(eq(siteStep.step, acceptedStep), isNull(siteStep.archivedAt)));
   const records = await tx
     .select({
+      id: commercialRecord.id,
       siteId: commercialRecord.siteId,
       kind: commercialRecord.kind,
       status: commercialRecord.status,
@@ -92,11 +95,17 @@ export async function commercialGaps(tx: Tx, acceptedStep: string) {
         sql`${installerJob.status} <> 'cancelled'`,
       ),
     );
+  /** D-44: further stores a record (a batch PO) covers, besides the store it was entered on. */
+  const links = await tx
+    .select({ recordId: commercialRecordSite.recordId, siteId: commercialRecordSite.siteId })
+    .from(commercialRecordSite)
+    .where(isNull(commercialRecordSite.archivedAt));
   return {
     sites,
     installed: new Set(installed.map((r) => r.siteId)),
     acceptedOn: new Map(accepted.map((r) => [r.siteId, r.doneOn])),
     records,
+    links,
     approvedCosts,
   };
 }
