@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   addWorkingDays,
+  calendarOfCountry,
   CalendarDataMissing,
   easterSunday,
   isHoliday,
@@ -89,5 +90,17 @@ describe('localDateIn', () => {
     const instant = new Date('2026-11-02T17:30:00Z');
     expect(localDateIn(instant, 'Asia/Shanghai')).toBe('2026-11-03');
     expect(localDateIn(instant, 'Europe/Madrid')).toBe('2026-11-02');
+  });
+});
+
+describe('calendarOfCountry — the project country calendar, GB where none exists yet', () => {
+  it.each([
+    ['CN', 'CN'],
+    ['ES', 'ES'],
+    ['GB', 'GB'],
+    ['FR', 'GB'],
+    ['', 'GB'],
+  ] as const)('%s → %s', (country, calendar) => {
+    expect(calendarOfCountry(country)).toBe(calendar);
   });
 });

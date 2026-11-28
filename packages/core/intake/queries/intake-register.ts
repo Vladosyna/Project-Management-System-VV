@@ -3,13 +3,11 @@
 // submitted card version, optionally for one month of submissions. Days to acceptance: working days from the
 // project's first submission to its acceptance (project country calendar, GB fallback — as in E3).
 import { z } from 'zod';
-import { calendarIds, localDateIn, workingDaysBetween, type CalendarId } from '../../calendar/index.ts';
+import { calendarOfCountry, localDateIn, workingDaysBetween } from '../../calendar/index.ts';
 import { defineQuery } from '../../kernel/index.ts';
 import { intakePermissions } from '../permissions.ts';
 import { submissions } from '../repository.ts';
 
-const calendarOf = (country: string): CalendarId =>
-  (calendarIds as readonly string[]).includes(country) ? (country as CalendarId) : 'GB';
 const day = (d: Date) => localDateIn(d, 'UTC');
 
 export const intakeRegister = defineQuery({
@@ -45,7 +43,7 @@ export const intakeRegister = defineQuery({
           returns: s.version - 1,
           daysToAcceptance:
             accepted && decidedAt
-              ? workingDaysBetween(day(first), day(decidedAt), calendarOf(s.countryCode))
+              ? workingDaysBetween(day(first), day(decidedAt), calendarOfCountry(s.countryCode))
               : null,
         };
         return [row];

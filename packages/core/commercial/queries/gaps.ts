@@ -3,17 +3,13 @@
 // accepted 5 working days ago or more without a confirmed client invoice (project country's calendar); R27 approved
 // installer cost above the client price (EUR). Only confirmed records count: an AI proposal is not yet a fact. The system actor only.
 import { z } from 'zod';
-import { calendarIds, localDateIn, type CalendarId } from '../../calendar/index.ts';
+import { calendarOfCountry, localDateIn } from '../../calendar/index.ts';
 import { defineQuery } from '../../kernel/index.ts';
 import { commercialPermissions } from '../permissions.ts';
 import { commercialGaps, directorIds } from '../repository.ts';
 import { invoiceOverdue } from '../rules/invoice-ready.ts';
 import { invoiceReadyRule } from '../rules/invoice-ready.config.ts';
 import { negativeMargin } from '../rules/negative-margin.ts';
-
-/** As work.alert.raise and the life cycle: a country without a working calendar yet counts like GB. */
-const calendarOf = (country: string): CalendarId =>
-  (calendarIds as readonly string[]).includes(country) ? (country as CalendarId) : 'GB';
 
 export const gaps = defineQuery({
   name: 'commercial.gaps.read',
@@ -39,7 +35,7 @@ export const gaps = defineQuery({
         acceptedOn: acceptedOn.get(s.id) ?? null,
         today,
         hasInvoice: has(s.id, invoiceReadyRule.clearedBy),
-        calendar: calendarOf(s.countryCode),
+        calendar: calendarOfCountry(s.countryCode),
       }),
       r27: negativeMargin({
         approvedCostsEur: approvedCosts.filter((c) => c.siteId === s.id).map((c) => c.eurAmount),
