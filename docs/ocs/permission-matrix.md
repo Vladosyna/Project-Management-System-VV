@@ -21,6 +21,9 @@ External roles (`client`, `partner`) are switched off in the checker until the V
 | `devices.platform.syncZones` | Sync a project's zones (stores, areas, gates) from the device platform (system only, E4) |  |  |  |  |  |  |  |  |  |  | ✓ |
 | `devices.platformSites.read` | Projects linked to a mall on the device platform, with their alerts switch (system only) |  |  |  |  |  |  |  |  |  |  | ✓ |
 | `devices.siteDevices.read` | See a project's devices: platform status, offline since, the gate each channel counts (E4) | ✓ | ✓ | ✓ | ✓ |  | ✓ | ✓ |  |  |  |  |
+| `files.file.confirm` | Confirm a file an AI agent, the market link or a mail brought in (a person only, never an agent): only a confirmed file may go to DingTalk (D-46). | ✓ | ✓ |  |  | ✓ |  |  |  |  |  |  |
+| `files.file.store` | Record a file stored in EU object storage for a project record (proposal, PO, invoice, quotation, drawing, Market Input), with hash, size, type and SOP-DEL-02 folder (D-46). A new version archives the previous one. From a person it is confirmed at once; from an AI agent it waits for a person. | ✓ | ✓ | ✓ |  | ✓ |  |  |  |  |  |  |
+| `files.upload.request` | Put a confirmed file into its DingTalk project folder by SOP-DEL-02 ("Put in folder", D-46): the worker uploads it and records the DingTalk link. A person only. | ✓ | ✓ |  |  | ✓ |  |  |  |  |  |  |
 | `identity.agent.revoke` | Disconnect an AI agent the person connected to OCS: revoke its tokens and the consent at once (D-33) | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |  |  |  |
 | `identity.agentResource.setup` | Create the MCP resource client OCS uses to check AI agent tokens (introspection); its secret is shown once (D-33) |  |  |  |  |  |  |  | ✓ |  |  |  |
 | `identity.invitation.accept` | Grant the invited roles once the invited person has set a password (system only) |  |  |  |  |  |  |  |  |  |  | ✓ |
@@ -32,6 +35,7 @@ External roles (`client`, `partner`) are switched off in the checker until the V
 | `identity.user.invite` | Invite a new staff user by link | ✓ |  |  |  |  |  |  | ✓ |  |  |  |
 | `identity.user.read` | See the user list with roles and MFA status | ✓ |  |  |  |  |  |  | ✓ |  |  |  |
 | `installers.approval.record` | Record the CEO's approval of the chosen installer quote with its reference (DingTalk OA or message). Needs two comparable confirmed quotes on the same SOW, or a reason for a single quote (P-11, P-12). A person only, never an AI agent. | ✓ | ✓ |  |  |  |  |  |  |  |  |  |
+| `installers.designChecks.read` | For the hourly alert run: every active site with an installer job, flagged when an open job counts a different number of sensors than the store’s current design (active proposal; CBox not counted) — R12. |  |  |  |  |  |  |  |  |  |  | ✓ |
 | `installers.job.create` | Create an installer job on a site: installer, scope (partial/full on-site), number of sensors, SOW version; the installer's real name stays internal. | ✓ | ✓ |  |  |  |  |  |  |  |  |  |
 | `installers.job.setStatus` | Move an installer job on: scheduled (with date), done, attended but site not ready, or cancelled, with an outcome note. | ✓ | ✓ |  |  |  |  |  |  |  |  |  |
 | `installers.partners.read` | Installer companies (partners) with their internal names and country, for choosing an installer on a job or quote. Staff only; never shown to clients. | ✓ | ✓ |  |  | ✓ | ✓ | ✓ |  |  |  |  |

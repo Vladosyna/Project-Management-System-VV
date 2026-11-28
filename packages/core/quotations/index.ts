@@ -4,3 +4,5 @@ export { quotationsPermissions } from './permissions.ts';
 export { saveConfig } from './commands/save-config.ts';
 export { savePrice } from './commands/save-price.ts';
 export { draftQuotation } from './commands/draft-quotation.ts';
+/** R12 (installers): the sensors of each store's active proposal. */
+export { designSensors } from './queries/design-sensors.ts';

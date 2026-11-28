@@ -74,7 +74,7 @@ Dates from D-17. Each epic lists acceptance criteria (AC). An epic is done when 
 
 ### E8 Alerts (subset)
 - AC1 Engine runs hourly; each hit has owner, level, due, handling log.
-- AC2 V1 rules: R2, R5, R6 (save-block), R7, R8, R9, R12, R13, R14, R17, R18, R19, R20, R23, R24–R31, R32 (save-block), R33, R34–R39 (domain/rules.md; R2 and R24–R33 added by D-34, R34–R39 by D-37).
+- AC2 V1 rules: R2, R5, R6 (save-block), R7, R8, R9, R12, R13, R14, R17, R18, R19, R20, R23, R24–R31, R32 (alert at D−20, D-47), R33, R34–R39 (domain/rules.md; R2 and R24–R33 added by D-34, R34–R39 by D-37).
 
 ### E9 DingTalk notifications (one-way)
 - AC1 Work notice to the assignee for new work item, ETA due, alert; deep link to OCS.

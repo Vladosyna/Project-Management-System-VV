@@ -44,3 +44,4 @@ export {
   FORM_REQUEST_STATUSES,
   FORM_REQUIREMENTS,
 } from './schema.ts';
+export { dingtalkUpload, FILE_OWNER_TYPES, storedFile } from './schema.ts';
