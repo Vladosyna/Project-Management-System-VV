@@ -180,3 +180,18 @@ export async function quotesToCheck(tx: Tx, near?: { siteId: string }) {
     );
   return { sites, quotes };
 }
+
+/** R12: every active installer job of an active site, with its project, sensors and status. */
+export async function jobsToCompare(tx: Tx) {
+  return tx
+    .select({
+      siteId: installerJob.siteId,
+      projectId: site.projectId,
+      sensorCount: installerJob.sensorCount,
+      status: installerJob.status,
+    })
+    .from(installerJob)
+    .innerJoin(site, eq(site.id, installerJob.siteId))
+    .where(and(isNull(installerJob.archivedAt), isNull(site.archivedAt)))
+    .orderBy(asc(site.projectId), asc(installerJob.createdAt));
+}

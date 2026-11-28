@@ -9,3 +9,4 @@ export { recordApproval } from './commands/record-approval.ts';
 export { setJobStatus } from './commands/set-job-status.ts';
 export { partners } from './queries/partners.ts';
 export { quoteChecks } from './queries/quote-checks.ts';
+export { designChecks } from './queries/design-checks.ts';
