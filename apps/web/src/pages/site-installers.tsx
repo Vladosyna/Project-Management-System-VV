@@ -10,6 +10,8 @@ type Outcome = 'ok' | 'forbidden' | 'invalid' | 'rule' | 'conflict' | 'failed';
 const NEXT = ['scheduled', 'done', 'attended_not_ready', 'cancelled'] as const;
 type Next = (typeof NEXT)[number];
 type Status = 'planned' | 'quoting' | 'approved' | Next;
+/** +18 % / −5 %: the sign always shown, a true minus. */
+const signed = (p: number) => `${p > 0 ? '+' : p < 0 ? '−' : ''}${String(Math.abs(p))} %`;
 
 function JobCard(props: {
   job: InstallerJob;
@@ -57,6 +59,7 @@ function JobCard(props: {
               <th scope="col">{t('installers.col.amount')}</th>
               <th scope="col">{t('installers.col.eur')}</th>
               <th scope="col">{t('installers.col.valid')}</th>
+              <th scope="col">{t('installers.col.vsAverage')}</th>
               <th scope="col">{t('installers.col.state')}</th>
             </tr>
           </thead>
@@ -67,6 +70,16 @@ function JobCard(props: {
                 <td>{`${q.amount} ${q.currency}`}</td>
                 <td>{t('commercial.overview.eur', { eur: q.eur })}</td>
                 <td>{q.validUntil ?? ''}</td>
+                <td>
+                  {q.vsAverage === null
+                    ? ''
+                    : q.vsAverage.labourPercent === null || q.vsAverage.totalPercent === null
+                      ? t('installers.vsAverage.tooFew')
+                      : t('installers.vsAverage', {
+                          labour: signed(q.vsAverage.labourPercent),
+                          total: signed(q.vsAverage.totalPercent),
+                        })}
+                </td>
                 <td>
                   {q.confirmed ? (
                     t('installers.confirmed')

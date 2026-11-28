@@ -9,6 +9,7 @@ import { createJob } from '../commands/create-job.ts';
 import { proposeQuote } from '../commands/propose-quote.ts';
 import { recordApproval } from '../commands/record-approval.ts';
 import { quoteChecks } from '../queries/quote-checks.ts';
+import { siteJobs } from '../queries/site-jobs.ts';
 
 const pm = aStaffActor({ roles: ['pm'] });
 const agent = { ...pm, via: 'mcp:test-agent' };
@@ -47,7 +48,7 @@ beforeAll(async () => {
   testDb = await createTestDatabase(inject('postgresUrl'));
   t = await openTestKernel(testDb.url);
   t.grant(pm, createClient.permission, createSite.permission, createJob.permission, proposeQuote.permission);
-  t.grant(pm, recordApproval.permission);
+  t.grant(pm, recordApproval.permission, siteJobs.permission);
   t.grant(system, quoteChecks.permission);
   await runAsOwner(
     testDb.url,
@@ -98,6 +99,16 @@ describe('installers.quoteChecks.read — R29 (D-44)', () => {
       otherScope: false,
     });
     expect(rows.find((r) => r.siteId === ids.above)).toMatchObject({ labourPercent: 33, totalPercent: 33 });
+  });
+
+  it('the Installers tab shows each confirmed quote against the average, + or − (review of PR 136)', async () => {
+    const vs = async (name: (typeof NAMES)[number]) =>
+      (await t.kernel.read(siteJobs, pm, { siteId: ids[name] }))[0]?.quotes[0]?.vsAverage;
+    expect(await vs('above')).toEqual({ labourPercent: 33, totalPercent: 33 });
+    // p1 against 100, 100, 150, 150: the average is 125, so 100 is −20 %.
+    expect(await vs('p1')).toEqual({ labourPercent: -20, totalPercent: -20 });
+    expect(await vs('es1')).toEqual({ labourPercent: null, totalPercent: null }); // fewer than 3 to compare
+    expect(await vs('agentOnly')).toBeNull(); // not confirmed yet
   });
 
   it('is for the alert run only', async () => {
