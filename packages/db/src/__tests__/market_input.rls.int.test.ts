@@ -17,7 +17,14 @@ import {
   type DbActor,
 } from '../index.ts';
 
-const [clientA, clientB, siteA, template, field, request] = Array.from({ length: 6 }, () => randomUUID());
+const [clientA, clientB, siteA, template, field, request] = [
+  randomUUID(),
+  randomUUID(),
+  randomUUID(),
+  randomUUID(),
+  randomUUID(),
+  randomUUID(),
+];
 const staff: DbActor = { id: randomUUID(), kind: 'staff', clientIds: [] };
 const userOfA: DbActor = { id: randomUUID(), kind: 'client', clientIds: [clientA] };
 const partnerOfA: DbActor = { id: randomUUID(), kind: 'partner', clientIds: [clientA] };
@@ -106,29 +113,25 @@ it('a client cannot write', async () => {
 it('one request per store and template; one current answer per field; same client only', async () => {
   await expect(
     asStaff((tx) =>
-      tx
-        .insert(formRequest)
-        .values({
-          id: randomUUID(),
-          clientId: clientA,
-          siteId: siteA,
-          templateId: template,
-          createdBy: staff.id,
-        }),
+      tx.insert(formRequest).values({
+        id: randomUUID(),
+        clientId: clientA,
+        siteId: siteA,
+        templateId: template,
+        createdBy: staff.id,
+      }),
     ),
   ).rejects.toThrow();
   await expect(asStaff((tx) => tx.insert(formAnswer).values(answer()))).rejects.toThrow();
   await expect(
     asStaff((tx) =>
-      tx
-        .insert(formRequest)
-        .values({
-          id: randomUUID(),
-          clientId: clientB,
-          siteId: siteA,
-          templateId: template,
-          createdBy: staff.id,
-        }),
+      tx.insert(formRequest).values({
+        id: randomUUID(),
+        clientId: clientB,
+        siteId: siteA,
+        templateId: template,
+        createdBy: staff.id,
+      }),
     ),
   ).rejects.toThrow();
   await asStaff((tx) => tx.insert(formAnswer).values(answer({ supersededAt: new Date() })));
