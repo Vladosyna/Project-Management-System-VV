@@ -21,6 +21,9 @@ External roles (`client`, `partner`) are switched off in the checker until the V
 | `devices.platform.syncZones` | Sync a project's zones (stores, areas, gates) from the device platform (system only, E4) |  |  |  |  |  |  |  |  |  |  | ✓ |
 | `devices.platformSites.read` | Projects linked to a mall on the device platform, with their alerts switch (system only) |  |  |  |  |  |  |  |  |  |  | ✓ |
 | `devices.siteDevices.read` | See a project's devices: platform status, offline since, the gate each channel counts (E4) | ✓ | ✓ | ✓ | ✓ |  | ✓ | ✓ |  |  |  |  |
+| `files.file.confirm` | Confirm a file an AI agent, the market link or a mail brought in (a person only, never an agent): only a confirmed file may go to DingTalk (D-46). | ✓ | ✓ |  |  | ✓ |  |  |  |  |  |  |
+| `files.file.store` | Record a file stored in EU object storage for a project record (proposal, PO, invoice, quotation, drawing, Market Input), with hash, size, type and SOP-DEL-02 folder (D-46). A new version archives the previous one. From a person it is confirmed at once; from an AI agent it waits for a person. | ✓ | ✓ | ✓ |  | ✓ |  |  |  |  |  |  |
+| `files.upload.request` | Put a confirmed file into its DingTalk project folder by SOP-DEL-02 ("Put in folder", D-46): the worker uploads it and records the DingTalk link. A person only. | ✓ | ✓ |  |  | ✓ |  |  |  |  |  |  |
 | `identity.agent.revoke` | Disconnect an AI agent the person connected to OCS: revoke its tokens and the consent at once (D-33) | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |  |  |  |
 | `identity.agentResource.setup` | Create the MCP resource client OCS uses to check AI agent tokens (introspection); its secret is shown once (D-33) |  |  |  |  |  |  |  | ✓ |  |  |  |
 | `identity.invitation.accept` | Grant the invited roles once the invited person has set a password (system only) |  |  |  |  |  |  |  |  |  |  | ✓ |
