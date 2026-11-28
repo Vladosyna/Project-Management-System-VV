@@ -1,10 +1,13 @@
 // installers.job.setStatus — E12 AC5/AC6: scheduled (date, after the approval; P-10: schedule changes through the
 // Delivery Director — this command is director/PM only), then the visit outcome: done, attended but the site not
-// ready (abortive charge per supplier rules), or cancelled before arrival, with a note.
+// ready (abortive charge per supplier rules), or cancelled before arrival, with a note. R32 (D-34 C3): booking
+// (scheduled) is refused until the project's readiness is confirmed.
 import { z } from 'zod';
 import { defineCommand, NotFound, RuleViolation } from '../../kernel/index.ts';
+import { readinessConfirmed } from '../../lifecycle/index.ts';
 import { installersPermissions } from '../permissions.ts';
 import { lockActiveJob, updateJob } from '../repository.ts';
+import { checkBookingReadiness } from '../rules/booking-readiness.ts';
 
 const FROM: Record<string, readonly string[]> = {
   scheduled: ['approved', 'scheduled'],
@@ -32,6 +35,10 @@ export const setJobStatus = defineCommand({
     if (i.status === 'scheduled' && !i.scheduledOn) {
       throw new RuleViolation('E12 AC5', 'a scheduled job needs its date');
     }
+    checkBookingReadiness({
+      status: i.status,
+      readinessPassed: i.status === 'scheduled' && (await readinessConfirmed(ctx.tx, job.siteId)),
+    });
     if (i.status === 'attended_not_ready' && !i.note) {
       throw new RuleViolation('E12 AC6', 'say what was not ready (abortive charge rules)');
     }

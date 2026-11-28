@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Button, Form, FormMessage, SelectField, TextField, useI18n } from '@ocs/ui';
 import { installerWrite } from '../api.ts';
 
-type Outcome = 'ok' | 'forbidden' | 'invalid' | 'rule' | 'conflict' | 'failed';
+type Outcome = 'ok' | 'forbidden' | 'invalid' | 'rule' | 'readiness' | 'conflict' | 'failed';
 interface Partner {
   id: string;
   name: string;

@@ -512,6 +512,25 @@ test('a PM records a client PO in GBP, sees it in EUR and archives it (E13, D-34
   await expect(pm.getByRole('heading', { name: 'Partial installation, 4 sensors — Approved' })).toBeVisible();
   await pm.getByLabel('Installation date').fill('2026-12-01');
   await pm.getByRole('button', { name: 'Save status' }).click();
+  // R32 (D-34 C3): no booking before readiness is confirmed; record it on the Lifecycle tab, then book.
+  await expect(pm.getByText(/^Not allowed yet: readiness is not confirmed/)).toBeVisible();
+  await pm.getByRole('link', { name: 'Lifecycle', exact: true }).click();
+  for (const [step, label] of [
+    ['card_received', 'Card received'],
+    ['card_complete', 'Card complete'],
+    ['readiness_confirmed', 'Readiness confirmed'],
+  ] as const) {
+    await pm.getByLabel('Step', { exact: true }).selectOption(step);
+    await pm.getByLabel('Date', { exact: true }).fill('2026-11-27');
+    await pm.getByRole('button', { name: 'Record step' }).click();
+    await expect(pm.getByRole('row', { name: new RegExp(`^${label} 2026-11-27`) })).toBeVisible();
+  }
+  await pm
+    .getByRole('navigation', { name: 'Project sections' })
+    .getByRole('link', { name: 'Installers' })
+    .click();
+  await pm.getByLabel('Installation date').fill('2026-12-01');
+  await pm.getByRole('button', { name: 'Save status' }).click();
   await expect(
     pm.getByRole('heading', { name: 'Partial installation, 4 sensors — Scheduled' }),
   ).toBeVisible();

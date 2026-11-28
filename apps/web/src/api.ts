@@ -338,7 +338,7 @@ export function loadInstallerPartners(): Promise<{ id: string; name: string; cou
 export async function installerWrite(
   path: string,
   body: Record<string, unknown>,
-): Promise<'ok' | 'forbidden' | 'invalid' | 'rule' | 'conflict'> {
+): Promise<'ok' | 'forbidden' | 'invalid' | 'rule' | 'readiness' | 'conflict'> {
   const res = await fetch(`/api/${path}`, {
     method: 'POST',
     credentials: 'same-origin',
@@ -346,7 +346,11 @@ export async function installerWrite(
     body: JSON.stringify(body),
   });
   if (res.status === 403) return 'forbidden';
-  if (res.status === 422) return 'rule';
+  if (res.status === 422) {
+    // R32 (D-34 C3) gets its own message: the PM must confirm readiness on the Lifecycle tab first.
+    const { clause } = (await res.json().catch(() => ({}))) as { clause?: string };
+    return clause?.startsWith('R32') ? 'readiness' : 'rule';
+  }
   if (res.status === 409) return 'conflict';
   if (res.status === 400 || res.status === 404) return 'invalid';
   if (!res.ok) throw new Error(`POST ${path} → ${String(res.status)}`);

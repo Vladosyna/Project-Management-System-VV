@@ -428,6 +428,7 @@ export const zh = {
   'installers.outcome.forbidden': '您的角色无权执行此操作（AI 助手不能确认或批准）。',
   'installers.outcome.invalid': '请检查输入。',
   'installers.outcome.rule': '不允许：需要两份可比报价或填写理由（P-12），或步骤顺序不对。',
+  'installers.outcome.readiness': '暂不允许：就绪尚未确认。请先在“生命周期”标签记录“已确认就绪”（R32）。',
   'installers.outcome.conflict': '已完成。',
   'installers.outcome.failed': '无法保存，请重试。',
   'site.tab.commercial': '商务',

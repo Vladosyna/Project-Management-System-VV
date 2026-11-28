@@ -9,3 +9,5 @@ export { archiveGateTemplate } from './commands/archive-gate-template.ts';
 export { gateTemplates } from './queries/gate-templates.ts';
 export { readinessGaps } from './queries/readiness-gaps.ts';
 export { programmeTracker } from './queries/programme-tracker.ts';
+/** R32 (D-34 C3): installers may book only once readiness is confirmed. */
+export { readinessConfirmed } from './queries/readiness-confirmed.ts';
