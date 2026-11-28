@@ -9,3 +9,4 @@ export { archiveGateTemplate } from './commands/archive-gate-template.ts';
 export { gateTemplates } from './queries/gate-templates.ts';
 export { readinessGaps } from './queries/readiness-gaps.ts';
 export { programmeTracker } from './queries/programme-tracker.ts';
+export { weeklyReport } from './queries/weekly-report.ts';

@@ -41,5 +41,10 @@ export const commercialPermissions = {
     description: 'Confirm a country DPIA or LPA an AI agent proposed (a person only, never an agent).',
     roles: ['director', 'pm', 'finance'],
   }),
+  weeklyChanges: permission('commercial.weeklyChanges.read', {
+    description:
+      "Friday weekly report per client (E11 AC1, D-44): the client's commercial records (PO, invoice, DPIA, price list) added, confirmed or archived in one week",
+    roles: ['director', 'pm', 'finance', 'management', 'sponsor'],
+  }),
   // gen:permissions — `pnpm gen:command` and `pnpm gen:query` add entries above this line.
 };

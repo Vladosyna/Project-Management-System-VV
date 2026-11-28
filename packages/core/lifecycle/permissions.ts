@@ -37,5 +37,10 @@ export const lifecyclePermissions = {
       'The programme tracker (E11 AC3): every project with stage, planned installation, readiness and gates, by client, programme or country',
     roles: ['director', 'pm', 'sales', 'rnd', 'finance', 'management', 'sponsor', 'admin'],
   }),
+  weeklyReport: permission('lifecycle.weeklyReport.read', {
+    description:
+      "Friday weekly report per client (E11 AC1, D-44): the client's projects that changed in one week — steps recorded and planned installation dates set or moved",
+    roles: ['director', 'pm', 'sales', 'finance', 'management', 'sponsor'],
+  }),
   // gen:permissions — `pnpm gen:command` and `pnpm gen:query` add entries above this line.
 };

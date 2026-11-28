@@ -13,6 +13,7 @@ External roles (`client`, `partner`) are switched off in the checker until the V
 | `commercial.record.confirm` | Confirm a commercial record an AI agent proposed (a person only, never an agent): money data is applied only when confirmed. | ✓ | ✓ |  |  | ✓ |  |  |  |  |  |  |
 | `commercial.record.propose` | Record a client PO, DPIA status, client invoice or price-list price on a site; amounts in the original currency and EUR. From an AI agent it stays a proposal until a PM confirms it. | ✓ | ✓ |  |  | ✓ |  | ✓ |  |  |  |  |
 | `commercial.site.read` | The commercial records of one site (PO, DPIA, invoice, price list): confirmed and proposed, with amounts in original currency and EUR. | ✓ | ✓ |  |  | ✓ | ✓ | ✓ |  |  |  |  |
+| `commercial.weeklyChanges.read` | Friday weekly report per client (E11 AC1, D-44): the client's commercial records (PO, invoice, DPIA, price list) added, confirmed or archived in one week | ✓ | ✓ |  |  | ✓ | ✓ | ✓ |  |  |  |  |
 | `devices.device.register` | Register a device on a project: SN, MAC, model, firmware, network, status (E4 AC1) | ✓ | ✓ |  | ✓ |  |  |  |  |  |  |  |
 | `devices.device.setVersions` | Set firmware and algorithm version on devices of a project (D-31) | ✓ | ✓ |  | ✓ |  |  |  |  |  |  |  |
 | `devices.firmwareIssue.record` | Record a known problem of a firmware version of a model (D-31, R&D reference) | ✓ |  |  | ✓ |  |  |  |  |  |  |  |
@@ -60,6 +61,7 @@ External roles (`client`, `partner`) are switched off in the checker until the V
 | `lifecycle.readinessGaps.read` | For the hourly alert run: every active project, flagged when installation is within the readiness window and readiness is not confirmed (R9), or is 20 working days away or closer and readiness is not confirmed (R32, D-47). |  |  |  |  |  |  |  |  |  |  | ✓ |
 | `lifecycle.siteLifecycle.read` | See a project's steps, gates, installation plan and readiness (E3) | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |  |  |  |
 | `lifecycle.step.record` | Record a step reached on a project — base step or gate — with date and evidence (E3 AC1) | ✓ | ✓ | ✓ |  |  |  |  |  |  |  |  |
+| `lifecycle.weeklyReport.read` | Friday weekly report per client (E11 AC1, D-44): the client's projects that changed in one week — steps recorded and planned installation dates set or moved | ✓ | ✓ | ✓ |  | ✓ | ✓ | ✓ |  |  |  |  |
 | `org.client.create` | Create a client (top of the SOP-DEL-02 hierarchy) | ✓ |  |  |  |  |  |  | ✓ |  |  |  |
 | `org.client.list` | See the clients the signed-in person may see: short code and name (E1) | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |  |  |  |
 | `org.complianceScope.set` | Set whether a client agrees DPIA and LPA per store or once per country (D-45); per country, a country record covers every store. | ✓ |  |  |  |  |  |  |  |  |  |  |

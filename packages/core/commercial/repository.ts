@@ -198,3 +198,23 @@ export async function insertCountry(tx: Tx, row: typeof countryCompliance.$infer
 export async function updateCountry(tx: Tx, id: string, set: Partial<typeof countryCompliance.$inferInsert>) {
   await tx.update(countryCompliance).set(set).where(eq(countryCompliance.id, id));
 }
+
+/** E11 AC1: the client's records created, confirmed or archived in [from, to), with their project. */
+export async function recordsChangedBetween(tx: Tx, clientId: string, from: Date, to: Date) {
+  const inWeek = (
+    col:
+      | typeof commercialRecord.createdAt
+      | typeof commercialRecord.confirmedAt
+      | typeof commercialRecord.archivedAt,
+  ) => sql`(${col} >= ${from} AND ${col} < ${to})`;
+  return tx
+    .select({ record: commercialRecord, projectId: site.projectId })
+    .from(commercialRecord)
+    .innerJoin(site, eq(site.id, commercialRecord.siteId))
+    .where(
+      and(
+        eq(commercialRecord.clientId, clientId),
+        sql`(${inWeek(commercialRecord.createdAt)} OR ${inWeek(commercialRecord.confirmedAt)} OR ${inWeek(commercialRecord.archivedAt)})`,
+      ),
+    );
+}

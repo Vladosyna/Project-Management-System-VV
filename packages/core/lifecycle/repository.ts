@@ -1,5 +1,18 @@
 // lifecycle repository — the only place in this module that touches tables.
-import { and, eq, gateTemplate, inArray, isNull, or, site, siteStep, type Tx } from '@ocs/db';
+import {
+  and,
+  asc,
+  auditEvent,
+  eq,
+  gateTemplate,
+  inArray,
+  isNull,
+  or,
+  site,
+  siteStep,
+  sql,
+  type Tx,
+} from '@ocs/db';
 
 /** The active project, locked until the transaction ends, with what the life cycle needs. */
 export async function lockActiveSite(tx: Tx, id: string) {
@@ -211,4 +224,40 @@ export async function activeTemplates(tx: Tx) {
     .from(gateTemplate)
     .where(isNull(gateTemplate.archivedAt))
     .orderBy(gateTemplate.name);
+}
+
+/** E11 AC1: active steps of these projects recorded in [from, to), oldest first. */
+export async function stepsRecordedBetween(tx: Tx, siteIds: readonly string[], from: Date, to: Date) {
+  if (siteIds.length === 0) return [];
+  return tx
+    .select({ siteId: siteStep.siteId, step: siteStep.step, doneOn: siteStep.doneOn, at: siteStep.createdAt })
+    .from(siteStep)
+    .where(
+      and(
+        inArray(siteStep.siteId, [...siteIds]),
+        isNull(siteStep.archivedAt),
+        sql`${siteStep.createdAt} >= ${from} AND ${siteStep.createdAt} < ${to}`,
+      ),
+    )
+    .orderBy(asc(siteStep.createdAt));
+}
+
+/** E11 AC1: planned installation dates set or moved for a client in [from, to), from the audit log (oldest first). */
+export async function plannedDateChanges(tx: Tx, clientId: string, from: Date, to: Date) {
+  return tx
+    .select({
+      siteId: auditEvent.objectId,
+      before: auditEvent.before,
+      after: auditEvent.after,
+      at: auditEvent.at,
+    })
+    .from(auditEvent)
+    .where(
+      and(
+        eq(auditEvent.command, 'lifecycle.installation.plan'),
+        eq(auditEvent.clientId, clientId),
+        sql`${auditEvent.at} >= ${from} AND ${auditEvent.at} < ${to}`,
+      ),
+    )
+    .orderBy(asc(auditEvent.at));
 }
